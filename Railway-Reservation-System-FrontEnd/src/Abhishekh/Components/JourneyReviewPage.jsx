@@ -29,20 +29,13 @@ const JourneyReviewPage = () => {
     },
   ];
 
-  const totalFare = passengers.reduce(
-    (sum, p) => sum + p.fare,
-    0
-  );
+  const totalFare = passengers.reduce((sum, p) => sum + p.fare, 0);
 
   return (
     <div className="p-6 space-y-6">
       {/* Passenger Cards */}
       {passengers.map((p, index) => (
-        <PassengerReviewCard
-          key={p.id}
-          passenger={p}
-          index={index + 1}
-        />
+        <PassengerReviewCard key={p.id} passenger={p} index={index + 1} />
       ))}
 
       {/* Footer */}
@@ -53,12 +46,11 @@ const JourneyReviewPage = () => {
         </div>
 
         <button
-  onClick={() => alert("Button Clicked")}
-  className="relative z-50 px-8 py-3 bg-orange-400 rounded-lg font-semibold cursor-pointer"
->
-  Proceed To Payment
-</button>
-
+          onClick={() => alert("Button Clicked")}
+          className="relative z-50 px-8 py-3 bg-orange-400 rounded-lg font-semibold cursor-pointer"
+        >
+          Proceed To Payment
+        </button>
       </div>
     </div>
   );
