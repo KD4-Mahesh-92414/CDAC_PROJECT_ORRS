@@ -16,4 +16,10 @@ public interface UserService {
 
 	ApiResponseDTO<?> updateUserPassword(UpdatePasswordReqDTO passwordDto, Long userId);
 
+	ApiResponseDTO<?> getAllUsers();
+
+	ApiResponseDTO<?> suspendUserById(Long userId);
+
+	ApiResponseDTO<?> deleteAccount(Long userId);
+
 }

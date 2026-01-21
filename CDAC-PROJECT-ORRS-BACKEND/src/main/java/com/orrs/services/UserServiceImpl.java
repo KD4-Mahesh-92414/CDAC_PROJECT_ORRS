@@ -1,8 +1,9 @@
 package com.orrs.services;
 
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-
 import com.orrs.custom_exceptions.InvalidRequestException;
 import com.orrs.custom_exceptions.PasswordMismatchException;
 import com.orrs.custom_exceptions.ResourceAlreadyExistsException;
@@ -11,9 +12,12 @@ import com.orrs.dto.common.ApiResponseDTO;
 import com.orrs.dto.request.RegisterReqDTO;
 import com.orrs.dto.request.UpdatePasswordReqDTO;
 import com.orrs.dto.request.UpdateUserReqDTO;
+import com.orrs.dto.response.UserAdminViewDTO;
 import com.orrs.dto.response.RegisterRespDTO;
 import com.orrs.dto.response.UserDetailsRespDTO;
 import com.orrs.entities.User;
+import com.orrs.enums.AccountStatus;
+import com.orrs.enums.Role;
 import com.orrs.repositories.UserRepository;
 
 import jakarta.transaction.Transactional;
@@ -26,6 +30,7 @@ public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepo;
 	private final ModelMapper modelMapper;
+
 
 	@Override
 	public ApiResponseDTO<?> registerNewUser(RegisterReqDTO regDto) {
@@ -46,6 +51,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ApiResponseDTO<?> getUserDetails(Long id) {
+		System.out.println(id);
 		User user = userRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("User does not exist"));
 		UserDetailsRespDTO userDetailsDto = modelMapper.map(user, UserDetailsRespDTO.class);
 		return new ApiResponseDTO<UserDetailsRespDTO>("User details fetched successfully", "SUCCESS", userDetailsDto);
@@ -76,12 +82,40 @@ public class UserServiceImpl implements UserService {
 		if(!passwordDto.getNewPassword().equals(passwordDto.getNewCnfPassword())) {
 			throw new PasswordMismatchException("New password and confirm password do not match");
 		}
-		
-		if(passwordDto.getPassword().equals(user.getPassword())) {
+		//bug fixed passwordDto.getPassword().equals(user.getPassword() to passwordDto.getNewPassword().equals(user.getPassword()
+		if(passwordDto.getNewPassword().equals(user.getPassword())) {
 			throw new InvalidRequestException("New passowrd must be different from old password");
 		}
 		user.setPassword(passwordDto.getNewPassword());
 		return new ApiResponseDTO<>("Password updated successfully","SUCCESS",null) ;
 	}
+
+	@Override
+	public ApiResponseDTO<?> getAllUsers() {
+		List<UserAdminViewDTO> userList =  userRepo.fetchAllUsers(AccountStatus.DELETED);
+		return new ApiResponseDTO<List<UserAdminViewDTO>>("All users details fetched successfully", "SUCCESS", userList );
+	}
+
+	@Override
+	public ApiResponseDTO<?> suspendUserById(Long userId) {
+		User persistedUser = userRepo.findById(userId).orElseThrow(()-> new ResourceNotFoundException("User does not exist"));
+		//deleted user account should not be suspended 
+		if(persistedUser.getStatus() == AccountStatus.DELETED) {
+			throw new ResourceNotFoundException("User does not exist");
+		}
+		persistedUser.setStatus(AccountStatus.SUSPENDED);
+		return new ApiResponseDTO<>("User account has been suspended successfully", "SUCCESS", null);
+	}
+
+	@Override
+	public ApiResponseDTO<?> deleteAccount(Long userId) {
+		User persistedUser = userRepo.findById(userId).orElseThrow(()-> new ResourceNotFoundException("User does not exist"));
+		
+		persistedUser.setStatus(AccountStatus.DELETED);
+		persistedUser.setEmail("deleted_"+persistedUser.getEmail()+"@system.local");
+		persistedUser.setMobile("XX"+persistedUser.getMobile());
+		return new ApiResponseDTO<>("User account deleted successfully", "SUCCESS", null);
+	}
+	
 	
 }
