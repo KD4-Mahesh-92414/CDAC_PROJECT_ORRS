@@ -1,7 +1,5 @@
-import { Login } from "./components/Login";
-import SelectSeatsPage from "./Vineet/selectseatcomponents/SelectSeatsPage";
-import Register from "./components/Register";
-import JourneyReviewPage from "./Abhishekh/Components/JourneyReviewPage";
+import { Routes, Route, useLocation } from "react-router";
+import { Suspense, lazy } from "react";
 
 // Main Pages
 import HomePage from "./pages/HomePage";
@@ -9,17 +7,6 @@ import { Login } from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import HeaderLayout from "./components/layout/HeaderLayout";
 import Navbar from "./components/layout/Navbar";
-
-// Admin Pages
-import {
-  Dashboard,
-  StationManagement,
-  TrainManagement,
-  UserManagement,
-  FareStructure,
-  RefundTransaction,
-  CreateAnnouncement
-} from "./admin/components";
 
 // Booking Flow Pages
 import TrainSearchResults from "./pages/booking/TrainSearchResults";
@@ -59,11 +46,8 @@ const EmergencyHelpline = lazy(() =>
 // Loading Fallback Component
 function LoadingFallback() {
   return (
-    <div className="flex flex-col items-center justify-center">
-      {/* <Login></Login>
-      <Register></Register> */}
-      {/* <SelectSeatsPage></SelectSeatsPage> */}
-      <JourneyReviewPage></JourneyReviewPage>
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="text-violet-600 text-lg">Loading...</div>
     </div>
   );
 }
@@ -77,7 +61,7 @@ function AppContent() {
   
   // Pages that don't need any navbar
   const noNavbarPages = ['/login', '/register', '/confirmation'];
-  const hideNavbar = noNavbarPages.includes(location.pathname) || location.pathname.startsWith('/admin');
+  const hideNavbar = noNavbarPages.includes(location.pathname);
   
   return (
     <>
@@ -136,15 +120,6 @@ function AppContent() {
           <Route path="/contact/support" element={<CustomerSupport />} />
           <Route path="/contact/feedback" element={<Feedback />} />
           <Route path="/contact/emergency" element={<EmergencyHelpline />} />
-
-          {/* Admin Routes */}
-          <Route path="/admin" element={<Dashboard />} />
-          <Route path="/admin/stations" element={<StationManagement />} />
-          <Route path="/admin/trains" element={<TrainManagement />} />
-          <Route path="/admin/users" element={<UserManagement />} />
-          <Route path="/admin/fares" element={<FareStructure />} />
-          <Route path="/admin/refunds" element={<RefundTransaction />} />
-          <Route path="/admin/announcements" element={<CreateAnnouncement />} />
         </Routes>
       </Suspense>
     </>
