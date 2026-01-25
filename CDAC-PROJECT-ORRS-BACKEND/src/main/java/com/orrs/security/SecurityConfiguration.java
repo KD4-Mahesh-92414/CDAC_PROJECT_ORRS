@@ -31,10 +31,13 @@ public class SecurityConfiguration {
 		.authorizeHttpRequests( request ->
 		  request
 		  .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/users/login", "/users/register").permitAll()
-		  .requestMatchers(HttpMethod.GET, "/users", "/admin").permitAll()
-		  .anyRequest().authenticated())
+		  .requestMatchers(HttpMethod.GET, "/users", "/admin/**").permitAll()
+		  .requestMatchers(HttpMethod.POST, "/admin/**").permitAll()
+		  .requestMatchers(HttpMethod.PUT, "/admin/**").permitAll()
+		  .requestMatchers(HttpMethod.DELETE, "/admin/**").permitAll()
+		  .anyRequest().authenticated());
 		   //add custom jwt filter before 1st authentication filter 
-		  .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+		 // .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 	}
 	
