@@ -1,0 +1,5 @@
+package com.orrs.dto.request;
+
+public class AddTrainReqDTO {
+
+}

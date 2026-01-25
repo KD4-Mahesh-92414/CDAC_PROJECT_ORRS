@@ -1,0 +1,5 @@
+package com.orrs.services;
+
+public interface TrainService {
+
+}
