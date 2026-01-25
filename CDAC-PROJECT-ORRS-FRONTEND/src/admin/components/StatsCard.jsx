@@ -6,8 +6,12 @@ export default function StatsCard({ title, value, icon: Icon, change, changeType
           <p className="text-sm font-medium text-gray-600">{title}</p>
           <p className="text-2xl font-bold text-gray-900">{value}</p>
           {change && (
-            <p className={`text-sm ${changeType === 'increase' ? 'text-green-600' : 'text-red-600'}`}>
-              {changeType === 'increase' ? '+' : '-'}{change}
+            <p className={`text-sm ${
+              changeType === 'increase' ? 'text-green-600' : 
+              changeType === 'decrease' ? 'text-red-600' : 
+              'text-gray-600'
+            }`}>
+              {changeType === 'increase' ? '+' : changeType === 'decrease' ? '-' : ''}{change}
             </p>
           )}
         </div>

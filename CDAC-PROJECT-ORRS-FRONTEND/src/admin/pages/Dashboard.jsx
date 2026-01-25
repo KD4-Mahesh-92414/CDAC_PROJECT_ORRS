@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react';
-import AdminLayout from '../components/AdminLayout';
+import { useState } from 'react';
+import AdminLayout from '../layouts/AdminLayout';
 import StatsCard from '../components/StatsCard';
+import { useTrains } from '../context/TrainContext';
+import { useStations } from '../context/StationContext';
 import { 
   RocketLaunchIcon, 
   UsersIcon, 
@@ -9,43 +11,14 @@ import {
 } from '@heroicons/react/24/outline';
 
 export default function Dashboard() {
-  const [stats, setStats] = useState({
-    activeTrains: 0,
-    totalPassengers: 0,
-    revenueToday: 0,
-    occupancyRate: 0
-  });
+  const { trains } = useTrains();
+  const { stations } = useStations();
 
-  useEffect(() => {
-    fetchStats();
-  }, []);
-
-  const fetchStats = async () => {
-    try {
-      // Replace with actual API calls
-      const [trainsRes, passengersRes, revenueRes, occupancyRes] = await Promise.all([
-        fetch('/api/admin/stats/trains'),
-        fetch('/api/admin/stats/passengers'),
-        fetch('/api/admin/stats/revenue'),
-        fetch('/api/admin/stats/occupancy')
-      ]);
-      
-      setStats({
-        activeTrains: await trainsRes.json() || 245,
-        totalPassengers: await passengersRes.json() || 12847,
-        revenueToday: await revenueRes.json() || 2847500,
-        occupancyRate: await occupancyRes.json() || 78.5
-      });
-    } catch (error) {
-      // Fallback to mock data
-      setStats({
-        activeTrains: 245,
-        totalPassengers: 12847,
-        revenueToday: 2847500,
-        occupancyRate: 78.5
-      });
-    }
-  };
+  const activeTrains = trains.filter(t => t.trainActiveStatus === 'Active').length;
+  const activeStations = stations.filter(s => s.status === 'Active').length;
+  const runningTrains = trains.filter(t => t.status === 'Running').length;
+  const cancelledTrains = trains.filter(t => t.status === 'Cancelled').length;
+  const notStartedTrains = trains.filter(t => t.status === 'Not Started').length;
 
   return (
     <AdminLayout>
@@ -60,31 +33,31 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatsCard
             title="Active Trains"
-            value={stats.activeTrains}
+            value={activeTrains}
             icon={RocketLaunchIcon}
-            change="12"
+            change="+2"
             changeType="increase"
           />
           <StatsCard
-            title="Total Passengers"
-            value={stats.totalPassengers.toLocaleString()}
+            title="Active Stations"
+            value={activeStations}
             icon={UsersIcon}
-            change="8.2%"
-            changeType="increase"
+            change="0"
+            changeType="neutral"
           />
           <StatsCard
-            title="Revenue Today"
-            value={`₹${(stats.revenueToday / 100000).toFixed(1)}L`}
+            title="Total Trains"
+            value={trains.length}
             icon={CurrencyDollarIcon}
-            change="15.3%"
+            change="+3"
             changeType="increase"
           />
           <StatsCard
-            title="Occupancy Rate"
-            value={`${stats.occupancyRate}%`}
+            title="Total Stations"
+            value={stations.length}
             icon={ChartBarIcon}
-            change="2.1%"
-            changeType="decrease"
+            change="+1"
+            changeType="increase"
           />
         </div>
 
@@ -112,15 +85,15 @@ export default function Dashboard() {
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Train Status Overview</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="text-center p-4 bg-green-50 rounded-lg">
-              <p className="text-2xl font-bold text-green-600">189</p>
+              <p className="text-2xl font-bold text-green-600">{runningTrains}</p>
               <p className="text-sm text-green-700">Running</p>
             </div>
             <div className="text-center p-4 bg-yellow-50 rounded-lg">
-              <p className="text-2xl font-bold text-yellow-600">12</p>
-              <p className="text-sm text-yellow-700">Delayed</p>
+              <p className="text-2xl font-bold text-yellow-600">{notStartedTrains}</p>
+              <p className="text-sm text-yellow-700">Not Started</p>
             </div>
             <div className="text-center p-4 bg-red-50 rounded-lg">
-              <p className="text-2xl font-bold text-red-600">3</p>
+              <p className="text-2xl font-bold text-red-600">{cancelledTrains}</p>
               <p className="text-sm text-red-700">Cancelled</p>
             </div>
           </div>

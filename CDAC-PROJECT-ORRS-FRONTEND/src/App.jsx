@@ -1,12 +1,25 @@
 import { Routes, Route, useLocation } from "react-router";
 import { Suspense, lazy } from "react";
 
+// Context Providers
+import { StationProvider } from "./admin/context/StationContext";
+import { TrainProvider } from "./admin/context/TrainContext";
+
 // Main Pages
 import HomePage from "./pages/HomePage";
 import { Login } from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import HeaderLayout from "./components/layout/HeaderLayout";
 import Navbar from "./components/layout/Navbar";
+
+// Admin Pages
+import Dashboard from "./admin/pages/Dashboard";
+import StationManagement from "./admin/pages/StationManagement";
+import TrainManagement from "./admin/pages/TrainManagement";
+import UserManagement from "./admin/pages/UserManagement";
+import FareStructure from "./admin/pages/FareStructure";
+import RefundTransaction from "./admin/pages/RefundTransaction";
+import CreateAnnouncement from "./admin/pages/CreateAnnouncement";
 
 // Booking Flow Pages
 import TrainSearchResults from "./pages/booking/TrainSearchResults";
@@ -63,13 +76,16 @@ function AppContent() {
   const noNavbarPages = ['/login', '/register', '/confirmation'];
   const hideNavbar = noNavbarPages.includes(location.pathname);
   
+  // Admin pages
+  const isAdminPage = location.pathname.startsWith('/admin');
+  
   return (
     <>
       {/* Show HeaderLayout only for booking flow */}
       {isBookingFlow && <HeaderLayout />}
       
-      {/* Show regular Navbar for all other pages except auth and confirmation */}
-      {!isBookingFlow && !hideNavbar && <Navbar />}
+      {/* Show regular Navbar for all other pages except auth, confirmation, and admin */}
+      {!isBookingFlow && !hideNavbar && !isAdminPage && <Navbar />}
       
       <Suspense fallback={<LoadingFallback />}>
         <Routes>
@@ -120,6 +136,15 @@ function AppContent() {
           <Route path="/contact/support" element={<CustomerSupport />} />
           <Route path="/contact/feedback" element={<Feedback />} />
           <Route path="/contact/emergency" element={<EmergencyHelpline />} />
+
+          {/* Admin Routes */}
+          <Route path="/admin" element={<Dashboard />} />
+          <Route path="/admin/stations" element={<StationManagement />} />
+          <Route path="/admin/trains" element={<TrainManagement />} />
+          <Route path="/admin/users" element={<UserManagement />} />
+          <Route path="/admin/fares" element={<FareStructure />} />
+          <Route path="/admin/refunds" element={<RefundTransaction />} />
+          <Route path="/admin/announcements" element={<CreateAnnouncement />} />
         </Routes>
       </Suspense>
     </>
@@ -128,7 +153,11 @@ function AppContent() {
 
 function App() {
   return (
-    <AppContent />
+    <StationProvider>
+      <TrainProvider>
+        <AppContent />
+      </TrainProvider>
+    </StationProvider>
   );
 }
 

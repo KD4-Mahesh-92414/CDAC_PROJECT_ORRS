@@ -1,4 +1,5 @@
 import { Link, useLocation } from 'react-router';
+import train from '../../assets/train.png';
 import { 
   HomeIcon, 
   RocketLaunchIcon, 
@@ -7,7 +8,8 @@ import {
   CurrencyDollarIcon,
   ArrowPathIcon,
   SpeakerWaveIcon,
-  XMarkIcon
+  XMarkIcon,
+  ArrowLeftIcon
 } from '@heroicons/react/24/outline';
 
 const navigation = [
@@ -39,11 +41,23 @@ export default function Sidebar({ open, setOpen }) {
       } lg:block`}>
         
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b">
-          <h1 className="text-xl font-bold text-violet-600">Admin Panel</h1>
+        <div className="p-6 border-b">
+          <Link to="/" className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 to-violet-700 flex items-center justify-center shadow-md">
+              <img src={train} alt="train logo" className="h-6 w-6 invert" />
+            </div>
+            <span className="text-xl font-bold text-violet-700">Admin Panel</span>
+          </Link>
+          <Link
+            to="/"
+            className="flex items-center gap-2 text-sm text-gray-600 hover:text-violet-600 transition-colors"
+          >
+            <ArrowLeftIcon className="w-4 h-4" />
+            Back to User Portal
+          </Link>
           <button
             onClick={() => setOpen(false)}
-            className="lg:hidden p-1 rounded-md hover:bg-gray-100"
+            className="lg:hidden absolute top-6 right-6 p-1 rounded-md hover:bg-gray-100"
           >
             <XMarkIcon className="w-5 h-5" />
           </button>
@@ -57,10 +71,10 @@ export default function Sidebar({ open, setOpen }) {
               <Link
                 key={item.name}
                 to={item.href}
-                className={`flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
                   isActive
-                    ? 'bg-violet-100 text-violet-700'
-                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    ? 'bg-violet-700 text-white shadow-lg'
+                    : 'text-gray-700 hover:bg-violet-50 hover:text-violet-700'
                 }`}
               >
                 <item.icon className="w-5 h-5 mr-3" />

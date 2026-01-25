@@ -2,7 +2,7 @@ import { Bars3Icon, BellIcon, UserCircleIcon } from '@heroicons/react/24/outline
 
 export default function TopNavbar({ setSidebarOpen }) {
   return (
-    <div className="bg-white shadow-sm border-b px-6 py-4">
+    <div className="bg-gradient-to-r from-violet-600 to-violet-700 shadow-lg border-b border-violet-800 px-6 py-4">
       <div className="flex items-center justify-between">
         {/* Left side */}
         <div className="flex items-center">
@@ -12,18 +12,18 @@ export default function TopNavbar({ setSidebarOpen }) {
           >
             <Bars3Icon className="w-5 h-5" />
           </button>
-          <h2 className="ml-2 text-lg font-semibold text-gray-900">
+          <h2 className="ml-2 text-lg font-semibold text-white">
             Railway Admin Dashboard
           </h2>
         </div>
 
         {/* Right side */}
         <div className="flex items-center space-x-4">
-          <button className="p-2 rounded-full hover:bg-gray-100">
-            <BellIcon className="w-5 h-5 text-gray-600" />
+          <button className="p-2 rounded-full hover:bg-violet-800 transition-colors">
+            <BellIcon className="w-5 h-5 text-white" />
           </button>
-          <button className="p-2 rounded-full hover:bg-gray-100">
-            <UserCircleIcon className="w-6 h-6 text-gray-600" />
+          <button className="p-2 rounded-full hover:bg-violet-800 transition-colors">
+            <UserCircleIcon className="w-6 h-6 text-white" />
           </button>
         </div>
       </div>
