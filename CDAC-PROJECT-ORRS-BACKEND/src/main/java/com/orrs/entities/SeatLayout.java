@@ -2,16 +2,12 @@ package com.orrs.entities;
 
 
 import com.orrs.enums.SeatType;
-import com.orrs.enums.TrainStatus;
-import com.orrs.enums.TrainType;
-
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
-
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -33,10 +29,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class SeatLayout extends BaseEntity {
-
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coach_type_id", nullable = false)
