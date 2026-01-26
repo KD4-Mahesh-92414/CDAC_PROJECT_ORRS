@@ -44,10 +44,10 @@ public class TrainFare extends BaseEntity{
     private BigDecimal baseFare = new BigDecimal("50.00");
 
     @Column(nullable = false)
-    private Boolean isActive = true;
+    private boolean isActive = true;
 
     @Column(nullable = false)
-    private Boolean isDeleted = false;
+    private boolean isDeleted = false;
 
     /**
      * Helper method for calculation logic:
