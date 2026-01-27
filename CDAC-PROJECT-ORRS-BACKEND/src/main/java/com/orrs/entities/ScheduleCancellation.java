@@ -29,5 +29,5 @@ public class ScheduleCancellation extends BaseEntity {
     
     private String cancelledBy; // Admin ID
     
-    private Boolean notificationTriggered = false;
+    private boolean notificationTriggered = false;
 }

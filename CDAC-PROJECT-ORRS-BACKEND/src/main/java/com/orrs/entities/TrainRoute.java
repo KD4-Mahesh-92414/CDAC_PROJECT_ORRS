@@ -49,7 +49,7 @@ public class TrainRoute extends BaseEntity{
     private Integer dayNumber = 1 ; 
 
     @Column(nullable = false)
-    private Boolean isMajorStation = false; // Helps in UI filtering
+    private boolean isMajorStation = false; // Helps in UI filtering
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

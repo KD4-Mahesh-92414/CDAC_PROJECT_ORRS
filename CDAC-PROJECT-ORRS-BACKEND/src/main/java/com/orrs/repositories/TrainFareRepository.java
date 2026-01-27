@@ -13,6 +13,17 @@ public interface TrainFareRepository extends JpaRepository<TrainFare, Long> {
 
 	List<TrainFare> findByTrainId(Long trainId);
 	
+	Optional<TrainFare> findByTrainIdAndCoachTypeIdAndIsDeletedFalse(Long trainId, Long coachTypeId);
+	
+	List<TrainFare> findAllByIsDeletedFalse();
+	
+	List<TrainFare> findAllByTrainIdAndIsDeletedFalse(Long trainId);
+	
+	@Query("SELECT new com.orrs.dto.response.TrainFareAdminViewDTO(" +
+		   "tf.id, tf.train.id, tf.train.trainNumber, tf.train.trainName, " +
+		   "tf.coachType.typeCode, tf.ratePerKm, tf.baseFare, tf.isActive) " +
+		   "FROM TrainFare tf WHERE tf.isDeleted = false")
+	List<com.orrs.dto.response.TrainFareAdminViewDTO> fetchAllTrainFares();
 	@Query("""
 		SELECT tf FROM TrainFare tf
 		WHERE tf.train.id = :trainId
