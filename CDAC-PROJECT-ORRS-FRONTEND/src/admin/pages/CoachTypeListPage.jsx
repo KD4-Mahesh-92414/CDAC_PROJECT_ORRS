@@ -7,29 +7,12 @@ import FormModal from '../components/FormModal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import PrimaryButton from '../components/PrimaryButton';
 import CoachTypeForm from '../components/CoachTypeForm';
+import { useCoachTypes } from '../context/CoachTypeContext';
 import toast from 'react-hot-toast';
 
 export default function CoachTypeListPage() {
   const navigate = useNavigate();
-  const [coachTypes] = useState([
-    {
-      id: 1,
-      typeCode: 'SL',
-      typeName: 'Sleeper',
-      description: 'Non-AC sleeper coach with berths',
-      totalSeats: 72,
-      coachImageUrl: ''
-    },
-    {
-      id: 2,
-      typeCode: '3A',
-      typeName: 'AC 3 Tier',
-      description: 'Air conditioned 3-tier sleeper',
-      totalSeats: 64,
-      coachImageUrl: ''
-    }
-  ]);
-
+  const { coachTypes, addCoachType, updateCoachType, deleteCoachType } = useCoachTypes();
   const [showModal, setShowModal] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedCoachType, setSelectedCoachType] = useState(null);
@@ -107,16 +90,33 @@ export default function CoachTypeListPage() {
     setShowDeleteDialog(true);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      toast.success(selectedCoachType ? 'Coach Type updated successfully!' : 'Coach Type added successfully!');
+    if (!validateForm()) return;
+
+    let success = false;
+    if (selectedCoachType) {
+      success = await updateCoachType(selectedCoachType.id, formData);
+      if (success) {
+        toast.success('Coach Type updated successfully!');
+      }
+    } else {
+      success = await addCoachType(formData);
+      if (success) {
+        toast.success('Coach Type added successfully!');
+      }
+    }
+    
+    if (success) {
       setShowModal(false);
     }
   };
 
-  const confirmDelete = () => {
-    toast.success('Coach Type deleted successfully!');
+  const confirmDelete = async () => {
+    const success = await deleteCoachType(selectedCoachType.id);
+    if (success) {
+      toast.success('Coach Type deleted successfully!');
+    }
     setShowDeleteDialog(false);
   };
 

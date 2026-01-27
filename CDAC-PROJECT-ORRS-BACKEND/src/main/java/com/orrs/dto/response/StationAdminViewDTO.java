@@ -21,6 +21,7 @@ public class StationAdminViewDTO {
     private String city;
     private String state;
     private String zone;
+    private Integer platforms;
     private StationStatus status;
 }
 

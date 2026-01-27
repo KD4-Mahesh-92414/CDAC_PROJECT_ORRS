@@ -1,4 +1,6 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { adminService } from '../../services';
+import toast from 'react-hot-toast';
 
 const TrainContext = createContext();
 
@@ -11,105 +13,110 @@ export const useTrains = () => {
 };
 
 export const TrainProvider = ({ children }) => {
-  const [trains, setTrains] = useState([
-    {
-      trainId: 1,
-      trainNumber: '12951',
-      trainName: 'Mumbai Rajdhani Express',
-      trainType: 'Rajdhani',
-      sourceStationId: 1,
-      destinationStationId: 3,
-      totalDistanceKm: 1384,
-      avgSpeed: 85,
-      daysOfRun: 'Daily',
-      trainActiveStatus: 'Active',
-      status: 'Running'
-    },
-    {
-      trainId: 2,
-      trainNumber: '12301',
-      trainName: 'Howrah Rajdhani Express',
-      trainType: 'Rajdhani',
-      sourceStationId: 1,
-      destinationStationId: 4,
-      totalDistanceKm: 1441,
-      avgSpeed: 82,
-      daysOfRun: 'Daily',
-      trainActiveStatus: 'Active',
-      status: 'Running'
-    },
-    {
-      trainId: 3,
-      trainNumber: '12009',
-      trainName: 'Shatabdi Express',
-      trainType: 'Shatabdi',
-      sourceStationId: 1,
-      destinationStationId: 5,
-      totalDistanceKm: 2180,
-      avgSpeed: 75,
-      daysOfRun: 'Mon-Fri',
-      trainActiveStatus: 'Active',
-      status: 'Running'
-    },
-    {
-      trainId: 4,
-      trainNumber: '12002',
-      trainName: 'Bhopal Shatabdi',
-      trainType: 'Shatabdi',
-      sourceStationId: 1,
-      destinationStationId: 2,
-      totalDistanceKm: 707,
-      avgSpeed: 90,
-      daysOfRun: 'Daily',
-      trainActiveStatus: 'Active',
-      status: 'Running'
-    },
-    {
-      trainId: 5,
-      trainNumber: '12259',
-      trainName: 'Duronto Express',
-      trainType: 'Duronto',
-      sourceStationId: 2,
-      destinationStationId: 4,
-      totalDistanceKm: 1968,
-      avgSpeed: 78,
-      daysOfRun: 'Tue-Thu-Sat',
-      trainActiveStatus: 'Active',
-      status: 'Running'
+  const [trains, setTrains] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch trains from backend on component mount
+  useEffect(() => {
+    fetchTrains();
+  }, []);
+
+  const fetchTrains = async () => {
+    try {
+      setLoading(true);
+      const response = await adminService.trains.getAllTrains();
+      if (response.data && response.data.status === 'SUCCESS') {
+        setTrains(response.data.data || []);
+      }
+    } catch (error) {
+      console.error('Error fetching trains:', error);
+      toast.error('Failed to fetch trains');
+    } finally {
+      setLoading(false);
     }
-  ]);
-
-  const addTrain = (trainData) => {
-    const newTrain = {
-      ...trainData,
-      trainId: Math.max(...trains.map(t => t.trainId), 0) + 1
-    };
-    setTrains([...trains, newTrain]);
-    return newTrain;
   };
 
-  const updateTrain = (trainId, trainData) => {
-    setTrains(trains.map(t => 
-      t.trainId === trainId ? { ...t, ...trainData } : t
-    ));
+  const addTrain = async (trainData) => {
+    try {
+      setLoading(true);
+      const response = await adminService.trains.addTrain(trainData);
+      if (response.data && response.data.status === 'SUCCESS') {
+        await fetchTrains(); // Refresh the list
+        return true;
+      }
+    } catch (error) {
+      console.error('Error adding train:', error);
+      toast.error(error.response?.data?.message || 'Failed to add train');
+      return false;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const deleteTrain = (trainId) => {
-    setTrains(trains.map(t => 
-      t.trainId === trainId ? { ...t, trainActiveStatus: 'Inactive' } : t
-    ));
+  const updateTrain = async (trainId, trainData) => {
+    try {
+      setLoading(true);
+      const response = await adminService.trains.updateTrain(trainId, trainData);
+      if (response.data && response.data.status === 'SUCCESS') {
+        await fetchTrains(); // Refresh the list
+        return true;
+      }
+    } catch (error) {
+      console.error('Error updating train:', error);
+      toast.error(error.response?.data?.message || 'Failed to update train');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteTrain = async (trainId) => {
+    try {
+      setLoading(true);
+      const response = await adminService.trains.deleteTrain(trainId);
+      if (response.data && response.data.status === 'SUCCESS') {
+        await fetchTrains(); // Refresh the list
+        return true;
+      }
+    } catch (error) {
+      console.error('Error deleting train:', error);
+      toast.error(error.response?.data?.message || 'Failed to delete train');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateTrainStatus = async (trainId, statusData) => {
+    try {
+      setLoading(true);
+      const response = await adminService.trains.updateTrainStatus(trainId, statusData);
+      if (response.data && response.data.status === 'SUCCESS') {
+        await fetchTrains(); // Refresh the list
+        return true;
+      }
+    } catch (error) {
+      console.error('Error updating train status:', error);
+      toast.error(error.response?.data?.message || 'Failed to update train status');
+      return false;
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getTrainById = (trainId) => {
-    return trains.find(t => t.trainId === trainId);
+    return trains.find(t => t.id === trainId);
   };
 
   const value = {
     trains,
+    loading,
     addTrain,
     updateTrain,
     deleteTrain,
-    getTrainById
+    updateTrainStatus,
+    getTrainById,
+    fetchTrains
   };
 
   return (

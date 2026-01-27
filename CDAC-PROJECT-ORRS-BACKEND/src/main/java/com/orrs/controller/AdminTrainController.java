@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.orrs.dto.request.AddTrainReqDTO;
 import com.orrs.dto.request.UpdateTrainReqDTO;
 import com.orrs.dto.request.UpdateTrainStatusReqDTO;
-import com.orrs.security.UserPrincipal;
 import com.orrs.services.TrainService;
 
 import jakarta.validation.Valid;

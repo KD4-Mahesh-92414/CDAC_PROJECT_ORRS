@@ -40,8 +40,8 @@ export default function StationManagement() {
       label: 'Status',
       render: (value) => (
         <span className={`px-2 py-1 text-xs rounded-full ${
-          value === 'Active' ? 'bg-green-100 text-green-800' :
-          value === 'Inactive' ? 'bg-red-100 text-red-800' :
+          value === 'ACTIVE' ? 'bg-green-100 text-green-800' :
+          value === 'INACTIVE' ? 'bg-red-100 text-red-800' :
           'bg-yellow-100 text-yellow-800'
         }`}>
           {value}
@@ -87,7 +87,7 @@ export default function StationManagement() {
     setShowDeleteDialog(true);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     const validationErrors = validateStation(formData);
@@ -96,21 +96,30 @@ export default function StationManagement() {
       return;
     }
 
+    let success = false;
     if (selectedStation) {
-      updateStation(selectedStation.stationId, formData);
-      toast.success('Station updated successfully!');
+      success = await updateStation(selectedStation.id, formData);
+      if (success) {
+        toast.success('Station updated successfully!');
+      }
     } else {
-      addStation(formData);
-      toast.success('Station added successfully!');
+      success = await addStation(formData);
+      if (success) {
+        toast.success('Station added successfully!');
+      }
     }
     
-    setShowModal(false);
-    setErrors({});
+    if (success) {
+      setShowModal(false);
+      setErrors({});
+    }
   };
 
-  const confirmDelete = () => {
-    deleteStation(selectedStation.stationId);
-    toast.success('Station deleted successfully!');
+  const confirmDelete = async () => {
+    const success = await deleteStation(selectedStation.id);
+    if (success) {
+      toast.success('Station deleted successfully!');
+    }
     setShowDeleteDialog(false);
   };
 

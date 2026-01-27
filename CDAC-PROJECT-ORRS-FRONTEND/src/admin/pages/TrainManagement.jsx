@@ -32,7 +32,7 @@ export default function TrainManagement() {
   const [errors, setErrors] = useState({});
 
   const getStationName = (stationId) => {
-    const station = stations.find(s => s.stationId === stationId);
+    const station = stations.find(s => s.id === stationId);
     return station ? station.stationName : 'N/A';
   };
 
@@ -41,24 +41,24 @@ export default function TrainManagement() {
     { key: 'trainName', label: 'Train Name' },
     { key: 'trainType', label: 'Type' },
     { 
-      key: 'sourceStationId', 
+      key: 'sourceStation', 
       label: 'Source',
-      render: (value) => getStationName(value)
+      render: (value) => value || 'N/A'
     },
     { 
-      key: 'destinationStationId', 
+      key: 'destinationStation', 
       label: 'Destination',
-      render: (value) => getStationName(value)
+      render: (value) => value || 'N/A'
     },
     { key: 'totalDistanceKm', label: 'Distance (km)' },
     { key: 'daysOfRun', label: 'Running Days' },
     { 
-      key: 'trainActiveStatus', 
+      key: 'trainStatus', 
       label: 'Status',
       render: (value) => (
         <span className={`px-2 py-1 text-xs rounded-full ${
-          value === 'Active' ? 'bg-green-100 text-green-800' :
-          value === 'Inactive' ? 'bg-red-100 text-red-800' :
+          value === 'ACTIVE' ? 'bg-green-100 text-green-800' :
+          value === 'INACTIVE' ? 'bg-red-100 text-red-800' :
           'bg-yellow-100 text-yellow-800'
         }`}>
           {value}
@@ -110,7 +110,7 @@ export default function TrainManagement() {
     setShowDeleteDialog(true);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     const validationErrors = validateTrain(formData);
@@ -119,21 +119,30 @@ export default function TrainManagement() {
       return;
     }
 
+    let success = false;
     if (selectedTrain) {
-      updateTrain(selectedTrain.trainId, formData);
-      toast.success('Train updated successfully!');
+      success = await updateTrain(selectedTrain.id, formData);
+      if (success) {
+        toast.success('Train updated successfully!');
+      }
     } else {
-      addTrain(formData);
-      toast.success('Train added successfully!');
+      success = await addTrain(formData);
+      if (success) {
+        toast.success('Train added successfully!');
+      }
     }
     
-    setShowModal(false);
-    setErrors({});
+    if (success) {
+      setShowModal(false);
+      setErrors({});
+    }
   };
 
-  const confirmDelete = () => {
-    deleteTrain(selectedTrain.trainId);
-    toast.success('Train deleted successfully!');
+  const confirmDelete = async () => {
+    const success = await deleteTrain(selectedTrain.id);
+    if (success) {
+      toast.success('Train deleted successfully!');
+    }
     setShowDeleteDialog(false);
   };
 

@@ -17,13 +17,13 @@ import {
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: HomeIcon },
+  { name: 'User Management', href: '/admin/users', icon: UsersIcon },
   { name: 'Train Management', href: '/admin/trains', icon: RocketLaunchIcon },
   { name: 'Station Management', href: '/admin/stations', icon: BuildingOfficeIcon },
   { name: 'Coach Type Management', href: '/admin/coach-types', icon: TruckIcon },
-  { name: 'Train Route Management', href: '/admin/train-routes', icon: MapIcon },
   { name: 'Seat Layout Management', href: '/admin/seat-layouts', icon: ViewColumnsIcon },
-  { name: 'User Management', href: '/admin/users', icon: UsersIcon },
-  { name: 'Fair Structure', href: '/admin/fares', icon: CurrencyDollarIcon },
+  { name: 'Train Route Management', href: '/admin/train-routes', icon: MapIcon },
+  { name: 'Fare Structure', href: '/admin/fares', icon: CurrencyDollarIcon },
   { name: 'Refund Transaction', href: '/admin/refunds', icon: ArrowPathIcon },
   { name: 'Create Announcement', href: '/admin/announcements', icon: SpeakerWaveIcon },
 ];

@@ -7,50 +7,24 @@ import FormModal from '../components/FormModal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import PrimaryButton from '../components/PrimaryButton';
 import SeatLayoutForm from '../components/SeatLayoutForm';
+import { useSeatLayouts } from '../context/SeatLayoutContext';
 import toast from 'react-hot-toast';
 
 export default function SeatLayoutListPage() {
   const navigate = useNavigate();
-  
-  const [seatLayouts] = useState([
-    {
-      id: 1,
-      coachType: 'SL',
-      layoutName: 'Standard Sleeper Layout',
-      totalSeats: 72,
-      rows: 24,
-      seatsPerRow: 3,
-      layoutConfig: '{"berths": {"lower": 18, "middle": 18, "upper": 18, "side_lower": 9, "side_upper": 9}}',
-      description: 'Standard sleeper coach layout with 72 berths'
-    },
-    {
-      id: 2,
-      coachType: '3A',
-      layoutName: 'AC 3 Tier Layout',
-      totalSeats: 64,
-      rows: 16,
-      seatsPerRow: 4,
-      layoutConfig: '{"berths": {"lower": 16, "middle": 16, "upper": 16, "side_lower": 8, "side_upper": 8}}',
-      description: 'AC 3 tier coach layout with 64 berths'
-    }
-  ]);
-
+  const { seatLayouts, addSeatLayout, updateSeatLayout, deleteSeatLayout } = useSeatLayouts();
   const [showModal, setShowModal] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedLayout, setSelectedLayout] = useState(null);
   const [formData, setFormData] = useState({
-    coachType: '',
-    layoutName: '',
-    totalSeats: '',
-    rows: '',
-    seatsPerRow: '',
-    layoutConfig: '',
-    description: ''
+    coachTypeId: '',
+    seatNumber: '',
+    seatType: ''
   });
 
   const columns = [
     { 
-      key: 'coachType', 
+      key: 'coachTypeCode', 
       label: 'Coach Type',
       render: (value) => (
         <span className="px-2 py-1 text-xs bg-violet-100 text-violet-800 rounded-full">
@@ -58,14 +32,16 @@ export default function SeatLayoutListPage() {
         </span>
       )
     },
-    { key: 'layoutName', label: 'Layout Name' },
-    { key: 'totalSeats', label: 'Total Seats' },
-    { key: 'rows', label: 'Rows' },
-    { key: 'seatsPerRow', label: 'Seats/Row' },
+    { key: 'coachTypeName', label: 'Coach Type Name' },
+    { key: 'seatNumber', label: 'Seat Number' },
     { 
-      key: 'description', 
-      label: 'Description',
-      render: (value) => value ? value.substring(0, 50) + '...' : '-'
+      key: 'seatType', 
+      label: 'Seat Type',
+      render: (value) => (
+        <span className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
+          {value?.replace('_', ' ')}
+        </span>
+      )
     },
     {
       key: 'actions',
@@ -85,24 +61,16 @@ export default function SeatLayoutListPage() {
   ];
 
   const validateForm = () => {
-    if (!formData.coachType) {
+    if (!formData.coachTypeId) {
       toast.error('Please select coach type');
       return false;
     }
-    if (!formData.layoutName) {
-      toast.error('Layout name is required');
+    if (!formData.seatNumber || formData.seatNumber <= 0) {
+      toast.error('Seat number must be greater than 0');
       return false;
     }
-    if (!formData.totalSeats || formData.totalSeats <= 0) {
-      toast.error('Total seats must be greater than 0');
-      return false;
-    }
-    if (!formData.rows || formData.rows <= 0) {
-      toast.error('Rows must be greater than 0');
-      return false;
-    }
-    if (!formData.seatsPerRow || formData.seatsPerRow <= 0) {
-      toast.error('Seats per row must be greater than 0');
+    if (!formData.seatType) {
+      toast.error('Please select seat type');
       return false;
     }
     return true;
@@ -111,20 +79,20 @@ export default function SeatLayoutListPage() {
   const handleAdd = () => {
     setSelectedLayout(null);
     setFormData({
-      coachType: '',
-      layoutName: '',
-      totalSeats: '',
-      rows: '',
-      seatsPerRow: '',
-      layoutConfig: '',
-      description: ''
+      coachTypeId: '',
+      seatNumber: '',
+      seatType: ''
     });
     setShowModal(true);
   };
 
   const handleEdit = (layout) => {
     setSelectedLayout(layout);
-    setFormData(layout);
+    setFormData({
+      coachTypeId: layout.coachTypeId,
+      seatNumber: layout.seatNumber,
+      seatType: layout.seatType
+    });
     setShowModal(true);
   };
 
@@ -133,16 +101,33 @@ export default function SeatLayoutListPage() {
     setShowDeleteDialog(true);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      toast.success(selectedLayout ? 'Seat Layout updated successfully!' : 'Seat Layout added successfully!');
+    if (!validateForm()) return;
+
+    let success = false;
+    if (selectedLayout) {
+      success = await updateSeatLayout(selectedLayout.id, formData);
+      if (success) {
+        toast.success('Seat Layout updated successfully!');
+      }
+    } else {
+      success = await addSeatLayout(formData);
+      if (success) {
+        toast.success('Seat Layout added successfully!');
+      }
+    }
+    
+    if (success) {
       setShowModal(false);
     }
   };
 
-  const confirmDelete = () => {
-    toast.success('Seat Layout deleted successfully!');
+  const confirmDelete = async () => {
+    const success = await deleteSeatLayout(selectedLayout.id);
+    if (success) {
+      toast.success('Seat Layout deleted successfully!');
+    }
     setShowDeleteDialog(false);
   };
 

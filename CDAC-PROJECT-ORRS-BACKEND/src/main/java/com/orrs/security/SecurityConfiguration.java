@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,11 +20,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-//	private final CustomJwtVerificationFilter jwtFilter;
+	private final CorsConfigurationSource corsConfigurationSource;
 	
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
+		.cors(cors -> cors.configurationSource(corsConfigurationSource))
 		.csrf((csrf)-> csrf.disable())
 		.sessionManagement((session)-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 		.authorizeHttpRequests( request ->
@@ -35,8 +37,6 @@ public class SecurityConfiguration {
 		  .requestMatchers(HttpMethod.DELETE, "/admin/**").permitAll()
 		  .requestMatchers(HttpMethod.PATCH, "/admin/**").permitAll()
 		  .anyRequest().authenticated());
-		   //add custom jwt filter before 1st authentication filter 
-		 // .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 	}
 	

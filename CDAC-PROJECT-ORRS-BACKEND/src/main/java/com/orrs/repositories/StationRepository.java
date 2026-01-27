@@ -19,7 +19,7 @@ public interface StationRepository extends JpaRepository<Station, Long> {
 
     @Query("""
         select new com.orrs.dto.response.StationAdminViewDTO(
-            s.id, s.stationCode, s.stationName, s.city, s.state, s.zone, s.status
+            s.id, s.stationCode, s.stationName, s.city, s.state, s.zone, s.platforms, s.status
         )
         from Station s
 

@@ -9,56 +9,38 @@ import PrimaryButton from '../components/PrimaryButton';
 import TrainRouteForm from '../components/TrainRouteForm';
 import { useTrains } from '../context/TrainContext';
 import { useStations } from '../context/StationContext';
+import { useTrainRoutes } from '../context/TrainRouteContext';
 import toast from 'react-hot-toast';
 
 export default function TrainRouteListPage() {
   const navigate = useNavigate();
   const { trains } = useTrains();
   const { stations } = useStations();
+  const { trainRoutes, addTrainRoute, updateTrainRoute, deleteTrainRoute } = useTrainRoutes();
   
-  const [trainRoutes] = useState([
-    {
-      id: 1,
-      trainId: 1,
-      stationId: 1,
-      arrivalTime: '08:00',
-      departureTime: '08:05',
-      stopNumber: 1,
-      distanceKm: 0,
-      platformNumber: '1'
-    },
-    {
-      id: 2,
-      trainId: 1,
-      stationId: 2,
-      arrivalTime: '12:30',
-      departureTime: '12:35',
-      stopNumber: 2,
-      distanceKm: 450,
-      platformNumber: '3'
-    }
-  ]);
-
   const [showModal, setShowModal] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedRoute, setSelectedRoute] = useState(null);
   const [formData, setFormData] = useState({
     trainId: '',
     stationId: '',
+    sequenceNo: '',
     arrivalTime: '',
     departureTime: '',
-    stopNumber: '',
-    distanceKm: '',
-    platformNumber: ''
+    haltMinutes: '',
+    distanceFromSource: '',
+    dayNumber: 1,
+    isMajorStation: false,
+    stopType: 'REGULAR'
   });
 
   const getTrainName = (trainId) => {
-    const train = trains.find(t => t.trainId === trainId);
+    const train = trains.find(t => t.id === trainId);
     return train ? `${train.trainNumber} - ${train.trainName}` : 'N/A';
   };
 
   const getStationName = (stationId) => {
-    const station = stations.find(s => s.stationId === stationId);
+    const station = stations.find(s => s.id === stationId);
     return station ? `${station.stationCode} - ${station.stationName}` : 'N/A';
   };
 
@@ -73,13 +55,26 @@ export default function TrainRouteListPage() {
       label: 'Station',
       render: (value) => getStationName(value)
     },
-    { key: 'stopNumber', label: 'Stop #' },
+    { key: 'sequenceNo', label: 'Sequence' },
     { key: 'arrivalTime', label: 'Arrival' },
     { key: 'departureTime', label: 'Departure' },
     { 
-      key: 'distanceKm', 
+      key: 'distanceFromSource', 
       label: 'Distance (KM)',
       render: (value) => value ? `${value} km` : '-'
+    },
+    { 
+      key: 'stopType', 
+      label: 'Stop Type',
+      render: (value) => (
+        <span className={`px-2 py-1 text-xs rounded-full ${
+          value === 'REGULAR' ? 'bg-green-100 text-green-800' :
+          value === 'TECHNICAL' ? 'bg-yellow-100 text-yellow-800' :
+          'bg-blue-100 text-blue-800'
+        }`}>
+          {value}
+        </span>
+      )
     },
     {
       key: 'actions',
@@ -107,12 +102,8 @@ export default function TrainRouteListPage() {
       toast.error('Please select a station');
       return false;
     }
-    if (!formData.departureTime) {
-      toast.error('Departure time is required');
-      return false;
-    }
-    if (!formData.stopNumber || formData.stopNumber <= 0) {
-      toast.error('Stop number must be greater than 0');
+    if (!formData.sequenceNo || formData.sequenceNo <= 0) {
+      toast.error('Sequence number must be greater than 0');
       return false;
     }
     return true;
@@ -123,18 +114,32 @@ export default function TrainRouteListPage() {
     setFormData({
       trainId: '',
       stationId: '',
+      sequenceNo: '',
       arrivalTime: '',
       departureTime: '',
-      stopNumber: '',
-      distanceKm: '',
-      platformNumber: ''
+      haltMinutes: '',
+      distanceFromSource: '',
+      dayNumber: 1,
+      isMajorStation: false,
+      stopType: 'REGULAR'
     });
     setShowModal(true);
   };
 
   const handleEdit = (route) => {
     setSelectedRoute(route);
-    setFormData(route);
+    setFormData({
+      trainId: route.trainId,
+      stationId: route.stationId,
+      sequenceNo: route.sequenceNo,
+      arrivalTime: route.arrivalTime,
+      departureTime: route.departureTime,
+      haltMinutes: route.haltMinutes,
+      distanceFromSource: route.distanceFromSource,
+      dayNumber: route.dayNumber,
+      isMajorStation: route.isMajorStation,
+      stopType: route.stopType
+    });
     setShowModal(true);
   };
 
@@ -143,16 +148,33 @@ export default function TrainRouteListPage() {
     setShowDeleteDialog(true);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      toast.success(selectedRoute ? 'Train Route updated successfully!' : 'Train Route added successfully!');
+    if (!validateForm()) return;
+
+    let success = false;
+    if (selectedRoute) {
+      success = await updateTrainRoute(selectedRoute.id, formData);
+      if (success) {
+        toast.success('Train Route updated successfully!');
+      }
+    } else {
+      success = await addTrainRoute(formData);
+      if (success) {
+        toast.success('Train Route added successfully!');
+      }
+    }
+    
+    if (success) {
       setShowModal(false);
     }
   };
 
-  const confirmDelete = () => {
-    toast.success('Train Route deleted successfully!');
+  const confirmDelete = async () => {
+    const success = await deleteTrainRoute(selectedRoute.id);
+    if (success) {
+      toast.success('Train Route deleted successfully!');
+    }
     setShowDeleteDialog(false);
   };
 
