@@ -38,6 +38,10 @@ const TrainRouteListPage = lazy(() => import("./admin/pages/TrainRouteListPage")
 const AddTrainRoutePage = lazy(() => import("./admin/pages/AddTrainRoutePage"));
 const EditTrainRoutePage = lazy(() => import("./admin/pages/EditTrainRoutePage"));
 const ViewTrainRoutePage = lazy(() => import("./admin/pages/ViewTrainRoutePage"));
+const SeatLayoutListPage = lazy(() => import("./admin/pages/SeatLayoutListPage"));
+const AddSeatLayoutPage = lazy(() => import("./admin/pages/AddSeatLayoutPage"));
+const EditSeatLayoutPage = lazy(() => import("./admin/pages/EditSeatLayoutPage"));
+const ViewSeatLayoutPage = lazy(() => import("./admin/pages/ViewSeatLayoutPage"));
 
 // Booking Flow Pages
 const TrainSearchResults = lazy(() => import("./pages/booking/TrainSearchResults"));
@@ -248,6 +252,10 @@ function AppContent() {
           <Route path="/admin/train-routes/add" element={<AddTrainRoutePage />} />
           <Route path="/admin/train-routes/edit/:id" element={<EditTrainRoutePage />} />
           <Route path="/admin/train-routes/view/:id" element={<ViewTrainRoutePage />} />
+          <Route path="/admin/seat-layouts" element={<SeatLayoutListPage />} />
+          <Route path="/admin/seat-layouts/add" element={<AddSeatLayoutPage />} />
+          <Route path="/admin/seat-layouts/edit/:id" element={<EditSeatLayoutPage />} />
+          <Route path="/admin/seat-layouts/view/:id" element={<ViewSeatLayoutPage />} />
 
           {/* Other Protected Routes */}
           <Route 

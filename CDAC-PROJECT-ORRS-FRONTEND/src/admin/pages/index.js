@@ -13,3 +13,7 @@ export { default as TrainRouteListPage } from './TrainRouteListPage';
 export { default as AddTrainRoutePage } from './AddTrainRoutePage';
 export { default as EditTrainRoutePage } from './EditTrainRoutePage';
 export { default as ViewTrainRoutePage } from './ViewTrainRoutePage';
+export { default as SeatLayoutListPage } from './SeatLayoutListPage';
+export { default as AddSeatLayoutPage } from './AddSeatLayoutPage';
+export { default as EditSeatLayoutPage } from './EditSeatLayoutPage';
+export { default as ViewSeatLayoutPage } from './ViewSeatLayoutPage';

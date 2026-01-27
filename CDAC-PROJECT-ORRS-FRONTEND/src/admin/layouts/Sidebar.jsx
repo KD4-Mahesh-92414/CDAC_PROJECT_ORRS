@@ -11,7 +11,8 @@ import {
   XMarkIcon,
   ArrowLeftIcon,
   TruckIcon,
-  MapIcon
+  MapIcon,
+  ViewColumnsIcon
 } from '@heroicons/react/24/outline';
 
 const navigation = [
@@ -20,6 +21,7 @@ const navigation = [
   { name: 'Station Management', href: '/admin/stations', icon: BuildingOfficeIcon },
   { name: 'Coach Type Management', href: '/admin/coach-types', icon: TruckIcon },
   { name: 'Train Route Management', href: '/admin/train-routes', icon: MapIcon },
+  { name: 'Seat Layout Management', href: '/admin/seat-layouts', icon: ViewColumnsIcon },
   { name: 'User Management', href: '/admin/users', icon: UsersIcon },
   { name: 'Fair Structure', href: '/admin/fares', icon: CurrencyDollarIcon },
   { name: 'Refund Transaction', href: '/admin/refunds', icon: ArrowPathIcon },
