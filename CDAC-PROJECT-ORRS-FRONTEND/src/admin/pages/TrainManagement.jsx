@@ -26,8 +26,7 @@ export default function TrainManagement() {
     totalDistanceKm: '',
     avgSpeed: '',
     daysOfRun: '',
-    trainActiveStatus: 'Active',
-    status: 'Not Started'
+    trainStatus: 'ACTIVE'
   });
   const [errors, setErrors] = useState({});
 
@@ -80,8 +79,7 @@ export default function TrainManagement() {
       totalDistanceKm: '',
       avgSpeed: '',
       daysOfRun: '',
-      trainActiveStatus: 'Active',
-      status: 'Not Started'
+      trainStatus: 'ACTIVE'
     });
     setErrors({});
     setShowModal(true);
@@ -90,16 +88,15 @@ export default function TrainManagement() {
   const handleEdit = (train) => {
     setSelectedTrain(train);
     setFormData({
-      trainNumber: train.trainNumber,
-      trainName: train.trainName,
-      trainType: train.trainType,
-      sourceStationId: train.sourceStationId,
-      destinationStationId: train.destinationStationId,
-      totalDistanceKm: train.totalDistanceKm,
-      avgSpeed: train.avgSpeed,
-      daysOfRun: train.daysOfRun,
-      trainActiveStatus: train.trainActiveStatus,
-      status: train.status
+      trainNumber: train.trainNumber || '',
+      trainName: train.trainName || '',
+      trainType: train.trainType || '',
+      sourceStationId: train.sourceStationId || '',
+      destinationStationId: train.destinationStationId || '',
+      totalDistanceKm: train.totalDistanceKm || '',
+      avgSpeed: train.avgSpeed || '',
+      daysOfRun: train.daysOfRun || '',
+      trainStatus: train.trainStatus || 'ACTIVE'
     });
     setErrors({});
     setShowModal(true);
@@ -173,9 +170,8 @@ export default function TrainManagement() {
           open={showModal}
           onClose={() => setShowModal(false)}
           title={selectedTrain ? 'Edit Train' : 'Add Train'}
-          onSubmit={handleSubmit}
         >
-          <div className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Train Information */}
             <div>
               <h3 className="text-lg font-bold text-gray-900 mb-4">Train Information</h3>
@@ -212,8 +208,8 @@ export default function TrainManagement() {
                   required
                   options={[
                     { value: '', label: 'Select Source Station' },
-                    ...stations.filter(s => s.status === 'Active').map(station => ({
-                      value: station.stationId,
+                    ...stations.filter(s => s.status === 'ACTIVE').map(station => ({
+                      value: station.id,
                       label: `${station.stationName} (${station.stationCode})`
                     }))
                   ]}
@@ -227,8 +223,8 @@ export default function TrainManagement() {
                   required
                   options={[
                     { value: '', label: 'Select Destination Station' },
-                    ...stations.filter(s => s.status === 'Active').map(station => ({
-                      value: station.stationId,
+                    ...stations.filter(s => s.status === 'ACTIVE').map(station => ({
+                      value: station.id,
                       label: `${station.stationName} (${station.stationCode})`
                     }))
                   ]}
@@ -278,30 +274,33 @@ export default function TrainManagement() {
               <h3 className="text-lg font-bold text-gray-900 mb-4">Status Settings</h3>
               <div className="grid grid-cols-2 gap-6">
                 <AdminSelect
-                  label="Active Status"
-                  name="trainActiveStatus"
-                  value={formData.trainActiveStatus}
-                  onChange={(e) => setFormData({...formData, trainActiveStatus: e.target.value})}
+                  label="Train Status"
+                  name="trainStatus"
+                  value={formData.trainStatus}
+                  onChange={(e) => setFormData({...formData, trainStatus: e.target.value})}
                   options={[
-                    { value: 'Active', label: 'Active' },
-                    { value: 'Inactive', label: 'Inactive' },
-                    { value: 'Under Maintenance', label: 'Under Maintenance' }
-                  ]}
-                />
-                <AdminSelect
-                  label="Current Status"
-                  name="status"
-                  value={formData.status}
-                  onChange={(e) => setFormData({...formData, status: e.target.value})}
-                  options={[
-                    { value: 'Running', label: 'Running' },
-                    { value: 'Cancelled', label: 'Cancelled' },
-                    { value: 'Not Started', label: 'Not Started' }
+                    { value: 'ACTIVE', label: 'Active' },
+                    { value: 'INACTIVE', label: 'Inactive' },
+                    { value: 'UNDER_MAINRENANCE', label: 'Under Maintenance' }
                   ]}
                 />
               </div>
             </div>
-          </div>
+
+            {/* Form Actions */}
+            <div className="flex justify-end space-x-4 pt-6">
+              <button
+                type="button"
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
+              >
+                Cancel
+              </button>
+              <PrimaryButton type="submit">
+                {selectedTrain ? 'Update Train' : 'Add Train'}
+              </PrimaryButton>
+            </div>
+          </form>
         </FormModal>
 
         {/* Delete Confirmation */}
