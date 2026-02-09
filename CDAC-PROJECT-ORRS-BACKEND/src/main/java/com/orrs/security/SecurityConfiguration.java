@@ -82,6 +82,18 @@ public class SecurityConfiguration {
 			// Admin Announcements
 			.requestMatchers("/admin/announcements/**").hasRole("ADMIN")
 			
+			// Admin Booking Management
+			.requestMatchers("/admin/bookings/**").hasRole("ADMIN")
+			
+			// Admin Coach Type Management
+			.requestMatchers("/admin/coach-types/**").hasRole("ADMIN")
+			
+			// Admin Seat Layout Management
+			.requestMatchers("/admin/seat-layouts/**").hasRole("ADMIN")
+			
+			// Admin Train Route Management
+			.requestMatchers("/admin/train-routes/**").hasRole("ADMIN")
+			
 			// === USER ENDPOINTS (Authentication Required) ===
 			
 			// User Profile Management

@@ -65,7 +65,7 @@ export default function UserForm({ user, onSubmit, onCancel, loading }) {
 
     if (!formData.mobile.trim()) {
       newErrors.mobile = 'Mobile number is required';
-    } else if (!/^[6-9]\d{9}$/.test(formData.mobile)) {
+    } else if (!/^\d{10}$/.test(formData.mobile)) {
       newErrors.mobile = 'Please enter a valid 10-digit mobile number';
     }
 
@@ -182,15 +182,7 @@ export default function UserForm({ user, onSubmit, onCancel, loading }) {
         rows={3}
       />
 
-      <div className="flex justify-end space-x-4">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
-          disabled={loading}
-        >
-          Cancel
-        </button>
+      <div className="flex justify-end">
         <PrimaryButton
           type="submit"
           loading={loading}

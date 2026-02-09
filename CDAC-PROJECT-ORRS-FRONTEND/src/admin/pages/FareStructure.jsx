@@ -61,7 +61,13 @@ export default function FareStructure() {
       toast.error(response.data?.message || 'Failed to add fare');
       return false;
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to add fare');
+      const errorMsg = error.response?.data?.message || error.message || 'Failed to add fare';
+      // Extract meaningful message from SQL errors
+      if (errorMsg.includes('Duplicate entry')) {
+        toast.error('A fare rule already exists for this train and coach type combination');
+      } else {
+        toast.error(errorMsg);
+      }
       return false;
     } finally {
       setLoading(false);
@@ -79,7 +85,13 @@ export default function FareStructure() {
       toast.error(response.data?.message || 'Failed to update fare');
       return false;
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to update fare');
+      const errorMsg = error.response?.data?.message || error.message || 'Failed to update fare';
+      // Extract meaningful message from SQL errors
+      if (errorMsg.includes('Duplicate entry')) {
+        toast.error('A fare rule already exists for this train and coach type combination');
+      } else {
+        toast.error(errorMsg);
+      }
       return false;
     } finally {
       setLoading(false);
@@ -285,8 +297,8 @@ export default function FareStructure() {
           open={showModal}
           onClose={() => setShowModal(false)}
           title={selectedFare ? 'Edit Fare Rule' : 'Add Fare Rule'}
-          onSubmit={handleSubmit}
         >
+          <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-6">
             {/* Train Selection */}
             <div>
@@ -366,6 +378,24 @@ export default function FareStructure() {
               </div>
             </div>
           </div>
+
+          {/* Action Buttons */}
+          <div className="flex justify-end gap-3 pt-6 border-t border-violet-100">
+            <button
+              type="button"
+              onClick={() => setShowModal(false)}
+              className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-6 py-2.5 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors"
+            >
+              {selectedFare ? 'Update Fare' : 'Add Fare'}
+            </button>
+          </div>
+          </form>
         </FormModal>
 
         <ConfirmDialog

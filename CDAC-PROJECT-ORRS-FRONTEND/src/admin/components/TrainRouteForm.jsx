@@ -83,21 +83,22 @@ export default function TrainRouteForm({
 
       <div className="grid grid-cols-2 gap-6">
         <AdminInput
-          label="Distance (KM)"
-          name="distanceKm"
+          label="Distance from Source (KM)"
+          name="distanceFromSource"
           type="number"
-          value={formData.distanceKm}
-          onChange={(e) => setFormData({...formData, distanceKm: parseFloat(e.target.value) || ''})}
-          error={errors.distanceKm}
+          value={formData.distanceFromSource}
+          onChange={(e) => setFormData({...formData, distanceFromSource: parseFloat(e.target.value) || ''})}
+          error={errors.distanceFromSource}
           step="0.1"
         />
 
         <AdminInput
-          label="Platform Number"
-          name="platformNumber"
-          value={formData.platformNumber}
-          onChange={(e) => setFormData({...formData, platformNumber: e.target.value})}
-          error={errors.platformNumber}
+          label="Halt Minutes"
+          name="haltMinutes"
+          type="number"
+          value={formData.haltMinutes}
+          onChange={(e) => setFormData({...formData, haltMinutes: parseInt(e.target.value) || ''})}
+          error={errors.haltMinutes}
         />
       </div>
     </div>

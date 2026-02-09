@@ -226,8 +226,8 @@ export default function StationManagement() {
           open={showModal}
           onClose={() => setShowModal(false)}
           title={selectedStation ? 'Edit Station' : 'Add Station'}
-          onSubmit={handleSubmit}
         >
+          <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-2 gap-x-6 gap-y-2">
             <AdminInput
               label="Station Code"
@@ -289,6 +289,24 @@ export default function StationManagement() {
               </select>
             </div>
           </div>
+
+          {/* Action Buttons */}
+          <div className="flex justify-end gap-3 pt-6 border-t border-violet-100">
+            <button
+              type="button"
+              onClick={() => setShowModal(false)}
+              className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-6 py-2.5 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors"
+            >
+              {selectedStation ? 'Update Station' : 'Add Station'}
+            </button>
+          </div>
+          </form>
         </FormModal>
 
         {/* Delete Confirmation */}

@@ -29,7 +29,7 @@ public class AdminCreateUserReqDTO {
     private String email;
 
     @NotBlank(message = "Mobile number is required")
-    @Pattern(regexp = "^[6-9]\\d{9}$", message = "Please provide a valid 10-digit mobile number")
+    @Pattern(regexp = "^\\d{10}$", message = "Please provide a valid 10-digit mobile number")
     private String mobile;
 
     @NotNull(message = "Gender is required")

@@ -45,7 +45,7 @@ export default function DataTable({
                 </th>
               ))}
               {showActions && (
-                <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                <th className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                   Actions
                 </th>
               )}
@@ -61,7 +61,7 @@ export default function DataTable({
                 ))}
                 {showActions && (
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex space-x-2">
+                    <div className="flex justify-center space-x-2">
                       {!hideEdit && onEdit && (
                         <button
                           onClick={() => onEdit(row)}

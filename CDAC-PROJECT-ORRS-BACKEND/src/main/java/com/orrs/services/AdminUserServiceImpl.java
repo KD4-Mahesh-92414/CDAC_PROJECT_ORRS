@@ -109,10 +109,8 @@ public class AdminUserServiceImpl implements AdminUserService {
                 .filter(u -> u.getStatus() != AccountStatus.DELETED)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        // Soft delete - mark as deleted and modify email/mobile to allow re-registration
+        // Soft delete - mark as deleted
         user.setStatus(AccountStatus.DELETED);
-        user.setEmail("deleted_" + user.getEmail() + "@system.local");
-        user.setMobile("XX" + user.getMobile());
         
         userRepository.save(user);
 
