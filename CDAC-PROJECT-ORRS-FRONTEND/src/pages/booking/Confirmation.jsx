@@ -28,8 +28,8 @@ export default function Confirmation() {
 
     setBooking(bookingData);
     
-    // Clear booking state after successful confirmation
-    dispatch(resetBooking());
+    // Don't reset booking here, let Payment page handle it
+    // dispatch(resetBooking());
   }, [location.state, navigate, dispatch]);
 
   const handlePrintTicket = () => {

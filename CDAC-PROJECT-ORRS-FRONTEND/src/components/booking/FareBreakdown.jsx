@@ -5,9 +5,8 @@
 export default function FareBreakdown({ passengers, fareData }) {
   const passengerCount = passengers.length;
   const baseFare = fareData?.baseFare || passengerCount * 2500;
-  const taxes = fareData?.taxes || Math.round(baseFare * 0.05);
   const farePerSeat = fareData?.farePerSeat || 2500;
-  const totalFare = fareData?.totalFare || baseFare + taxes;
+  const totalFare = fareData?.totalFare || baseFare;
 
   return (
     <div className="bg-white border-2 border-violet-100 rounded-2xl shadow-sm p-6">
@@ -23,13 +22,6 @@ export default function FareBreakdown({ passengers, fareData }) {
           </div>
           <p className="text-lg font-bold text-gray-900">
             ₹{baseFare.toLocaleString()}
-          </p>
-        </div>
-
-        <div className="flex justify-between items-center py-3 border-t border-violet-100">
-          <p className="font-medium text-gray-700">Taxes & Service Charges (5%)</p>
-          <p className="text-lg font-bold text-gray-900">
-            ₹{taxes.toLocaleString()}
           </p>
         </div>
 

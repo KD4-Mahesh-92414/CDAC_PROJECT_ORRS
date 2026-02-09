@@ -44,7 +44,7 @@ export default function Payment() {
     }
   }, [selectedTrain, passengers, reservationData, navigate]);
 
-  const totalFare = fareData?.totalFare || Math.round((passengers?.length || 0) * 2500 * 1.05);
+  const totalFare = fareData?.totalFare || (passengers?.length || 0) * 2500;
 
   const handlePayment = async () => {
     try {
@@ -66,8 +66,10 @@ export default function Payment() {
       // Navigate to confirmation with booking details
       navigate("/confirmation", { state: { booking: bookingResult } });
       
-      // Reset booking state
-      dispatch(resetBooking());
+      // Reset booking state after navigation
+      setTimeout(() => {
+        dispatch(resetBooking());
+      }, 100);
     } catch (error) {
       console.error('Payment/Booking failed:', error);
       toast.error(error.message || 'Booking failed. Please try again.', { id: "payment" });
