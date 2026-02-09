@@ -1,4 +1,6 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { adminService } from '../../services';
+import toast from 'react-hot-toast';
 
 const StationContext = createContext();
 
@@ -11,90 +13,110 @@ export const useStations = () => {
 };
 
 export const StationProvider = ({ children }) => {
-  const [stations, setStations] = useState([
-    {
-      stationId: 1,
-      stationCode: 'NDLS',
-      stationName: 'New Delhi',
-      city: 'Delhi',
-      state: 'Delhi',
-      zone: 'Northern Railway',
-      platforms: 16,
-      status: 'Active'
-    },
-    {
-      stationId: 2,
-      stationCode: 'CSMT',
-      stationName: 'Chhatrapati Shivaji Maharaj Terminus',
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      zone: 'Central Railway',
-      platforms: 18,
-      status: 'Active'
-    },
-    {
-      stationId: 3,
-      stationCode: 'BCT',
-      stationName: 'Mumbai Central',
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      zone: 'Western Railway',
-      platforms: 7,
-      status: 'Active'
-    },
-    {
-      stationId: 4,
-      stationCode: 'HWH',
-      stationName: 'Howrah Junction',
-      city: 'Howrah',
-      state: 'West Bengal',
-      zone: 'Eastern Railway',
-      platforms: 23,
-      status: 'Active'
-    },
-    {
-      stationId: 5,
-      stationCode: 'MAS',
-      stationName: 'Chennai Central',
-      city: 'Chennai',
-      state: 'Tamil Nadu',
-      zone: 'Southern Railway',
-      platforms: 12,
-      status: 'Active'
+  const [stations, setStations] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch stations from backend on component mount
+  useEffect(() => {
+    fetchStations();
+  }, []);
+
+  const fetchStations = async () => {
+    try {
+      setLoading(true);
+      const response = await adminService.stations.getAllStations();
+      if (response.data && response.data.status === 'SUCCESS') {
+        setStations(response.data.data || []);
+      }
+    } catch (error) {
+      console.error('Error fetching stations:', error);
+      toast.error('Failed to fetch stations');
+    } finally {
+      setLoading(false);
     }
-  ]);
-
-  const addStation = (stationData) => {
-    const newStation = {
-      ...stationData,
-      stationId: Math.max(...stations.map(s => s.stationId), 0) + 1
-    };
-    setStations([...stations, newStation]);
-    return newStation;
   };
 
-  const updateStation = (stationId, stationData) => {
-    setStations(stations.map(s => 
-      s.stationId === stationId ? { ...s, ...stationData } : s
-    ));
+  const addStation = async (stationData) => {
+    try {
+      setLoading(true);
+      const response = await adminService.stations.addStation(stationData);
+      if (response.data && response.data.status === 'SUCCESS') {
+        await fetchStations(); // Refresh the list
+        return true;
+      }
+    } catch (error) {
+      console.error('Error adding station:', error);
+      toast.error(error.response?.data?.message || 'Failed to add station');
+      return false;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const deleteStation = (stationId) => {
-    setStations(stations.map(s => 
-      s.stationId === stationId ? { ...s, status: 'Inactive' } : s
-    ));
+  const updateStation = async (stationId, stationData) => {
+    try {
+      setLoading(true);
+      const response = await adminService.stations.updateStation(stationId, stationData);
+      if (response.data && response.data.status === 'SUCCESS') {
+        await fetchStations(); // Refresh the list
+        return true;
+      }
+    } catch (error) {
+      console.error('Error updating station:', error);
+      toast.error(error.response?.data?.message || 'Failed to update station');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteStation = async (stationId) => {
+    try {
+      setLoading(true);
+      const response = await adminService.stations.deleteStation(stationId);
+      if (response.data && response.data.status === 'SUCCESS') {
+        await fetchStations(); // Refresh the list
+        return true;
+      }
+    } catch (error) {
+      console.error('Error deleting station:', error);
+      toast.error(error.response?.data?.message || 'Failed to delete station');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateStationStatus = async (stationId, statusData) => {
+    try {
+      setLoading(true);
+      const response = await adminService.stations.updateStationStatus(stationId, statusData);
+      if (response.data && response.data.status === 'SUCCESS') {
+        await fetchStations(); // Refresh the list
+        return true;
+      }
+    } catch (error) {
+      console.error('Error updating station status:', error);
+      toast.error(error.response?.data?.message || 'Failed to update station status');
+      return false;
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getStationById = (stationId) => {
-    return stations.find(s => s.stationId === stationId);
+    return stations.find(s => s.id === stationId);
   };
 
   const value = {
     stations,
+    loading,
     addStation,
     updateStation,
     deleteStation,
-    getStationById
+    updateStationStatus,
+    getStationById,
+    fetchStations
   };
 
   return (

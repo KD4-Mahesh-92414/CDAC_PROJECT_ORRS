@@ -9,6 +9,11 @@ import { initializeAuth } from "./store/slices/authSlice";
 // Admin Context Providers
 import { TrainProvider } from "./admin/context/TrainContext";
 import { StationProvider } from "./admin/context/StationContext";
+import { FareProvider } from "./admin/context/FareContext";
+import { UserProvider } from "./admin/context/UserContext";
+import { CoachTypeProvider } from "./admin/context/CoachTypeContext";
+import { SeatLayoutProvider } from "./admin/context/SeatLayoutContext";
+import { TrainRouteProvider } from "./admin/context/TrainRouteContext";
 
 // Protected Route Guard
 import ProtectedRoute from "./components/guards/ProtectedRoute";
@@ -326,9 +331,19 @@ function App() {
     <Provider store={store}>
       <TrainProvider>
         <StationProvider>
-          <BrowserRouter>
-            <AppContent />
-          </BrowserRouter>
+          <FareProvider>
+            <UserProvider>
+              <CoachTypeProvider>
+                <SeatLayoutProvider>
+                  <TrainRouteProvider>
+                    <BrowserRouter>
+                      <AppContent />
+                    </BrowserRouter>
+                  </TrainRouteProvider>
+                </SeatLayoutProvider>
+              </CoachTypeProvider>
+            </UserProvider>
+          </FareProvider>
         </StationProvider>
       </TrainProvider>
     </Provider>

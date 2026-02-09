@@ -5,7 +5,9 @@ export default function DataTable({
   data, 
   onEdit, 
   onDelete, 
-  showActions = true 
+  showActions = true,
+  hideEdit = false,
+  customActions = null
 }) {
   return (
     <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -39,18 +41,34 @@ export default function DataTable({
                 {showActions && (
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex space-x-2">
-                      {onEdit && (
+                      {!hideEdit && onEdit && (
                         <button
                           onClick={() => onEdit(row)}
                           className="text-violet-600 hover:text-violet-900"
+                          title="Edit"
                         >
                           <PencilIcon className="w-4 h-4" />
                         </button>
                       )}
+                      {customActions && customActions(row).map((action, actionIndex) => (
+                        <button
+                          key={actionIndex}
+                          onClick={action.onClick}
+                          className={action.className || "text-blue-600 hover:text-blue-900"}
+                          title={action.label}
+                        >
+                          {action.icon || (
+                            <span className="text-xs px-2 py-1 rounded">
+                              {action.label}
+                            </span>
+                          )}
+                        </button>
+                      ))}
                       {onDelete && (
                         <button
                           onClick={() => onDelete(row)}
                           className="text-red-600 hover:text-red-900"
+                          title="Delete"
                         >
                           <TrashIcon className="w-4 h-4" />
                         </button>

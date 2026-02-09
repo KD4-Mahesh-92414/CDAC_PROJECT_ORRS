@@ -38,7 +38,6 @@ public class AdminUserController {
     // - Output: List of users with all details
     // - Requires ADMIN role authentication
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
@@ -48,7 +47,6 @@ public class AdminUserController {
     // - Output: User details with all information
     // - Requires ADMIN role authentication
     @GetMapping("/{userId}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getUserById(@PathVariable Long userId) {
         return ResponseEntity.ok(adminUserService.getUserById(userId));
     }
@@ -59,7 +57,6 @@ public class AdminUserController {
     // - Output: Created user details
     // - Requires ADMIN role authentication
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createUser(@RequestBody @Valid AdminCreateUserReqDTO reqDTO) {
         return ResponseEntity.ok(adminUserService.createUser(reqDTO));
     }
@@ -70,7 +67,6 @@ public class AdminUserController {
     // - Output: Updated user details
     // - Requires ADMIN role authentication
     @PutMapping("/{userId}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateUser(@PathVariable Long userId, @RequestBody @Valid AdminUpdateUserReqDTO reqDTO) {
         return ResponseEntity.ok(adminUserService.updateUser(userId, reqDTO));
     }
@@ -81,7 +77,6 @@ public class AdminUserController {
     // - Output: Success message
     // - Requires ADMIN role authentication
     @PatchMapping("/{userId}/status")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateUserStatus(@PathVariable Long userId, @RequestBody @Valid UpdateStatusReqDTO statusDto) {
         return ResponseEntity.ok(userService.updateUserStatus(userId, statusDto));
     }
@@ -91,7 +86,6 @@ public class AdminUserController {
     // - Output: Success message
     // - Requires ADMIN role authentication
     @PatchMapping("/{userId}/suspend")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> suspendUser(@PathVariable Long userId) {
         return ResponseEntity.ok(userService.suspendUserById(userId));
     }
@@ -101,7 +95,6 @@ public class AdminUserController {
     // - Sets user status to deleted and modifies email/mobile
     // - Requires ADMIN role authentication
     @DeleteMapping("/{userId}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteUser(@PathVariable Long userId) {
         return ResponseEntity.ok(adminUserService.deleteUser(userId));
     }

@@ -7,42 +7,29 @@ import PrimaryButton from '../components/PrimaryButton';
 import AdminInput from '../components/AdminInput';
 import AdminSelect from '../components/AdminSelect';
 import { useTrains } from '../context/TrainContext';
+import { useFares } from '../context/FareContext';
 import toast from 'react-hot-toast';
 
 export default function FareStructure() {
   const { trains } = useTrains();
-  const [fares] = useState([
-    {
-      fareId: 1,
-      trainId: 1,
-      coachType: '3A',
-      ratePerKm: 2.50,
-      minFare: 50.00,
-      isActive: true
-    },
-    {
-      fareId: 2,
-      trainId: 1,
-      coachType: '2A',
-      ratePerKm: 3.75,
-      minFare: 75.00,
-      isActive: true
-    }
-  ]);
-
+  const { fares, addFare, updateFare, deleteFare, loading } = useFares();
   const [showModal, setShowModal] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedFare, setSelectedFare] = useState(null);
   const [formData, setFormData] = useState({
     trainId: '',
-    coachType: '',
+    coachTypeId: '',
     ratePerKm: '',
-    minFare: '50.00',
+    baseFare: '50.00',
     isActive: true
   });
 
+  // Debug logging
+  console.log('Fares data:', fares);
+  console.log('Loading state:', loading);
+
   const getTrainName = (trainId) => {
-    const train = trains.find(t => t.trainId === trainId);
+    const train = trains.find(t => t.id === trainId);
     return train ? `${train.trainNumber} - ${train.trainName}` : 'N/A';
   };
 
@@ -53,7 +40,7 @@ export default function FareStructure() {
       render: (value) => getTrainName(value)
     },
     { 
-      key: 'coachType', 
+      key: 'coachTypeCode', 
       label: 'Coach Type',
       render: (value) => (
         <span className="px-2 py-1 text-xs bg-violet-100 text-violet-800 rounded-full">
@@ -64,12 +51,12 @@ export default function FareStructure() {
     { 
       key: 'ratePerKm', 
       label: 'Rate per KM',
-      render: (value) => `₹${value.toFixed(2)}`
+      render: (value) => `₹${value}`
     },
     { 
-      key: 'minFare', 
-      label: 'Minimum Fare',
-      render: (value) => `₹${value.toFixed(2)}`
+      key: 'baseFare', 
+      label: 'Base Fare',
+      render: (value) => `₹${value}`
     },
     { 
       key: 'isActive', 
@@ -89,7 +76,7 @@ export default function FareStructure() {
       toast.error('Please select a train');
       return false;
     }
-    if (!formData.coachType) {
+    if (!formData.coachTypeId) {
       toast.error('Please select coach type');
       return false;
     }
@@ -104,9 +91,9 @@ export default function FareStructure() {
     setSelectedFare(null);
     setFormData({
       trainId: '',
-      coachType: '',
+      coachTypeId: '',
       ratePerKm: '',
-      minFare: '50.00',
+      baseFare: '50.00',
       isActive: true
     });
     setShowModal(true);
@@ -114,7 +101,17 @@ export default function FareStructure() {
 
   const handleEdit = (fare) => {
     setSelectedFare(fare);
-    setFormData(fare);
+    // Map coach type codes to IDs
+    const coachTypeMap = {
+      'SL': 1, '3A': 2, '2A': 3, '1A': 4, 'CC': 5, '2S': 6
+    };
+    setFormData({
+      trainId: fare.trainId || '',
+      coachTypeId: coachTypeMap[fare.coachTypeCode] || '',
+      ratePerKm: fare.ratePerKm || '',
+      baseFare: fare.baseFare || '50.00',
+      isActive: fare.isActive !== undefined ? fare.isActive : true
+    });
     setShowModal(true);
   };
 
@@ -123,16 +120,33 @@ export default function FareStructure() {
     setShowDeleteDialog(true);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      toast.success(selectedFare ? 'Fare rule updated successfully!' : 'Fare rule added successfully!');
+    if (!validateForm()) return;
+
+    let success = false;
+    if (selectedFare) {
+      success = await updateFare(selectedFare.fareId || selectedFare.id, formData);
+      if (success) {
+        toast.success('Fare rule updated successfully!');
+      }
+    } else {
+      success = await addFare(formData);
+      if (success) {
+        toast.success('Fare rule added successfully!');
+      }
+    }
+    
+    if (success) {
       setShowModal(false);
     }
   };
 
-  const confirmDelete = () => {
-    toast.success('Fare rule deleted successfully!');
+  const confirmDelete = async () => {
+    const success = await deleteFare(selectedFare.fareId || selectedFare.id);
+    if (success) {
+      toast.success('Fare rule deleted successfully!');
+    }
     setShowDeleteDialog(false);
   };
 
@@ -156,6 +170,19 @@ export default function FareStructure() {
           onDelete={handleDelete}
         />
 
+        {loading && (
+          <div className="flex justify-center items-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-violet-600"></div>
+            <span className="ml-2 text-gray-600">Loading fares...</span>
+          </div>
+        )}
+
+        {!loading && fares.length === 0 && (
+          <div className="text-center py-8 text-gray-500">
+            No fare data available. Add some fare rules to get started.
+          </div>
+        )}
+
         <FormModal
           open={showModal}
           onClose={() => setShowModal(false)}
@@ -174,8 +201,8 @@ export default function FareStructure() {
                 required
                 options={[
                   { value: '', label: 'Select Train' },
-                  ...trains.filter(t => t.trainActiveStatus === 'Active').map(train => ({
-                    value: train.trainId,
+                  ...trains.filter(t => t.trainStatus === 'ACTIVE').map(train => ({
+                    value: train.id,
                     label: `${train.trainNumber} - ${train.trainName}`
                   }))
                 ]}
@@ -188,18 +215,18 @@ export default function FareStructure() {
               <div className="grid grid-cols-2 gap-6">
                 <AdminSelect
                   label="Coach Type"
-                  name="coachType"
-                  value={formData.coachType}
-                  onChange={(e) => setFormData({...formData, coachType: e.target.value})}
+                  name="coachTypeId"
+                  value={formData.coachTypeId}
+                  onChange={(e) => setFormData({...formData, coachTypeId: parseInt(e.target.value)})}
                   required
                   options={[
                     { value: '', label: 'Select Coach Type' },
-                    { value: 'SL', label: 'Sleeper (SL)' },
-                    { value: '3A', label: 'AC 3 Tier (3A)' },
-                    { value: '2A', label: 'AC 2 Tier (2A)' },
-                    { value: '1A', label: 'AC First Class (1A)' },
-                    { value: 'CC', label: 'Chair Car (CC)' },
-                    { value: '2S', label: 'Second Sitting (2S)' }
+                    { value: 1, label: 'Sleeper (SL)' },
+                    { value: 2, label: 'AC 3 Tier (3A)' },
+                    { value: 3, label: 'AC 2 Tier (2A)' },
+                    { value: 4, label: 'AC First Class (1A)' },
+                    { value: 5, label: 'Chair Car (CC)' },
+                    { value: 6, label: 'Second Sitting (2S)' }
                   ]}
                 />
                 <AdminInput
@@ -219,12 +246,12 @@ export default function FareStructure() {
               <h3 className="text-lg font-bold text-gray-900 mb-4">Additional Settings</h3>
               <div className="grid grid-cols-2 gap-6">
                 <AdminInput
-                  label="Minimum Fare (₹)"
-                  name="minFare"
+                  label="Base Fare (₹)"
+                  name="baseFare"
                   type="number"
                   step="0.01"
-                  value={formData.minFare}
-                  onChange={(e) => setFormData({...formData, minFare: parseFloat(e.target.value)})}
+                  value={formData.baseFare}
+                  onChange={(e) => setFormData({...formData, baseFare: parseFloat(e.target.value)})}
                 />
                 <div className="flex items-end pb-3">
                   <input
