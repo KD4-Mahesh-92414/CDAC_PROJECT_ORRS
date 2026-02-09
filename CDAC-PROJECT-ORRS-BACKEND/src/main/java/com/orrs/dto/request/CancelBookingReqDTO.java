@@ -16,6 +16,5 @@ public class CancelBookingReqDTO {
     @NotNull(message = "Booking ID is required")
     private Long bookingId;
 
-    @NotBlank(message = "Cancellation reason is required")
     private String reason;
 }

@@ -18,6 +18,19 @@ public interface SeatReservationRepository extends JpaRepository<SeatReservation
         WHERE sr.schedule.id = :scheduleId
         AND sr.coachType.id = :coachTypeId
         AND CONCAT(sr.coachLabel, '-', sr.seatNumber) IN :seatIds
+        AND sr.expiresAt > :currentTime
+        """)
+    List<String> findReservedSeatsSimple(@Param("scheduleId") Long scheduleId,
+                                         @Param("coachTypeId") Long coachTypeId,
+                                         @Param("seatIds") List<String> seatIds,
+                                         @Param("currentTime") LocalDateTime currentTime);
+
+    @Query("""
+        SELECT CONCAT(sr.coachLabel, '-', sr.seatNumber)
+        FROM SeatReservation sr
+        WHERE sr.schedule.id = :scheduleId
+        AND sr.coachType.id = :coachTypeId
+        AND CONCAT(sr.coachLabel, '-', sr.seatNumber) IN :seatIds
         AND sr.status = 'RESERVED'
         AND sr.expiresAt > :currentTime
         """)
@@ -30,7 +43,6 @@ public interface SeatReservationRepository extends JpaRepository<SeatReservation
         SELECT sr FROM SeatReservation sr
         WHERE sr.user.id = :userId
         AND (:scheduleId IS NULL OR sr.schedule.id = :scheduleId)
-        AND sr.status = 'RESERVED'
         AND sr.expiresAt > :currentTime
         """)
     List<SeatReservation> findActiveReservationsByUser(@Param("userId") Long userId,
@@ -42,7 +54,6 @@ public interface SeatReservationRepository extends JpaRepository<SeatReservation
         FROM SeatReservation sr
         WHERE sr.schedule.id = :scheduleId
         AND sr.coachType.id = :coachTypeId
-        AND sr.status = 'RESERVED'
         AND sr.expiresAt > :currentTime
         """)
     List<Object[]> findActiveReservationsForMatrix(@Param("scheduleId") Long scheduleId,
@@ -54,7 +65,6 @@ public interface SeatReservationRepository extends JpaRepository<SeatReservation
         FROM SeatReservation sr
         WHERE sr.schedule.id = :scheduleId
         AND sr.coachType.id = :coachTypeId
-        AND sr.status = 'RESERVED'
         AND sr.expiresAt > NOW()
         """)
     List<Object[]> findReservedSeatsForMatrix(@Param("scheduleId") Long scheduleId,

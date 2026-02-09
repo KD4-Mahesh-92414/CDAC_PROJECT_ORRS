@@ -82,8 +82,13 @@ public class TrainScheduleServiceImpl implements TrainScheduleService{
             destStation.getId(), 
             searchDto.getJourneyDate(),
             ScheduleStatus.RUNNING
-            
         );
+        
+        // Set station IDs for seat matrix API
+        for (SearchResultRespDTO train : trains) {
+            train.setSourceStationId(sourceStation.getId());
+            train.setDestinationStationId(destStation.getId());
+        }
         
      // 3. ENRICHMENT LOOP: Calculate Fares & Availability for each train
         // 

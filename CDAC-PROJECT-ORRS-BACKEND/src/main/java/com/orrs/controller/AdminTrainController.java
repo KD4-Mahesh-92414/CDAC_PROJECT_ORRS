@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.orrs.dto.request.AddTrainReqDTO;
 import com.orrs.dto.request.UpdateTrainReqDTO;
 import com.orrs.dto.request.UpdateTrainStatusReqDTO;
+import com.orrs.dto.common.ApiResponseDTO;
 import com.orrs.security.UserPrincipal;
 import com.orrs.services.TrainService;
+import com.orrs.services.TrainSchedulingService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 public class AdminTrainController {
 
     private final TrainService trainService;
+    private final TrainSchedulingService trainSchedulingService;
 
     // GET /admin/trains
     // - Fetch all trains
@@ -86,5 +89,16 @@ public class AdminTrainController {
              trainService.updateTrainStatus(trainId, dto)
      );
  }
+
+    // POST /admin/trains/schedule
+    // - Manually trigger train scheduling for next 60 days
+    // - Requires ADMIN authentication
+    @PostMapping("/schedule")
+    public ResponseEntity<?> scheduleTrains() {
+        trainSchedulingService.scheduleTrainsForNext60Days();
+        return ResponseEntity.ok(
+            new ApiResponseDTO<>("Train schedules created successfully for next 60 days", "SUCCESS", null)
+        );
+    }
 
 }
