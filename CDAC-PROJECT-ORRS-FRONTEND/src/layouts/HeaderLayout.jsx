@@ -1,8 +1,8 @@
 import { useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import Navbar from "../components/Navbar";
-import SearchBar from "../AfterSearch/Components/SearchBar";
-import JourneySteps from "../AfterSearch/Components/JourneySteps";
+import BookingNavbar from "../components/layout/BookingNavbar";
+import HeaderSearchBar from "../components/layout/HeaderSearchBar";
+import JourneySteps from "../components/booking/JourneySteps";
 import { setSearchData } from "../store/slices/bookingSlice";
 
 export default function HeaderLayout() {
@@ -35,15 +35,15 @@ export default function HeaderLayout() {
   };
 
   return (
-    <div className="w-full bg-white shadow-sm">
-      <Navbar />
+    <div className="w-full bg-gradient-to-r from-violet-600 to-violet-700 shadow-lg">
+      <BookingNavbar />
       {!hideSearchBar && (
-        <div className="border-t border-violet-100">
-          <SearchBar searchData={searchData} setSearchData={(data) => dispatch(setSearchData(data))} />
+        <div className="border-t border-white/20">
+          <HeaderSearchBar searchData={searchData} />
         </div>
       )}
       {!hideJourneySteps && (
-        <div className="border-t border-violet-100">
+        <div className="border-t border-white/20 bg-white">
           <JourneySteps currentStep={getCurrentStep()} />
         </div>
       )}

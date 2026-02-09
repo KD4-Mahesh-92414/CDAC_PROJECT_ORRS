@@ -81,7 +81,7 @@ export default function StationManagement() {
       state: '',
       zone: '',
       platforms: '',
-      status: 'Active'
+      status: 'ACTIVE'
     });
     setErrors({});
     setShowModal(true);
@@ -116,29 +116,38 @@ export default function StationManagement() {
       return;
     }
 
-    let success = false;
-    if (selectedStation) {
-      success = await updateStation(selectedStation.id, formData);
-      if (success) {
-        toast.success('Station updated successfully!');
+    try {
+      if (selectedStation) {
+        const response = await adminService.stations.updateStation(selectedStation.id, formData);
+        if (response.data?.status === 'SUCCESS') {
+          toast.success('Station updated successfully!');
+          fetchStations();
+          setShowModal(false);
+          setErrors({});
+        }
+      } else {
+        const response = await adminService.stations.addStation(formData);
+        if (response.data?.status === 'SUCCESS') {
+          toast.success('Station added successfully!');
+          fetchStations();
+          setShowModal(false);
+          setErrors({});
+        }
       }
-    } else {
-      success = await addStation(formData);
-      if (success) {
-        toast.success('Station added successfully!');
-      }
-    }
-    
-    if (success) {
-      setShowModal(false);
-      setErrors({});
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Operation failed');
     }
   };
 
   const confirmDelete = async () => {
-    const success = await deleteStation(selectedStation.id);
-    if (success) {
-      toast.success('Station deleted successfully!');
+    try {
+      const response = await adminService.stations.deleteStation(selectedStation.id);
+      if (response.data?.status === 'SUCCESS') {
+        toast.success('Station deleted successfully!');
+        fetchStations();
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Delete failed');
     }
     setShowDeleteDialog(false);
   };
@@ -274,9 +283,9 @@ export default function StationManagement() {
                 onChange={(e) => setFormData({...formData, status: e.target.value})}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-200 text-base"
               >
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-                <option value="Under Maintenance">Under Maintenance</option>
+                <option value="ACTIVE">Active</option>
+                <option value="INACTIVE">Inactive</option>
+                <option value="UNDER_MAINRENANCE">Under Maintenance</option>
               </select>
             </div>
           </div>

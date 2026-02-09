@@ -146,29 +146,38 @@ export default function TrainManagement() {
       return;
     }
 
-    let success = false;
-    if (selectedTrain) {
-      success = await updateTrain(selectedTrain.id, formData);
-      if (success) {
-        toast.success('Train updated successfully!');
+    try {
+      if (selectedTrain) {
+        const response = await adminService.trains.updateTrain(selectedTrain.id, formData);
+        if (response.data?.status === 'SUCCESS') {
+          toast.success('Train updated successfully!');
+          fetchTrains();
+          setShowModal(false);
+          setErrors({});
+        }
+      } else {
+        const response = await adminService.trains.addTrain(formData);
+        if (response.data?.status === 'SUCCESS') {
+          toast.success('Train added successfully!');
+          fetchTrains();
+          setShowModal(false);
+          setErrors({});
+        }
       }
-    } else {
-      success = await addTrain(formData);
-      if (success) {
-        toast.success('Train added successfully!');
-      }
-    }
-    
-    if (success) {
-      setShowModal(false);
-      setErrors({});
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Operation failed');
     }
   };
 
   const confirmDelete = async () => {
-    const success = await deleteTrain(selectedTrain.id);
-    if (success) {
-      toast.success('Train deleted successfully!');
+    try {
+      const response = await adminService.trains.deleteTrain(selectedTrain.id);
+      if (response.data?.status === 'SUCCESS') {
+        toast.success('Train deleted successfully!');
+        fetchTrains();
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Delete failed');
     }
     setShowDeleteDialog(false);
   };
@@ -200,137 +209,122 @@ export default function TrainManagement() {
           open={showModal}
           onClose={() => setShowModal(false)}
           title={selectedTrain ? 'Edit Train' : 'Add Train'}
+          onSubmit={handleSubmit}
         >
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Train Information */}
-            <div>
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Train Information</h3>
-              <div className="grid grid-cols-2 gap-6">
-                <AdminInput
-                  label="Train Number"
-                  name="trainNumber"
-                  value={formData.trainNumber}
-                  onChange={(e) => setFormData({...formData, trainNumber: e.target.value})}
-                  error={errors.trainNumber}
-                  required
-                />
-                <AdminInput
-                  label="Train Name"
-                  name="trainName"
-                  value={formData.trainName}
-                  onChange={(e) => setFormData({...formData, trainName: e.target.value})}
-                  error={errors.trainName}
-                  required
-                />
-              </div>
+          {/* Train Information */}
+          <div>
+            <h3 className="text-lg font-bold text-gray-900 mb-4">Train Information</h3>
+            <div className="grid grid-cols-2 gap-6">
+              <AdminInput
+                label="Train Number"
+                name="trainNumber"
+                value={formData.trainNumber}
+                onChange={(e) => setFormData({...formData, trainNumber: e.target.value})}
+                error={errors.trainNumber}
+                required
+              />
+              <AdminInput
+                label="Train Name"
+                name="trainName"
+                value={formData.trainName}
+                onChange={(e) => setFormData({...formData, trainName: e.target.value})}
+                error={errors.trainName}
+                required
+              />
             </div>
+          </div>
 
-            {/* Route Details */}
-            <div className="border-t-2 border-violet-100 pt-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Route Details</h3>
-              <div className="grid grid-cols-2 gap-6">
-                <AdminSelect
-                  label="Source Station"
-                  name="sourceStationId"
-                  value={formData.sourceStationId}
-                  onChange={(e) => setFormData({...formData, sourceStationId: parseInt(e.target.value) || ''})}
-                  error={errors.sourceStationId}
-                  required
-                  options={[
-                    { value: '', label: 'Select Source Station' },
-                    ...stations.filter(s => s.status === 'ACTIVE').map(station => ({
-                      value: station.id,
-                      label: `${station.stationName} (${station.stationCode})`
-                    }))
-                  ]}
-                />
-                <AdminSelect
-                  label="Destination Station"
-                  name="destinationStationId"
-                  value={formData.destinationStationId}
-                  onChange={(e) => setFormData({...formData, destinationStationId: parseInt(e.target.value) || ''})}
-                  error={errors.destinationStationId}
-                  required
-                  options={[
-                    { value: '', label: 'Select Destination Station' },
-                    ...stations.filter(s => s.status === 'ACTIVE').map(station => ({
-                      value: station.id,
-                      label: `${station.stationName} (${station.stationCode})`
-                    }))
-                  ]}
-                />
-              </div>
+          {/* Route Details */}
+          <div className="border-t-2 border-violet-100 pt-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">Route Details</h3>
+            <div className="grid grid-cols-2 gap-6">
+              <AdminSelect
+                label="Source Station"
+                name="sourceStationId"
+                value={formData.sourceStationId}
+                onChange={(e) => setFormData({...formData, sourceStationId: parseInt(e.target.value) || ''})}
+                error={errors.sourceStationId}
+                required
+                options={[
+                  { value: '', label: 'Select Source Station' },
+                  ...stations.filter(s => s.status === 'ACTIVE').map(station => ({
+                    value: station.id,
+                    label: `${station.stationName} (${station.stationCode})`
+                  }))
+                ]}
+              />
+              <AdminSelect
+                label="Destination Station"
+                name="destinationStationId"
+                value={formData.destinationStationId}
+                onChange={(e) => setFormData({...formData, destinationStationId: parseInt(e.target.value) || ''})}
+                error={errors.destinationStationId}
+                required
+                options={[
+                  { value: '', label: 'Select Destination Station' },
+                  ...stations.filter(s => s.status === 'ACTIVE').map(station => ({
+                    value: station.id,
+                    label: `${station.stationName} (${station.stationCode})`
+                  }))
+                ]}
+              />
             </div>
+          </div>
 
-            {/* Train Specifications */}
-            <div className="border-t-2 border-violet-100 pt-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Train Specifications</h3>
-              <div className="grid grid-cols-2 gap-6">
-                <AdminInput
-                  label="Train Type"
-                  name="trainType"
-                  value={formData.trainType}
-                  onChange={(e) => setFormData({...formData, trainType: e.target.value})}
-                  placeholder="Express, Rajdhani, etc."
-                />
-                <AdminInput
-                  label="Total Distance (km)"
-                  name="totalDistanceKm"
-                  type="number"
-                  value={formData.totalDistanceKm}
-                  onChange={(e) => setFormData({...formData, totalDistanceKm: parseInt(e.target.value) || ''})}
-                  error={errors.totalDistanceKm}
-                />
-                <AdminInput
-                  label="Average Speed (km/h)"
-                  name="avgSpeed"
-                  type="number"
-                  value={formData.avgSpeed}
-                  onChange={(e) => setFormData({...formData, avgSpeed: parseInt(e.target.value) || ''})}
-                  error={errors.avgSpeed}
-                />
-                <AdminInput
-                  label="Days of Run"
-                  name="daysOfRun"
-                  value={formData.daysOfRun}
-                  onChange={(e) => setFormData({...formData, daysOfRun: e.target.value})}
-                  placeholder="Daily, Mon-Wed-Fri, etc."
-                />
-              </div>
+          {/* Train Specifications */}
+          <div className="border-t-2 border-violet-100 pt-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">Train Specifications</h3>
+            <div className="grid grid-cols-2 gap-6">
+              <AdminInput
+                label="Train Type"
+                name="trainType"
+                value={formData.trainType}
+                onChange={(e) => setFormData({...formData, trainType: e.target.value})}
+                placeholder="Express, Rajdhani, etc."
+              />
+              <AdminInput
+                label="Total Distance (km)"
+                name="totalDistanceKm"
+                type="number"
+                value={formData.totalDistanceKm}
+                onChange={(e) => setFormData({...formData, totalDistanceKm: parseInt(e.target.value) || ''})}
+                error={errors.totalDistanceKm}
+              />
+              <AdminInput
+                label="Average Speed (km/h)"
+                name="avgSpeed"
+                type="number"
+                value={formData.avgSpeed}
+                onChange={(e) => setFormData({...formData, avgSpeed: parseInt(e.target.value) || ''})}
+                error={errors.avgSpeed}
+              />
+              <AdminInput
+                label="Days of Run"
+                name="daysOfRun"
+                value={formData.daysOfRun}
+                onChange={(e) => setFormData({...formData, daysOfRun: e.target.value})}
+                placeholder="Daily, Mon-Wed-Fri, etc."
+              />
             </div>
+          </div>
 
-            {/* Status Settings */}
-            <div className="border-t-2 border-violet-100 pt-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Status Settings</h3>
-              <div className="grid grid-cols-2 gap-6">
-                <AdminSelect
-                  label="Train Status"
-                  name="trainStatus"
-                  value={formData.trainStatus}
-                  onChange={(e) => setFormData({...formData, trainStatus: e.target.value})}
-                  options={[
-                    { value: 'ACTIVE', label: 'Active' },
-                    { value: 'INACTIVE', label: 'Inactive' },
-                    { value: 'UNDER_MAINRENANCE', label: 'Under Maintenance' }
-                  ]}
-                />
-              </div>
+          {/* Status Settings */}
+          <div className="border-t-2 border-violet-100 pt-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">Status Settings</h3>
+            <div className="grid grid-cols-2 gap-6">
+              <AdminSelect
+                label="Train Status"
+                name="trainStatus"
+                value={formData.trainStatus}
+                onChange={(e) => setFormData({...formData, trainStatus: e.target.value})}
+                options={[
+                  { value: 'ACTIVE', label: 'Active' },
+                  { value: 'INACTIVE', label: 'Inactive' },
+                  { value: 'UNDER_MAINRENANCE', label: 'Under Maintenance' }
+                ]}
+              />
             </div>
-
-            {/* Form Actions */}
-            <div className="flex justify-end space-x-4 pt-6">
-              <button
-                type="button"
-                onClick={() => setShowModal(false)}
-                className="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
-              >
-                Cancel
-              </button>
-              <PrimaryButton type="submit">
-                {selectedTrain ? 'Update Train' : 'Add Train'}
-              </PrimaryButton>
-            </div>
-          </form>
+          </div>
         </FormModal>
 
         {/* Delete Confirmation */}

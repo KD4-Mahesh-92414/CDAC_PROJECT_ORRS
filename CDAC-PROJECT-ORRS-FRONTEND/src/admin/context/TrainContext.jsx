@@ -36,11 +36,12 @@ export const TrainProvider = ({ children }) => {
       setLoading(true);
       const response = await adminService.trains.addTrain(trainData);
       if (response.data && response.data.status === 'SUCCESS') {
-        await fetchTrains(); // Refresh the list
+        await fetchTrains();
         return true;
       }
+      toast.error(response.data?.message || 'Failed to add train');
+      return false;
     } catch (error) {
-      console.error('Error adding train:', error);
       toast.error(error.response?.data?.message || 'Failed to add train');
       return false;
     } finally {
@@ -53,11 +54,12 @@ export const TrainProvider = ({ children }) => {
       setLoading(true);
       const response = await adminService.trains.updateTrain(trainId, trainData);
       if (response.data && response.data.status === 'SUCCESS') {
-        await fetchTrains(); // Refresh the list
+        await fetchTrains();
         return true;
       }
+      toast.error(response.data?.message || 'Failed to update train');
+      return false;
     } catch (error) {
-      console.error('Error updating train:', error);
       toast.error(error.response?.data?.message || 'Failed to update train');
       return false;
     } finally {
@@ -70,11 +72,12 @@ export const TrainProvider = ({ children }) => {
       setLoading(true);
       const response = await adminService.trains.deleteTrain(trainId);
       if (response.data && response.data.status === 'SUCCESS') {
-        await fetchTrains(); // Refresh the list
+        await fetchTrains();
         return true;
       }
+      toast.error(response.data?.message || 'Failed to delete train');
+      return false;
     } catch (error) {
-      console.error('Error deleting train:', error);
       toast.error(error.response?.data?.message || 'Failed to delete train');
       return false;
     } finally {
@@ -87,11 +90,12 @@ export const TrainProvider = ({ children }) => {
       setLoading(true);
       const response = await adminService.trains.updateTrainStatus(trainId, statusData);
       if (response.data && response.data.status === 'SUCCESS') {
-        await fetchTrains(); // Refresh the list
+        await fetchTrains();
         return true;
       }
+      toast.error(response.data?.message || 'Failed to update train status');
+      return false;
     } catch (error) {
-      console.error('Error updating train status:', error);
       toast.error(error.response?.data?.message || 'Failed to update train status');
       return false;
     } finally {

@@ -36,11 +36,12 @@ export const StationProvider = ({ children }) => {
       setLoading(true);
       const response = await adminService.stations.addStation(stationData);
       if (response.data && response.data.status === 'SUCCESS') {
-        await fetchStations(); // Refresh the list
+        await fetchStations();
         return true;
       }
+      toast.error(response.data?.message || 'Failed to add station');
+      return false;
     } catch (error) {
-      console.error('Error adding station:', error);
       toast.error(error.response?.data?.message || 'Failed to add station');
       return false;
     } finally {
@@ -53,11 +54,12 @@ export const StationProvider = ({ children }) => {
       setLoading(true);
       const response = await adminService.stations.updateStation(stationId, stationData);
       if (response.data && response.data.status === 'SUCCESS') {
-        await fetchStations(); // Refresh the list
+        await fetchStations();
         return true;
       }
+      toast.error(response.data?.message || 'Failed to update station');
+      return false;
     } catch (error) {
-      console.error('Error updating station:', error);
       toast.error(error.response?.data?.message || 'Failed to update station');
       return false;
     } finally {
@@ -70,11 +72,12 @@ export const StationProvider = ({ children }) => {
       setLoading(true);
       const response = await adminService.stations.deleteStation(stationId);
       if (response.data && response.data.status === 'SUCCESS') {
-        await fetchStations(); // Refresh the list
+        await fetchStations();
         return true;
       }
+      toast.error(response.data?.message || 'Failed to delete station');
+      return false;
     } catch (error) {
-      console.error('Error deleting station:', error);
       toast.error(error.response?.data?.message || 'Failed to delete station');
       return false;
     } finally {
@@ -87,11 +90,12 @@ export const StationProvider = ({ children }) => {
       setLoading(true);
       const response = await adminService.stations.updateStationStatus(stationId, statusData);
       if (response.data && response.data.status === 'SUCCESS') {
-        await fetchStations(); // Refresh the list
+        await fetchStations();
         return true;
       }
+      toast.error(response.data?.message || 'Failed to update station status');
+      return false;
     } catch (error) {
-      console.error('Error updating station status:', error);
       toast.error(error.response?.data?.message || 'Failed to update station status');
       return false;
     } finally {

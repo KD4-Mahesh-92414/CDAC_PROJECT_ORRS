@@ -36,11 +36,12 @@ export const CoachTypeProvider = ({ children }) => {
       setLoading(true);
       const response = await adminService.coachTypes.addCoachType(coachTypeData);
       if (response.data && response.data.status === 'SUCCESS') {
-        await fetchCoachTypes(); // Refresh the list
+        await fetchCoachTypes();
         return true;
       }
+      toast.error(response.data?.message || 'Failed to add coach type');
+      return false;
     } catch (error) {
-      console.error('Error adding coach type:', error);
       toast.error(error.response?.data?.message || 'Failed to add coach type');
       return false;
     } finally {
@@ -53,11 +54,12 @@ export const CoachTypeProvider = ({ children }) => {
       setLoading(true);
       const response = await adminService.coachTypes.updateCoachType(coachTypeId, coachTypeData);
       if (response.data && response.data.status === 'SUCCESS') {
-        await fetchCoachTypes(); // Refresh the list
+        await fetchCoachTypes();
         return true;
       }
+      toast.error(response.data?.message || 'Failed to update coach type');
+      return false;
     } catch (error) {
-      console.error('Error updating coach type:', error);
       toast.error(error.response?.data?.message || 'Failed to update coach type');
       return false;
     } finally {
@@ -70,11 +72,12 @@ export const CoachTypeProvider = ({ children }) => {
       setLoading(true);
       const response = await adminService.coachTypes.deleteCoachType(coachTypeId);
       if (response.data && response.data.status === 'SUCCESS') {
-        await fetchCoachTypes(); // Refresh the list
+        await fetchCoachTypes();
         return true;
       }
+      toast.error(response.data?.message || 'Failed to delete coach type');
+      return false;
     } catch (error) {
-      console.error('Error deleting coach type:', error);
       toast.error(error.response?.data?.message || 'Failed to delete coach type');
       return false;
     } finally {

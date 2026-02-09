@@ -36,11 +36,12 @@ export const SeatLayoutProvider = ({ children }) => {
       setLoading(true);
       const response = await adminService.seatLayouts.addSeatLayout(seatLayoutData);
       if (response.data && response.data.status === 'SUCCESS') {
-        await fetchSeatLayouts(); // Refresh the list
+        await fetchSeatLayouts();
         return true;
       }
+      toast.error(response.data?.message || 'Failed to add seat layout');
+      return false;
     } catch (error) {
-      console.error('Error adding seat layout:', error);
       toast.error(error.response?.data?.message || 'Failed to add seat layout');
       return false;
     } finally {
@@ -53,11 +54,12 @@ export const SeatLayoutProvider = ({ children }) => {
       setLoading(true);
       const response = await adminService.seatLayouts.updateSeatLayout(seatLayoutId, seatLayoutData);
       if (response.data && response.data.status === 'SUCCESS') {
-        await fetchSeatLayouts(); // Refresh the list
+        await fetchSeatLayouts();
         return true;
       }
+      toast.error(response.data?.message || 'Failed to update seat layout');
+      return false;
     } catch (error) {
-      console.error('Error updating seat layout:', error);
       toast.error(error.response?.data?.message || 'Failed to update seat layout');
       return false;
     } finally {
@@ -70,11 +72,12 @@ export const SeatLayoutProvider = ({ children }) => {
       setLoading(true);
       const response = await adminService.seatLayouts.deleteSeatLayout(seatLayoutId);
       if (response.data && response.data.status === 'SUCCESS') {
-        await fetchSeatLayouts(); // Refresh the list
+        await fetchSeatLayouts();
         return true;
       }
+      toast.error(response.data?.message || 'Failed to delete seat layout');
+      return false;
     } catch (error) {
-      console.error('Error deleting seat layout:', error);
       toast.error(error.response?.data?.message || 'Failed to delete seat layout');
       return false;
     } finally {

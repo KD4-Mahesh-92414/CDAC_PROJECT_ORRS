@@ -23,15 +23,19 @@ export default function NavDropdown({
       </button>
 
       <div className={`absolute top-full ${alignRight ? 'right-0' : 'left-0'} hidden group-hover:block bg-white rounded-xl shadow-xl w-56 py-2 z-50 border border-violet-200 mt-2`}>
-        {items.map((item, idx) => (
-          <Link
-            key={idx}
-            to={item.path}
-            className={`block px-4 py-3 transition-all duration-200 text-sm ${isActive(item.path) ? "bg-violet-50 text-violet-700 font-semibold border-l-4 border-violet-600" : "text-gray-700 hover:bg-violet-50 hover:text-violet-600"}`}
-          >
-            {item.label}
-          </Link>
-        ))}
+        {items.map((item, idx) => {
+          const Icon = item.icon;
+          return (
+            <Link
+              key={idx}
+              to={item.path}
+              className={`flex items-center gap-3 px-4 py-3 transition-all duration-200 text-sm ${isActive(item.path) ? "bg-violet-50 text-violet-700 font-semibold border-l-4 border-violet-600" : "text-gray-700 hover:bg-violet-50 hover:text-violet-600"}`}
+            >
+              {Icon && <Icon size={18} weight="duotone" />}
+              {item.label}
+            </Link>
+          );
+        })}
         {hasLogout && onLogout && (
           <>
             <div className="border-t border-violet-200 my-2 mx-3"></div>

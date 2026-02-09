@@ -15,7 +15,7 @@ import toast from "react-hot-toast";
  * Responsibility: Handle train search form UI, validation, and navigation
  * Features: City-based search with autocomplete, backend integration
  */
-export default function SearchTrain() {
+export default function SearchTrain({ calendarOpenUpward = false }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -253,6 +253,7 @@ export default function SearchTrain() {
               selectedDate={date}
               onDateChange={handleDateChange}
               placeholder="dd/mm/yyyy"
+              openUpward={calendarOpenUpward}
             />
           </div>
 

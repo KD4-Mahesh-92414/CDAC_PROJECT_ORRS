@@ -176,9 +176,14 @@ export default function UserManagement() {
   };
 
   const confirmDelete = async () => {
-    const success = await deleteUser(selectedUser.userId);
-    if (success) {
-      toast.success('User deleted successfully!');
+    try {
+      const response = await adminService.users.deleteUser(selectedUser.userId);
+      if (response.data?.status === 'SUCCESS') {
+        toast.success('User deleted successfully!');
+        fetchUsers();
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Delete failed');
     }
     setShowDeleteDialog(false);
     setSelectedUser(null);

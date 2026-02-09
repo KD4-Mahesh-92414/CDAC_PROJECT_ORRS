@@ -36,11 +36,12 @@ export const TrainRouteProvider = ({ children }) => {
       setLoading(true);
       const response = await adminService.trainRoutes.addTrainRoute(trainRouteData);
       if (response.data && response.data.status === 'SUCCESS') {
-        await fetchTrainRoutes(); // Refresh the list
+        await fetchTrainRoutes();
         return true;
       }
+      toast.error(response.data?.message || 'Failed to add train route');
+      return false;
     } catch (error) {
-      console.error('Error adding train route:', error);
       toast.error(error.response?.data?.message || 'Failed to add train route');
       return false;
     } finally {
@@ -53,11 +54,12 @@ export const TrainRouteProvider = ({ children }) => {
       setLoading(true);
       const response = await adminService.trainRoutes.updateTrainRoute(trainRouteId, trainRouteData);
       if (response.data && response.data.status === 'SUCCESS') {
-        await fetchTrainRoutes(); // Refresh the list
+        await fetchTrainRoutes();
         return true;
       }
+      toast.error(response.data?.message || 'Failed to update train route');
+      return false;
     } catch (error) {
-      console.error('Error updating train route:', error);
       toast.error(error.response?.data?.message || 'Failed to update train route');
       return false;
     } finally {
@@ -70,11 +72,12 @@ export const TrainRouteProvider = ({ children }) => {
       setLoading(true);
       const response = await adminService.trainRoutes.deleteTrainRoute(trainRouteId);
       if (response.data && response.data.status === 'SUCCESS') {
-        await fetchTrainRoutes(); // Refresh the list
+        await fetchTrainRoutes();
         return true;
       }
+      toast.error(response.data?.message || 'Failed to delete train route');
+      return false;
     } catch (error) {
-      console.error('Error deleting train route:', error);
       toast.error(error.response?.data?.message || 'Failed to delete train route');
       return false;
     } finally {

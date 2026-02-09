@@ -20,9 +20,9 @@ const authSlice = createSlice({
       state.isAuthenticated = true
       state.isLoading = false
       state.error = null
-      // Store token in localStorage
-      localStorage.setItem('token', action.payload.token)
-      localStorage.setItem('user', JSON.stringify(action.payload.user))
+      // Store token in sessionStorage (clears on browser close)
+      sessionStorage.setItem('token', action.payload.token)
+      sessionStorage.setItem('user', JSON.stringify(action.payload.user))
     },
     loginFailure: (state, action) => {
       state.user = null
@@ -36,31 +36,23 @@ const authSlice = createSlice({
       state.token = null
       state.isAuthenticated = false
       state.error = null
-      // Clear localStorage
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
+      // Clear sessionStorage
+      sessionStorage.removeItem('token')
+      sessionStorage.removeItem('user')
     },
     clearError: (state) => {
       state.error = null
     },
-    // Initialize auth state from localStorage
+    // Initialize auth state from sessionStorage
     initializeAuth: (state) => {
-      const token = localStorage.getItem('token')
-      const user = localStorage.getItem('user')
-      
-      console.log('Auth initialization:', {
-        hasToken: !!token,
-        hasUser: !!user,
-        tokenPreview: token ? `${token.substring(0, 30)}...` : 'No token'
-      });
+      const token = sessionStorage.getItem('token')
+      const user = sessionStorage.getItem('user')
       
       if (token && user) {
-        console.log('Auth initialization: Token and user found, authenticating user');
         state.token = token
         state.user = JSON.parse(user)
         state.isAuthenticated = true
       } else {
-        console.log('Auth initialization: No token or user found');
         state.token = null
         state.user = null
         state.isAuthenticated = false
@@ -69,8 +61,8 @@ const authSlice = createSlice({
     // Update user data (for profile updates)
     setUser: (state, action) => {
       state.user = action.payload
-      // Update localStorage with new user data
-      localStorage.setItem('user', JSON.stringify(action.payload))
+      // Update sessionStorage with new user data
+      sessionStorage.setItem('user', JSON.stringify(action.payload))
     },
   },
 })

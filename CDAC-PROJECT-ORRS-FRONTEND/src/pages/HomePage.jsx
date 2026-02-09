@@ -8,9 +8,9 @@ import ImageSection from "../components/common/ImageSection";
  */
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-violet-50">
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="flex flex-col lg:flex-row min-h-[75vh] items-stretch">
+    <div className="h-full overflow-hidden bg-violet-50">
+      <section className="h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="flex flex-col lg:flex-row h-full items-stretch">
           {/* Left Side - Hero and Search */}
           <div className="w-full lg:w-[60%] flex flex-col justify-center px-4">
             <HeroSection />

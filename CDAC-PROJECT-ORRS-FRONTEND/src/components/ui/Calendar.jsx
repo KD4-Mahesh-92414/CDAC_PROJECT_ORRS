@@ -9,7 +9,7 @@ import {
  * Calendar Component
  * Responsibility: Handle date selection with calendar UI and logic
  */
-export default function Calendar({ selectedDate, onDateChange, placeholder = "dd/mm/yyyy" }) {
+export default function Calendar({ selectedDate, onDateChange, placeholder = "dd/mm/yyyy", openUpward = false }) {
   const [showCalendar, setShowCalendar] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
@@ -91,7 +91,7 @@ export default function Calendar({ selectedDate, onDateChange, placeholder = "dd
         </span>
 
         {showCalendar && (
-          <div className="absolute bottom-full left-0 mb-2 bg-white rounded-2xl shadow-2xl shadow-violet-300/50 border-2 border-violet-200 p-4 z-[100] w-72">
+          <div className={`absolute ${openUpward ? 'bottom-full mb-2' : 'top-full mt-2'} left-0 bg-white rounded-2xl shadow-2xl shadow-violet-300/50 border-2 border-violet-200 p-4 z-[100] w-72`}>
             {/* Calendar Header */}
             <div className="flex items-center justify-between mb-4">
               <button

@@ -1,8 +1,10 @@
-import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../store/slices/authSlice";
 import train from "../../assets/train.png";
+import { House, Train as TrainIcon, Question, Phone, User } from 'phosphor-react';
+import NavDropdown from './NavDropdown';
+import { trainItems, helpItems, contactItems, accountItems } from './navLinks';
 
 export default function BookingNavbar() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -15,105 +17,19 @@ export default function BookingNavbar() {
     dispatch(logout());
   };
 
-  const trainItems = [
-    { label: "PNR Status", path: "/trains/pnr-status" },
-    { label: "Cancelled Trains", path: "/trains/cancelled" },
-  ];
+  const publicTrainItems = trainItems.filter(item => 
+    item.path === "/trains/pnr-status" || item.path === "/trains/cancelled"
+  );
 
-  const helpItems = [
-    { label: "How to Book", path: "/help/how-to-book" },
-    { label: "FAQs", path: "/help/faqs" },
-  ];
+  const publicHelpItems = helpItems.filter(item => 
+    item.path === "/help/how-to-book" || item.path === "/help/faqs"
+  );
 
-  const contactItems = [
-    { label: "Customer Support", path: "/contact/support" },
-    { label: "Feedback", path: "/contact/feedback" },
-  ];
-
-  const accountItems = [
-    { label: "My Profile", path: "/account/profile" },
-    { label: "Edit Profile", path: "/account/edit-profile" },
-    { label: "Booking History", path: "/account/bookings" },
-    { label: "Change Password", path: "/account/change-password" },
-  ];
-
-  const NavDropdown = ({
-    label,
-    items,
-    hasLogout = false,
-    alignRight = false,
-    icon,
-  }) => (
-    <div className="relative group">
-      <button className="flex items-center gap-2 px-4 py-2 rounded-lg text-white/90 hover:text-white hover:bg-white/10 font-medium transition-all duration-200 group">
-        {icon}
-        <span>{label}</span>
-        <svg
-          className="w-3 h-3 transition-transform duration-200 group-hover:rotate-180"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
-      </button>
-
-      <div
-        className={`absolute top-full ${
-          alignRight ? "right-0" : "left-0"
-        } opacity-0 invisible group-hover:opacity-100 group-hover:visible bg-gradient-to-br from-white to-violet-50 rounded-xl shadow-2xl w-64 py-4 z-50 border border-violet-200 mt-2 transition-all duration-200 backdrop-blur-sm`}
-      >
-        {items.map((item, idx) => (
-          <Link
-            key={idx}
-            to={item.path}
-            className={`block px-5 py-3 transition-all duration-200 text-sm font-medium rounded-lg mx-2 ${
-              isActive(item.path)
-                ? "bg-gradient-to-r from-violet-500 to-violet-600 text-white shadow-md transform scale-105"
-                : "text-gray-700 hover:bg-gradient-to-r hover:from-violet-100 hover:to-violet-200 hover:text-violet-700 hover:transform hover:scale-105"
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              <div
-                className={`w-2 h-2 rounded-full ${
-                  isActive(item.path) ? "bg-white" : "bg-violet-400"
-                }`}
-              ></div>
-              {item.label}
-            </div>
-          </Link>
-        ))}
-        {hasLogout && (
-          <>
-            <div className="border-t border-violet-300 my-3 mx-3"></div>
-            <button
-              onClick={handleLogout}
-              className="w-full text-left px-5 py-3 text-red-600 hover:bg-gradient-to-r hover:from-red-50 hover:to-red-100 hover:text-red-700 transition-all duration-200 font-medium flex items-center gap-3 text-sm rounded-lg mx-2 hover:transform hover:scale-105"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                />
-              </svg>
-              Logout
-            </button>
-          </>
-        )}
-      </div>
-    </div>
+  const userAccountItems = accountItems.filter(item => 
+    item.path === "/account/profile" || 
+    item.path === "/account/edit-profile" || 
+    item.path === "/account/bookings" || 
+    item.path === "/account/change-password"
   );
 
   return (
@@ -134,71 +50,33 @@ export default function BookingNavbar() {
         <div className="hidden lg:flex items-center gap-8 font-medium">
           <Link
             to="/"
-            className={`px-3 py-2 rounded-lg transition-all duration-200 ${
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
               isActive("/")
                 ? "text-white font-semibold bg-white/20"
                 : "text-white/90 hover:text-white hover:bg-white/10"
             }`}
           >
+            <House size={18} weight="duotone" />
             Home
           </Link>
 
           <NavDropdown
             label="Trains"
-            items={trainItems}
-            icon={
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 10V3L4 14h7v7l9-11h-7z"
-                />
-              </svg>
-            }
+            items={publicTrainItems}
+            icon={<TrainIcon size={18} weight="duotone" />}
+            isDark={true}
           />
           <NavDropdown
             label="Help"
-            items={helpItems}
-            icon={
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            }
+            items={publicHelpItems}
+            icon={<Question size={18} weight="duotone" />}
+            isDark={true}
           />
           <NavDropdown
             label="Contact"
             items={contactItems}
-            icon={
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                />
-              </svg>
-            }
+            icon={<Phone size={18} weight="duotone" />}
+            isDark={true}
           />
         </div>
 
@@ -207,24 +85,12 @@ export default function BookingNavbar() {
             <div className="hidden lg:block">
               <NavDropdown
                 label={user?.fullName || "My Account"}
-                items={accountItems}
+                items={userAccountItems}
                 hasLogout={true}
+                onLogout={handleLogout}
                 alignRight={true}
-                icon={
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    />
-                  </svg>
-                }
+                icon={<User size={18} weight="duotone" />}
+                isDark={true}
               />
             </div>
           )}

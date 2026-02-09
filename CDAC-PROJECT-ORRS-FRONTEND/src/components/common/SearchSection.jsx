@@ -7,7 +7,7 @@ import SearchTrain from "../forms/SearchTrain";
 export default function SearchSection() {
   return (
     <div className="mt-8 pr-4">
-      <SearchTrain />
+      <SearchTrain calendarOpenUpward={true} />
     </div>
   );
 }

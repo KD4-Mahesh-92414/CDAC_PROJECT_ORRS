@@ -58,6 +58,8 @@ export default function FareStructure() {
         await fetchFares();
         return true;
       }
+      toast.error(response.data?.message || 'Failed to add fare');
+      return false;
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to add fare');
       return false;
@@ -74,6 +76,8 @@ export default function FareStructure() {
         await fetchFares();
         return true;
       }
+      toast.error(response.data?.message || 'Failed to update fare');
+      return false;
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to update fare');
       return false;
@@ -90,6 +94,8 @@ export default function FareStructure() {
         await fetchFares();
         return true;
       }
+      toast.error(response.data?.message || 'Failed to delete fare');
+      return false;
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to delete fare');
       return false;
@@ -142,13 +148,16 @@ export default function FareStructure() {
     { 
       key: 'isActive', 
       label: 'Status',
-      render: (value) => (
-        <span className={`px-2 py-1 text-xs rounded-full ${
-          value ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-        }`}>
-          {value ? 'Active' : 'Inactive'}
-        </span>
-      )
+      render: (value, row) => {
+        const isActive = value === true || row.active === true;
+        return (
+          <span className={`px-2 py-1 text-xs rounded-full ${
+            isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+          }`}>
+            {isActive ? 'Active' : 'Inactive'}
+          </span>
+        );
+      }
     }
   ];
 
@@ -182,16 +191,16 @@ export default function FareStructure() {
 
   const handleEdit = (fare) => {
     setSelectedFare(fare);
-    // Map coach type codes to IDs
     const coachTypeMap = {
       'SL': 1, '3A': 2, '2A': 3, '1A': 4, 'CC': 5, '2S': 6
     };
+    const activeStatus = fare.isActive ?? fare.active ?? true;
     setFormData({
       trainId: fare.trainId || '',
       coachTypeId: coachTypeMap[fare.coachTypeCode] || '',
       ratePerKm: fare.ratePerKm || '',
       baseFare: fare.baseFare || '50.00',
-      isActive: fare.isActive !== undefined ? fare.isActive : true
+      isActive: Boolean(activeStatus)
     });
     setShowModal(true);
   };
@@ -205,14 +214,22 @@ export default function FareStructure() {
     e.preventDefault();
     if (!validateForm()) return;
 
+    const payload = {
+      trainId: formData.trainId,
+      coachTypeId: formData.coachTypeId,
+      ratePerKm: formData.ratePerKm,
+      baseFare: formData.baseFare,
+      active: formData.isActive
+    };
+
     let success = false;
     if (selectedFare) {
-      success = await updateFare(selectedFare.fareId || selectedFare.id, formData);
+      success = await updateFare(selectedFare.fareId || selectedFare.id, payload);
       if (success) {
         toast.success('Fare rule updated successfully!');
       }
     } else {
-      success = await addFare(formData);
+      success = await addFare(payload);
       if (success) {
         toast.success('Fare rule added successfully!');
       }

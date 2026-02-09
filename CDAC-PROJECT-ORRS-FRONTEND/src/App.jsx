@@ -114,17 +114,18 @@ function AppContent() {
   const isAdminPage = location.pathname.startsWith('/admin');
   
   return (
-    <>
+    <div className="h-screen flex flex-col">
       {/* Show HeaderLayout only for booking flow */}
       {isBookingFlow && <HeaderLayout />}
       
       {/* Show regular Navbar for all other pages except auth, confirmation, and admin */}
       {!isBookingFlow && !hideNavbar && !isAdminPage && <Navbar />}
       
-      <Suspense fallback={<LoadingFallback />}>
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<HomePage />} />
+      <div className="flex-1 overflow-auto">
+        <Suspense fallback={<LoadingFallback />}>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
@@ -248,29 +249,29 @@ function AppContent() {
             } 
           />
 
-          {/* Admin Routes - No Authentication Required */}
-          <Route path="/admin" element={<Dashboard />} />
-          <Route path="/admin/profile" element={<Profile />} />
-          <Route path="/admin/profile/edit" element={<EditProfile />} />
-          <Route path="/admin/profile/change-password" element={<ChangePassword />} />
-          <Route path="/admin/stations" element={<StationManagement />} />
-          <Route path="/admin/trains" element={<TrainManagement />} />
-          <Route path="/admin/users" element={<UserManagement />} />
-          <Route path="/admin/fares" element={<FareStructure />} />
-          <Route path="/admin/refunds" element={<RefundTransaction />} />
-          <Route path="/admin/announcements" element={<CreateAnnouncement />} />
-          <Route path="/admin/coach-types" element={<CoachTypeProvider><CoachTypeListPage /></CoachTypeProvider>} />
-          <Route path="/admin/coach-types/add" element={<CoachTypeProvider><AddCoachTypePage /></CoachTypeProvider>} />
-          <Route path="/admin/coach-types/edit/:id" element={<CoachTypeProvider><EditCoachTypePage /></CoachTypeProvider>} />
-          <Route path="/admin/coach-types/view/:id" element={<CoachTypeProvider><ViewCoachTypePage /></CoachTypeProvider>} />
-          <Route path="/admin/train-routes" element={<TrainProvider><StationProvider><TrainRouteProvider><TrainRouteListPage /></TrainRouteProvider></StationProvider></TrainProvider>} />
-          <Route path="/admin/train-routes/add" element={<TrainProvider><StationProvider><TrainRouteProvider><AddTrainRoutePage /></TrainRouteProvider></StationProvider></TrainProvider>} />
-          <Route path="/admin/train-routes/edit/:id" element={<TrainProvider><StationProvider><TrainRouteProvider><EditTrainRoutePage /></TrainRouteProvider></StationProvider></TrainProvider>} />
-          <Route path="/admin/train-routes/view/:id" element={<TrainProvider><StationProvider><TrainRouteProvider><ViewTrainRoutePage /></TrainRouteProvider></StationProvider></TrainProvider>} />
-          <Route path="/admin/seat-layouts" element={<SeatLayoutProvider><SeatLayoutListPage /></SeatLayoutProvider>} />
-          <Route path="/admin/seat-layouts/add" element={<SeatLayoutProvider><AddSeatLayoutPage /></SeatLayoutProvider>} />
-          <Route path="/admin/seat-layouts/edit/:id" element={<SeatLayoutProvider><EditSeatLayoutPage /></SeatLayoutProvider>} />
-          <Route path="/admin/seat-layouts/view/:id" element={<SeatLayoutProvider><ViewSeatLayoutPage /></SeatLayoutProvider>} />
+          {/* Admin Routes - Protected */}
+          <Route path="/admin" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/admin/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/admin/profile/edit" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
+          <Route path="/admin/profile/change-password" element={<ProtectedRoute><ChangePassword /></ProtectedRoute>} />
+          <Route path="/admin/stations" element={<ProtectedRoute><StationManagement /></ProtectedRoute>} />
+          <Route path="/admin/trains" element={<ProtectedRoute><TrainManagement /></ProtectedRoute>} />
+          <Route path="/admin/users" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
+          <Route path="/admin/fares" element={<ProtectedRoute><FareStructure /></ProtectedRoute>} />
+          <Route path="/admin/refunds" element={<ProtectedRoute><RefundTransaction /></ProtectedRoute>} />
+          <Route path="/admin/announcements" element={<ProtectedRoute><CreateAnnouncement /></ProtectedRoute>} />
+          <Route path="/admin/coach-types" element={<ProtectedRoute><CoachTypeProvider><CoachTypeListPage /></CoachTypeProvider></ProtectedRoute>} />
+          <Route path="/admin/coach-types/add" element={<ProtectedRoute><CoachTypeProvider><AddCoachTypePage /></CoachTypeProvider></ProtectedRoute>} />
+          <Route path="/admin/coach-types/edit/:id" element={<ProtectedRoute><CoachTypeProvider><EditCoachTypePage /></CoachTypeProvider></ProtectedRoute>} />
+          <Route path="/admin/coach-types/view/:id" element={<ProtectedRoute><CoachTypeProvider><ViewCoachTypePage /></CoachTypeProvider></ProtectedRoute>} />
+          <Route path="/admin/train-routes" element={<ProtectedRoute><TrainProvider><StationProvider><TrainRouteProvider><TrainRouteListPage /></TrainRouteProvider></StationProvider></TrainProvider></ProtectedRoute>} />
+          <Route path="/admin/train-routes/add" element={<ProtectedRoute><TrainProvider><StationProvider><TrainRouteProvider><AddTrainRoutePage /></TrainRouteProvider></StationProvider></TrainProvider></ProtectedRoute>} />
+          <Route path="/admin/train-routes/edit/:id" element={<ProtectedRoute><TrainProvider><StationProvider><TrainRouteProvider><EditTrainRoutePage /></TrainRouteProvider></StationProvider></TrainProvider></ProtectedRoute>} />
+          <Route path="/admin/train-routes/view/:id" element={<ProtectedRoute><TrainProvider><StationProvider><TrainRouteProvider><ViewTrainRoutePage /></TrainRouteProvider></StationProvider></TrainProvider></ProtectedRoute>} />
+          <Route path="/admin/seat-layouts" element={<ProtectedRoute><SeatLayoutProvider><SeatLayoutListPage /></SeatLayoutProvider></ProtectedRoute>} />
+          <Route path="/admin/seat-layouts/add" element={<ProtectedRoute><SeatLayoutProvider><AddSeatLayoutPage /></SeatLayoutProvider></ProtectedRoute>} />
+          <Route path="/admin/seat-layouts/edit/:id" element={<ProtectedRoute><SeatLayoutProvider><EditSeatLayoutPage /></SeatLayoutProvider></ProtectedRoute>} />
+          <Route path="/admin/seat-layouts/view/:id" element={<ProtectedRoute><SeatLayoutProvider><ViewSeatLayoutPage /></SeatLayoutProvider></ProtectedRoute>} />
 
           {/* Other Protected Routes */}
           <Route 
@@ -323,7 +324,8 @@ function AppContent() {
           />
         </Routes>
       </Suspense>
-    </>
+      </div>
+    </div>
   );
 }
 
