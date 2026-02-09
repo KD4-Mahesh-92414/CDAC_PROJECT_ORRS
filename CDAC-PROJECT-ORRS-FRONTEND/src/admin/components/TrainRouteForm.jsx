@@ -24,7 +24,7 @@ export default function TrainRouteForm({
           options={[
             { value: '', label: 'Select Train' },
             ...trains.map(train => ({
-              value: train.trainId,
+              value: train.id,
               label: `${train.trainNumber} - ${train.trainName}`
             }))
           ]}
@@ -40,7 +40,7 @@ export default function TrainRouteForm({
           options={[
             { value: '', label: 'Select Station' },
             ...stations.map(station => ({
-              value: station.stationId,
+              value: station.id,
               label: `${station.stationCode} - ${station.stationName}`
             }))
           ]}
@@ -52,6 +52,7 @@ export default function TrainRouteForm({
           label="Arrival Time"
           name="arrivalTime"
           type="time"
+          step="1"
           value={formData.arrivalTime}
           onChange={(e) => setFormData({...formData, arrivalTime: e.target.value})}
           error={errors.arrivalTime}
@@ -61,6 +62,7 @@ export default function TrainRouteForm({
           label="Departure Time"
           name="departureTime"
           type="time"
+          step="1"
           value={formData.departureTime}
           onChange={(e) => setFormData({...formData, departureTime: e.target.value})}
           error={errors.departureTime}
@@ -68,12 +70,12 @@ export default function TrainRouteForm({
         />
 
         <AdminInput
-          label="Stop Number"
-          name="stopNumber"
+          label="Sequence Number"
+          name="sequenceNo"
           type="number"
-          value={formData.stopNumber}
-          onChange={(e) => setFormData({...formData, stopNumber: parseInt(e.target.value) || ''})}
-          error={errors.stopNumber}
+          value={formData.sequenceNo}
+          onChange={(e) => setFormData({...formData, sequenceNo: parseInt(e.target.value) || ''})}
+          error={errors.sequenceNo}
           required
           min={1}
         />

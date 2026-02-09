@@ -203,12 +203,25 @@ export default function TrainRouteListPage() {
           open={showModal}
           onClose={() => setShowModal(false)}
           title={selectedRoute ? 'Edit Train Route' : 'Add Train Route'}
-          onSubmit={handleSubmit}
         >
-          <TrainRouteForm
-            formData={formData}
-            setFormData={setFormData}
-          />
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <TrainRouteForm
+              formData={formData}
+              setFormData={setFormData}
+            />
+            <div className="flex justify-end space-x-4 pt-6">
+              <button
+                type="button"
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
+              >
+                Cancel
+              </button>
+              <PrimaryButton type="submit">
+                {selectedRoute ? 'Update Route' : 'Add Route'}
+              </PrimaryButton>
+            </div>
+          </form>
         </FormModal>
 
         <ConfirmDialog
