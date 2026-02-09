@@ -30,11 +30,11 @@ public class TrainSchedulingServiceImpl implements TrainSchedulingService {
 
     @Override
     public void scheduleTrainsForNext60Days() {
-        log.info("Starting initial 60-day train scheduling...");
+        log.info("Starting initial 30-day train scheduling...");
         
         List<Train> activeTrains = trainRepository.findAllActiveTrains();
         LocalDate startDate = LocalDate.now();
-        LocalDate endDate = startDate.plusDays(60);
+        LocalDate endDate = startDate.plusDays(30);
         
         int totalScheduled = 0;
         
@@ -57,7 +57,7 @@ public class TrainSchedulingServiceImpl implements TrainSchedulingService {
             }
         }
         
-        log.info("Initial 60-day scheduling completed. Total schedules created: {}", totalScheduled);
+        log.info("Initial 30-day scheduling completed. Total schedules created: {}", totalScheduled);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class TrainSchedulingServiceImpl implements TrainSchedulingService {
         log.info("Starting daily train scheduling for next day...");
         
         List<Train> activeTrains = trainRepository.findAllActiveTrains();
-        LocalDate targetDate = LocalDate.now().plusDays(60); // Schedule for 60 days ahead
+        LocalDate targetDate = LocalDate.now().plusDays(1); // Schedule for tomorrow
         
         int totalScheduled = 0;
         

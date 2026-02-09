@@ -99,16 +99,32 @@ public class UserServiceImpl implements UserService {
 	public ApiResponseDTO<?> updateUserPassword(UpdatePasswordReqDTO passwordDto, Long userId) {
 		User user = getValidUser(userId);
 		
-		if(!user.getPassword().equals(passwordDto.getPassword())) {
+		System.out.println("=== PASSWORD CHANGE DEBUG ===");
+		System.out.println("User ID: " + userId);
+		System.out.println("User Email: " + user.getEmail());
+		System.out.println("Stored Password Hash: " + user.getPassword());
+		System.out.println("Input Password Length: " + passwordDto.getPassword().length());
+		System.out.println("New Password Length: " + passwordDto.getNewPassword().length());
+		
+		// Use BCrypt to verify the old password against the stored hashed password
+		boolean passwordMatches = passwordEncoder.matches(passwordDto.getPassword(), user.getPassword());
+		System.out.println("Password Matches: " + passwordMatches);
+		
+		if(!passwordMatches) {
+			System.out.println("Password verification failed!");
 			throw new PasswordMismatchException("Old password does not match");
 		}
+		
 		if(!passwordDto.getNewPassword().equals(passwordDto.getNewCnfPassword())) {
 			throw new PasswordMismatchException("New password and confirm password do not match");
 		}
-		//bug fixed passwordDto.getPassword().equals(user.getPassword() to passwordDto.getNewPassword().equals(user.getPassword()
-		if(passwordDto.getNewPassword().equals(user.getPassword())) {
-			throw new InvalidRequestException("New passowrd must be different from old password");
+		
+		// Check if new password is same as old password using BCrypt comparison
+		if(passwordEncoder.matches(passwordDto.getNewPassword(), user.getPassword())) {
+			throw new InvalidRequestException("New password must be different from old password");
 		}
+		
+		System.out.println("Password change successful for user: " + user.getEmail());
 		user.setPassword(passwordEncoder.encode(passwordDto.getNewPassword()));
 		return new ApiResponseDTO<>("Password updated successfully","SUCCESS",null) ;
 	}

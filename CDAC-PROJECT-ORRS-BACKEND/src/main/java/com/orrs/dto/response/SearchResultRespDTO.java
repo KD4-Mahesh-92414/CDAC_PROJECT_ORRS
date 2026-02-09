@@ -15,20 +15,41 @@ import lombok.Setter;
 public class SearchResultRespDTO {
 
 	private Long trainId;
-	private Long scheduleId;       // Crucial: Use this ID to book the ticket
+	private Long scheduleId;
     private String trainNumber;
     private String trainName;
+    private String trainType;
     
     private String sourceStationName;
     private String destinationStationName;
+    private Long sourceStationId;
+    private Long destinationStationId;
     
-    private LocalTime departureTime;  // Time at Source
-    private LocalTime arrivalTime;    // Time at Destination
+    private LocalTime departureTime;
+    private LocalTime arrivalTime;
     private Integer travelDurationMinutes; 
     
-    private Integer distanceKm;       // Needed for fare calculation on UI
-    private String daysOfRun;         // Days when train runs (e.g., "Mon,Wed,Fri")
+    private Integer distanceKm;
+    private String daysOfRun;
 
-    // Add this new field
     private List<TrainCoachRespDTO> classOptions;
+    
+    // Constructor for repository query
+    public SearchResultRespDTO(Long trainId, Long scheduleId, String trainNumber, String trainName, 
+                              String trainType, String sourceStationName, String destinationStationName,
+                              LocalTime departureTime, LocalTime arrivalTime, Integer travelDurationMinutes,
+                              Integer distanceKm, String daysOfRun) {
+        this.trainId = trainId;
+        this.scheduleId = scheduleId;
+        this.trainNumber = trainNumber;
+        this.trainName = trainName;
+        this.trainType = trainType;
+        this.sourceStationName = sourceStationName;
+        this.destinationStationName = destinationStationName;
+        this.departureTime = departureTime;
+        this.arrivalTime = arrivalTime;
+        this.travelDurationMinutes = travelDurationMinutes;
+        this.distanceKm = distanceKm;
+        this.daysOfRun = daysOfRun;
+    }
 }

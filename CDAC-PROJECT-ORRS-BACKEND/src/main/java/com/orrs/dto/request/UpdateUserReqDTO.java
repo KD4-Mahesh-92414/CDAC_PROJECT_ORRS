@@ -36,7 +36,6 @@ public class UpdateUserReqDTO {
 	private String address;
 	@NotBlank(message = "Aadhar No is required")
 	private String aadharNo;
-	@NotNull(message = "Prefered class is required")
 	private PreferedClass prefClass;
 }
 

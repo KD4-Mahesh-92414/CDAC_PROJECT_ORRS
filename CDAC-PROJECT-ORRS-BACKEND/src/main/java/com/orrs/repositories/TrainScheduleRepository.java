@@ -19,7 +19,8 @@ public interface TrainScheduleRepository extends JpaRepository<TrainSchedule, Lo
 		        t.id, 
 		        ts.id, 
 		        t.trainNumber, 
-		        t.trainName, 
+		        t.trainName,
+		        CAST(t.trainType AS string),
 		        srcRoute.station.stationName, 
 		        destRoute.station.stationName,
 		        srcRoute.departureTime, 
@@ -28,9 +29,8 @@ public interface TrainScheduleRepository extends JpaRepository<TrainSchedule, Lo
             FUNCTION('TIMESTAMPDIFF', MINUTE, srcRoute.departureTime, destRoute.arrivalTime)
             AS integer
         ),
-		        cast((destRoute.distanceFromSource - srcRoute.distanceFromSource) as integer),
-		        t.daysOfRun,
-		        null
+		        CAST((destRoute.distanceFromSource - srcRoute.distanceFromSource) AS integer),
+		        t.daysOfRun
 		    )
 		    FROM TrainSchedule ts
 		    JOIN ts.train t

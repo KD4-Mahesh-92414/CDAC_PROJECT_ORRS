@@ -1,5 +1,6 @@
 package com.orrs.dto.request;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import jakarta.validation.Valid;
@@ -25,6 +26,9 @@ public class BookingReqDTO {
     private Long sourceStationId;
 
     private Long destStationId;
+    
+    private BigDecimal farePerSeat; // Calculated fare from frontend
+    
     @NotEmpty(message = "Passengers list cannot be empty")
     @Valid
     private List<PassengerReqDTO> passengers;
