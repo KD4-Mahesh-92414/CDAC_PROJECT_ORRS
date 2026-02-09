@@ -5,14 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthRespDTO {
-	
-	private String jwt;
-	private String message;
-	private String role;
-	
+public class WeeklyBookingsRespDTO {
+    private String day;
+    private Long bookings;
 }

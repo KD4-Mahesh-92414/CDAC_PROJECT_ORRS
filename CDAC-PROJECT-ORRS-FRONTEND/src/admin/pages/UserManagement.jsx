@@ -1,20 +1,39 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AdminLayout from '../layouts/AdminLayout';
 import DataTable from '../components/DataTable';
 import ConfirmDialog from '../components/ConfirmDialog';
 import FormModal from '../components/FormModal';
 import UserForm from '../components/UserForm';
 import PrimaryButton from '../components/PrimaryButton';
-import { useUsers } from '../context/UserContext';
 import { adminService } from '../../services';
 import toast from 'react-hot-toast';
 
 export default function UserManagement() {
-  const { users, loading, createUser, updateUser, updateUserStatus, suspendUser, deleteUser } = useUsers();
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      const response = await adminService.users.getAllUsers();
+      if (response.data?.status === 'SUCCESS') {
+        setUsers(response.data.data || []);
+      }
+    } catch (error) {
+      toast.error('Failed to fetch users');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const columns = [
     { key: 'fullName', label: 'Full Name' },
@@ -61,35 +80,81 @@ export default function UserManagement() {
   ];
 
   const handleCreateUser = async (userData) => {
-    const success = await createUser(userData);
-    if (success) {
-      toast.success('User created successfully!');
-      setShowCreateModal(false);
+    try {
+      setLoading(true);
+      const response = await adminService.users.createUser(userData);
+      if (response.data?.status === 'SUCCESS') {
+        toast.success('User created successfully!');
+        setShowCreateModal(false);
+        fetchUsers();
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to create user');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleEditUser = async (userData) => {
-    const userId = selectedUser.id || selectedUser.userId;
-    const success = await updateUser(userId, userData);
-    if (success) {
-      toast.success('User updated successfully!');
-      setShowEditModal(false);
-      setSelectedUser(null);
+    try {
+      setLoading(true);
+      const userId = selectedUser.id || selectedUser.userId;
+      const response = await adminService.users.updateUser(userId, userData);
+      if (response.data?.status === 'SUCCESS') {
+        toast.success('User updated successfully!');
+        setShowEditModal(false);
+        setSelectedUser(null);
+        fetchUsers();
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to update user');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleStatusToggle = async (user) => {
-    const newStatus = user.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
-    const success = await updateUserStatus(user.userId, { status: newStatus });
-    if (success) {
-      toast.success(`User ${newStatus.toLowerCase()} successfully!`);
+    try {
+      const newStatus = user.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
+      const response = await adminService.users.updateUserStatus(user.userId, { status: newStatus });
+      if (response.data?.status === 'SUCCESS') {
+        toast.success(`User ${newStatus.toLowerCase()} successfully!`);
+        fetchUsers();
+      }
+    } catch (error) {
+      toast.error('Failed to update status');
     }
   };
 
   const handleSuspendUser = async (user) => {
-    const success = await suspendUser(user.userId);
-    if (success) {
-      toast.success('User suspended successfully!');
+    try {
+      const response = await adminService.users.suspendUser(user.userId);
+      if (response.data?.status === 'SUCCESS') {
+        toast.success('User suspended successfully!');
+        fetchUsers();
+      }
+    } catch (error) {
+      toast.error('Failed to suspend user');
+    }
+  };
+
+  const handleRoleToggle = async (user) => {
+    try {
+      const newRole = user.role === 'ROLE_ADMIN' ? 'ROLE_CUSTOMER' : 'ROLE_ADMIN';
+      const response = await adminService.users.getUserById(user.userId);
+      if (response.data?.status === 'SUCCESS') {
+        const userData = response.data.data;
+        const updateResponse = await adminService.users.updateUser(user.userId, {
+          ...userData,
+          role: newRole
+        });
+        if (updateResponse.data?.status === 'SUCCESS') {
+          toast.success(`User role changed to ${newRole.replace('ROLE_', '')} successfully!`);
+          fetchUsers();
+        }
+      }
+    } catch (error) {
+      toast.error('Failed to change user role');
     }
   };
 
@@ -130,6 +195,11 @@ export default function UserManagement() {
       onClick: () => handleSuspendUser(user),
       className: 'text-yellow-600 hover:text-yellow-800',
       show: user.status !== 'SUSPENDED'
+    },
+    {
+      label: user.role === 'ROLE_ADMIN' ? 'Make Customer' : 'Make Admin',
+      onClick: () => handleRoleToggle(user),
+      className: 'text-blue-600 hover:text-blue-800'
     }
   ];
 

@@ -1,16 +1,36 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AdminLayout from '../layouts/AdminLayout';
 import DataTable from '../components/DataTable';
 import FormModal from '../components/FormModal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import PrimaryButton from '../components/PrimaryButton';
 import AdminInput from '../components/AdminInput';
-import { useStations } from '../context/StationContext';
+import { adminService } from '../../services';
 import { validateStation } from '../validations';
 import toast from 'react-hot-toast';
 
 export default function StationManagement() {
-  const { stations, addStation, updateStation, deleteStation } = useStations();
+  const [stations, setStations] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchStations();
+  }, []);
+
+  const fetchStations = async () => {
+    try {
+      setLoading(true);
+      const response = await adminService.stations.getAllStations();
+      if (response.data?.status === 'SUCCESS') {
+        setStations(response.data.data || []);
+      }
+    } catch (error) {
+      toast.error('Failed to fetch stations');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const [showModal, setShowModal] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');

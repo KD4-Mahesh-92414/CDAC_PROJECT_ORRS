@@ -84,19 +84,21 @@ export const Login = ({ onLoginSuccess }) => {
 
       console.log('Login response from backend:', response);
 
-      // Backend returns { jwt, message }
-      const { jwt, message } = response;
+      // Backend returns { jwt, message, role }
+      const { jwt, message, role } = response;
       
       if (!jwt) {
         throw new Error('No JWT token received from server');
       }
 
-      // Store JWT token in localStorage
+      // Store JWT token and role in localStorage
       localStorage.setItem('token', jwt);
+      localStorage.setItem('userRole', role);
       
-      // Create basic user object with email
+      // Create user object with email and role
       const user = {
         email: values.email,
+        role: role,
       };
 
       console.log('JWT token stored in localStorage');
@@ -109,7 +111,13 @@ export const Login = ({ onLoginSuccess }) => {
 
       toast.success(message || "Login successful! Welcome back.");
       onLoginSuccess?.();
-      setTimeout(() => navigate("/"), 500);
+      
+      // Navigate based on role
+      if (role === 'ROLE_ADMIN') {
+        setTimeout(() => navigate("/admin"), 500);
+      } else {
+        setTimeout(() => navigate("/"), 500);
+      }
     } catch (error) {
       console.error('Login error:', error);
       const errorMessage = error.message || "Login failed. Please try again.";

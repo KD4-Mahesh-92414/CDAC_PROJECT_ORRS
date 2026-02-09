@@ -16,11 +16,6 @@ export const FareProvider = ({ children }) => {
   const [fares, setFares] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Fetch fares from backend on component mount
-  useEffect(() => {
-    fetchFares();
-  }, []);
-
   const fetchFares = async () => {
     try {
       setLoading(true);

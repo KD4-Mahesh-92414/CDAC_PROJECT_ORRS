@@ -16,11 +16,6 @@ export const TrainRouteProvider = ({ children }) => {
   const [trainRoutes, setTrainRoutes] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Fetch train routes from backend on component mount
-  useEffect(() => {
-    fetchTrainRoutes();
-  }, []);
-
   const fetchTrainRoutes = async () => {
     try {
       setLoading(true);

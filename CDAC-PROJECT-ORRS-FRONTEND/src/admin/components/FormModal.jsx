@@ -4,7 +4,8 @@ export default function FormModal({
   open, 
   onClose, 
   title, 
-  children
+  children,
+  onSubmit
 }) {
   if (!open) return null;
 
@@ -28,9 +29,28 @@ export default function FormModal({
         </div>
 
         {/* Content */}
-        <div className="p-6">
-          {children}
-        </div>
+        <form onSubmit={onSubmit}>
+          <div className="p-6">
+            {children}
+          </div>
+          
+          {/* Footer with buttons */}
+          <div className="flex gap-3 p-6 border-t border-violet-100">
+            <button
+              type="submit"
+              className="flex-1 bg-violet-600 hover:bg-violet-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

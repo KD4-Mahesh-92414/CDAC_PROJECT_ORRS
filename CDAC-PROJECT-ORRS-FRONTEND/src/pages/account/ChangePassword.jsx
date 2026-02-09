@@ -66,7 +66,7 @@ export default function ChangePassword() {
         resetForm();
         // Redirect to profile page after successful password change
         setTimeout(() => {
-          navigate('/account/profile');
+          navigate(-1);
         }, 1500);
       }
     } catch (error) {
@@ -83,7 +83,7 @@ export default function ChangePassword() {
   };
 
   const handleCancel = () => {
-    navigate('/account/profile');
+    navigate(-1);
   };
 
   const toggleShow = (field) => {

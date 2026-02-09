@@ -16,11 +16,6 @@ export const SeatLayoutProvider = ({ children }) => {
   const [seatLayouts, setSeatLayouts] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Fetch seat layouts from backend on component mount
-  useEffect(() => {
-    fetchSeatLayouts();
-  }, []);
-
   const fetchSeatLayouts = async () => {
     try {
       setLoading(true);

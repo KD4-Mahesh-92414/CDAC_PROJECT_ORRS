@@ -1,6 +1,9 @@
 import { Bars3Icon, BellIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import { useNavigate } from 'react-router';
 
 export default function TopNavbar({ setSidebarOpen }) {
+  const navigate = useNavigate();
+
   return (
     <div className="bg-gradient-to-r from-violet-600 to-violet-700 shadow-lg border-b border-violet-800 px-6 py-4">
       <div className="flex items-center justify-between">
@@ -22,7 +25,10 @@ export default function TopNavbar({ setSidebarOpen }) {
           <button className="p-2 rounded-full hover:bg-violet-800 transition-colors">
             <BellIcon className="w-5 h-5 text-white" />
           </button>
-          <button className="p-2 rounded-full hover:bg-violet-800 transition-colors">
+          <button 
+            onClick={() => navigate('/admin/profile')}
+            className="p-2 rounded-full hover:bg-violet-800 transition-colors"
+          >
             <UserCircleIcon className="w-6 h-6 text-white" />
           </button>
         </div>

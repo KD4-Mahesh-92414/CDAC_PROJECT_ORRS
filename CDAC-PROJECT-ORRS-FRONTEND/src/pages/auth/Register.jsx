@@ -42,7 +42,7 @@ const Register = ({ onRegisterSuccess }) => {
 
   const handleSubmit = async (values) => {
     try {
-      dispatch(loginStart()); // Using loginStart for loading state
+      dispatch(loginStart());
       dispatch(clearError());
       setSuccessMessage("");
 
@@ -56,6 +56,7 @@ const Register = ({ onRegisterSuccess }) => {
 
       toast.success("Registration successful! Please login to continue.");
       setSuccessMessage("Registration successful! Please login to continue.");
+      dispatch(loginSuccess({ user: null, token: null }));
       
       setTimeout(() => {
         onRegisterSuccess?.();

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AdminLayout from '../layouts/AdminLayout';
 import DataTable from '../components/DataTable';
 import FormModal from '../components/FormModal';
@@ -6,13 +6,98 @@ import ConfirmDialog from '../components/ConfirmDialog';
 import PrimaryButton from '../components/PrimaryButton';
 import AdminInput from '../components/AdminInput';
 import AdminSelect from '../components/AdminSelect';
-import { useTrains } from '../context/TrainContext';
-import { useFares } from '../context/FareContext';
+import { adminService } from '../../services';
 import toast from 'react-hot-toast';
 
 export default function FareStructure() {
-  const { trains } = useTrains();
-  const { fares, addFare, updateFare, deleteFare, loading } = useFares();
+  const [trains, setTrains] = useState([]);
+  const [fares, setFares] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchFares();
+    fetchTrains();
+  }, []);
+
+  const fetchFares = async () => {
+    try {
+      setLoading(true);
+      const response = await adminService.fares.getAllFares();
+      if (Array.isArray(response.data)) {
+        setFares(response.data);
+      } else if (response.data?.status === 'SUCCESS') {
+        setFares(response.data.data || []);
+      } else {
+        setFares([]);
+      }
+    } catch (error) {
+      console.error('Error fetching fares:', error);
+      toast.error('Failed to fetch fares');
+      setFares([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchTrains = async () => {
+    try {
+      const response = await adminService.trains.getAllTrains();
+      if (response.data?.status === 'SUCCESS') {
+        setTrains(response.data.data || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch trains');
+    }
+  };
+
+  const addFare = async (fareData) => {
+    try {
+      setLoading(true);
+      const response = await adminService.fares.addFare(fareData);
+      if (response.data?.status === 'SUCCESS') {
+        await fetchFares();
+        return true;
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to add fare');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateFare = async (fareId, fareData) => {
+    try {
+      setLoading(true);
+      const response = await adminService.fares.updateFare(fareId, fareData);
+      if (response.data?.status === 'SUCCESS') {
+        await fetchFares();
+        return true;
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to update fare');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteFare = async (fareId) => {
+    try {
+      setLoading(true);
+      const response = await adminService.fares.deleteFare(fareId);
+      if (response.data?.status === 'SUCCESS') {
+        await fetchFares();
+        return true;
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to delete fare');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const [showModal, setShowModal] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedFare, setSelectedFare] = useState(null);
@@ -23,10 +108,6 @@ export default function FareStructure() {
     baseFare: '50.00',
     isActive: true
   });
-
-  // Debug logging
-  console.log('Fares data:', fares);
-  console.log('Loading state:', loading);
 
   const getTrainName = (trainId) => {
     const train = trains.find(t => t.id === trainId);
@@ -163,23 +244,23 @@ export default function FareStructure() {
           </PrimaryButton>
         </div>
 
-        <DataTable
-          columns={columns}
-          data={fares}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
+        {!loading && fares.length === 0 ? (
+          <div className="text-center py-8 text-gray-500">
+            No fare data available. Add some fare rules to get started.
+          </div>
+        ) : (
+          <DataTable
+            columns={columns}
+            data={fares}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        )}
 
         {loading && (
           <div className="flex justify-center items-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-violet-600"></div>
             <span className="ml-2 text-gray-600">Loading fares...</span>
-          </div>
-        )}
-
-        {!loading && fares.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
-            No fare data available. Add some fare rules to get started.
           </div>
         )}
 
@@ -281,3 +362,4 @@ export default function FareStructure() {
     </AdminLayout>
   );
 }
+

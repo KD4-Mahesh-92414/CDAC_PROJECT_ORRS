@@ -101,7 +101,7 @@ export default function EditProfile() {
         // Update Redux store with new user data
         dispatch(setUser(values));
         toast.success('Profile updated successfully!');
-        navigate('/account/profile');
+        navigate(-1);
       }
     } catch (error) {
       console.error('EditProfile: Update error:', error);
@@ -112,7 +112,7 @@ export default function EditProfile() {
   };
 
   const handleCancel = () => {
-    navigate('/account/profile');
+    navigate(-1);
   };
 
   if (loading) {

@@ -1,5 +1,5 @@
 import { EyeIcon } from '@heroicons/react/24/outline';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import AdminLayout from '../layouts/AdminLayout';
 import DataTable from '../components/DataTable';
@@ -12,7 +12,7 @@ import toast from 'react-hot-toast';
 
 export default function CoachTypeListPage() {
   const navigate = useNavigate();
-  const { coachTypes, addCoachType, updateCoachType, deleteCoachType } = useCoachTypes();
+  const { coachTypes, addCoachType, updateCoachType, deleteCoachType, fetchCoachTypes } = useCoachTypes();
   const [showModal, setShowModal] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedCoachType, setSelectedCoachType] = useState(null);
@@ -23,6 +23,10 @@ export default function CoachTypeListPage() {
     totalSeats: '',
     coachImageUrl: ''
   });
+
+  useEffect(() => {
+    fetchCoachTypes();
+  }, []);
 
   const columns = [
     { key: 'typeCode', label: 'Type Code' },

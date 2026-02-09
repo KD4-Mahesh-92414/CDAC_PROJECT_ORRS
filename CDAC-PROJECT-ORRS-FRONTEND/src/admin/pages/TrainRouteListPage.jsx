@@ -1,5 +1,5 @@
 import { EyeIcon } from '@heroicons/react/24/outline';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import AdminLayout from '../layouts/AdminLayout';
 import DataTable from '../components/DataTable';
@@ -14,9 +14,15 @@ import toast from 'react-hot-toast';
 
 export default function TrainRouteListPage() {
   const navigate = useNavigate();
-  const { trains } = useTrains();
-  const { stations } = useStations();
-  const { trainRoutes, addTrainRoute, updateTrainRoute, deleteTrainRoute } = useTrainRoutes();
+  const { trains, fetchTrains } = useTrains();
+  const { stations, fetchStations } = useStations();
+  const { trainRoutes, addTrainRoute, updateTrainRoute, deleteTrainRoute, fetchTrainRoutes } = useTrainRoutes();
+
+  useEffect(() => {
+    fetchTrainRoutes();
+    fetchTrains();
+    fetchStations();
+  }, []);
   
   const [showModal, setShowModal] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);

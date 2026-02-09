@@ -65,7 +65,9 @@ export const trainRouteService = {
 // Dashboard APIs (if available)
 export const dashboardService = {
   getDashboardStats: () => api.get('/admin/dashboard/stats'),
-  getRecentActivity: () => api.get('/admin/dashboard/recent-activity')
+  getRecentActivity: () => api.get('/admin/dashboard/recent-activity'),
+  getWeeklyBookings: () => api.get('/admin/dashboard/weekly-bookings'),
+  getMonthlyRevenue: () => api.get('/admin/dashboard/monthly-revenue')
 };
 
 // Combined admin service

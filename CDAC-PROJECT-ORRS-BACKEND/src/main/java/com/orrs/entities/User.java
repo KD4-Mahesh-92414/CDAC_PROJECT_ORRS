@@ -60,6 +60,6 @@ public class User extends BaseEntity{
 	private PreferedClass prefClass;
 	
 	@Column(name="is_email_verified")
-	private boolean isEmailVerified;
+	private Boolean isEmailVerified;
 	
 }

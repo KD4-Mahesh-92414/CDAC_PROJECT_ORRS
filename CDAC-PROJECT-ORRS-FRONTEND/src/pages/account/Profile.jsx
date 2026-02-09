@@ -170,6 +170,15 @@ export default function Profile() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-8">
+          <button
+            onClick={() => navigate(-1)}
+            className="mb-4 flex items-center text-violet-600 hover:text-violet-700 font-medium"
+          >
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back
+          </button>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">My Profile</h1>
           <p className="text-lg text-gray-600">
             View and manage your account information
@@ -266,13 +275,13 @@ export default function Profile() {
               <div className="border-t-2 border-violet-100 pt-6 flex gap-4">
                 <button
                   className="flex-1 bg-violet-600 hover:bg-violet-700 text-white font-bold py-3 rounded-xl transition-all duration-300 shadow-lg shadow-violet-300"
-                  onClick={() => navigate("/account/edit-profile")}
+                  onClick={() => navigate("/admin/profile/edit")}
                 >
                   Edit Profile
                 </button>
                 <button 
                   className="flex-1 bg-white border-2 border-violet-600 hover:bg-violet-50 text-violet-600 font-bold py-3 rounded-xl transition-all duration-300"
-                  onClick={() => navigate("/account/change-password")}
+                  onClick={() => navigate("/admin/profile/change-password")}
                 >
                   Change Password
                 </button>

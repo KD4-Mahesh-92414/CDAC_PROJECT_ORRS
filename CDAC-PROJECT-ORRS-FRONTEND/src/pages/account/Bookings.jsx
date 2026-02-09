@@ -60,6 +60,8 @@ export default function Bookings() {
   const isBookingCancellable = (booking) => {
     const journeyDate = new Date(booking.journeyDate || booking.date);
     const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    journeyDate.setHours(0, 0, 0, 0);
     const status = booking.bookingStatus || booking.status;
     
     // Only show cancel for confirmed bookings that are today or in the future

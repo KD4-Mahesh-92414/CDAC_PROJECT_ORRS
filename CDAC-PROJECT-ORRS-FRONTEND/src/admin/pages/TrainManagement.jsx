@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AdminLayout from '../layouts/AdminLayout';
 import DataTable from '../components/DataTable';
 import FormModal from '../components/FormModal';
@@ -6,14 +6,14 @@ import ConfirmDialog from '../components/ConfirmDialog';
 import PrimaryButton from '../components/PrimaryButton';
 import AdminInput from '../components/AdminInput';
 import AdminSelect from '../components/AdminSelect';
-import { useTrains } from '../context/TrainContext';
-import { useStations } from '../context/StationContext';
+import { adminService } from '../../services';
 import { validateTrain } from '../validations';
 import toast from 'react-hot-toast';
 
 export default function TrainManagement() {
-  const { trains, addTrain, updateTrain, deleteTrain } = useTrains();
-  const { stations } = useStations();
+  const [trains, setTrains] = useState([]);
+  const [stations, setStations] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedTrain, setSelectedTrain] = useState(null);
@@ -29,6 +29,36 @@ export default function TrainManagement() {
     trainStatus: 'ACTIVE'
   });
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    fetchTrains();
+    fetchStations();
+  }, []);
+
+  const fetchTrains = async () => {
+    try {
+      setLoading(true);
+      const response = await adminService.trains.getAllTrains();
+      if (response.data?.status === 'SUCCESS') {
+        setTrains(response.data.data || []);
+      }
+    } catch (error) {
+      toast.error('Failed to fetch trains');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchStations = async () => {
+    try {
+      const response = await adminService.stations.getAllStations();
+      if (response.data?.status === 'SUCCESS') {
+        setStations(response.data.data || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch stations');
+    }
+  };
 
   const getStationName = (stationId) => {
     const station = stations.find(s => s.id === stationId);

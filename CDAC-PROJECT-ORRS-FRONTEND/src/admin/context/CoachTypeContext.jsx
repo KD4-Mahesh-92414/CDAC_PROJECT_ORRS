@@ -16,11 +16,6 @@ export const CoachTypeProvider = ({ children }) => {
   const [coachTypes, setCoachTypes] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Fetch coach types from backend on component mount
-  useEffect(() => {
-    fetchCoachTypes();
-  }, []);
-
   const fetchCoachTypes = async () => {
     try {
       setLoading(true);

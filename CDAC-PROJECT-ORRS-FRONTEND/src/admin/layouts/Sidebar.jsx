@@ -40,12 +40,12 @@ export default function Sidebar({ open, setOpen }) {
       )}
 
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${
-        open ? 'translate-x-0' : '-translate-x-full'
-      } lg:block`}>
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
+        open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      } flex flex-col`}>
         
         {/* Header */}
-        <div className="p-6 border-b">
+        <div className="p-6 border-b flex-shrink-0">
           <Link to="/" className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 to-violet-700 flex items-center justify-center shadow-md">
               <img src={train} alt="train logo" className="h-6 w-6 invert" />
@@ -68,7 +68,7 @@ export default function Sidebar({ open, setOpen }) {
         </div>
 
         {/* Navigation */}
-        <nav className="p-4 space-y-2">
+        <nav className="p-4 space-y-2 overflow-y-auto flex-1">
           {navigation.map((item) => {
             const isActive = location.pathname === item.href;
             return (

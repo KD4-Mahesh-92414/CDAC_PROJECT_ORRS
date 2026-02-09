@@ -32,7 +32,6 @@ public class AdminUpdateUserReqDTO {
     @Pattern(regexp = "^[6-9]\\d{9}$", message = "Please provide a valid 10-digit mobile number")
     private String mobile;
 
-    @NotNull(message = "Gender is required")
     private Gender gender;
 
     @NotNull(message = "Role is required")

@@ -16,11 +16,6 @@ export const StationProvider = ({ children }) => {
   const [stations, setStations] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Fetch stations from backend on component mount
-  useEffect(() => {
-    fetchStations();
-  }, []);
-
   const fetchStations = async () => {
     try {
       setLoading(true);

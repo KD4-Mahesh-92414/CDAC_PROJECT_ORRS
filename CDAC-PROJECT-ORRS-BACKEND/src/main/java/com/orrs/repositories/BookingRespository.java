@@ -85,4 +85,7 @@ public interface BookingRespository extends JpaRepository<Booking, Long> {
     // Admin Dashboard Stats
     @Query("SELECT COUNT(b) FROM Booking b WHERE DATE(b.bookingDate) = :date")
     Long countBookingsByDate(@Param("date") LocalDate date);
+    
+    @Query("SELECT COALESCE(SUM(b.totalFare), 0) FROM Booking b WHERE DATE(b.bookingDate) BETWEEN :startDate AND :endDate AND b.status = 'CONFIRMED'")
+    java.math.BigDecimal sumTotalAmountByDateRange(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 }

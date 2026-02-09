@@ -101,7 +101,7 @@ public class UserController {
 		System.out.println("IsAuthenticated" + fullyAuth.isAuthenticated());
 		
 		UserPrincipal principal = (UserPrincipal) fullyAuth.getPrincipal();
-        return ResponseEntity.ok(new AuthRespDTO(jwtUtils.generateToken(principal), "Login Successfull"));
+        return ResponseEntity.ok(new AuthRespDTO(jwtUtils.generateToken(principal), "Login Successfull", principal.getUserRole()));
 	}
 	
 }

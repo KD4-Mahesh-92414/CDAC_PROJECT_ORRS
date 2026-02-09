@@ -6,13 +6,11 @@ import { Provider, useDispatch } from "react-redux";
 import store from "./store";
 import { initializeAuth } from "./store/slices/authSlice";
 
-// Admin Context Providers
-import { TrainProvider } from "./admin/context/TrainContext";
-import { StationProvider } from "./admin/context/StationContext";
-import { FareProvider } from "./admin/context/FareContext";
-import { UserProvider } from "./admin/context/UserContext";
+// Context Providers
 import { CoachTypeProvider } from "./admin/context/CoachTypeContext";
 import { SeatLayoutProvider } from "./admin/context/SeatLayoutContext";
+import { TrainProvider } from "./admin/context/TrainContext";
+import { StationProvider } from "./admin/context/StationContext";
 import { TrainRouteProvider } from "./admin/context/TrainRouteContext";
 
 // Protected Route Guard
@@ -252,24 +250,27 @@ function AppContent() {
 
           {/* Admin Routes - No Authentication Required */}
           <Route path="/admin" element={<Dashboard />} />
+          <Route path="/admin/profile" element={<Profile />} />
+          <Route path="/admin/profile/edit" element={<EditProfile />} />
+          <Route path="/admin/profile/change-password" element={<ChangePassword />} />
           <Route path="/admin/stations" element={<StationManagement />} />
           <Route path="/admin/trains" element={<TrainManagement />} />
           <Route path="/admin/users" element={<UserManagement />} />
           <Route path="/admin/fares" element={<FareStructure />} />
           <Route path="/admin/refunds" element={<RefundTransaction />} />
           <Route path="/admin/announcements" element={<CreateAnnouncement />} />
-          <Route path="/admin/coach-types" element={<CoachTypeListPage />} />
-          <Route path="/admin/coach-types/add" element={<AddCoachTypePage />} />
-          <Route path="/admin/coach-types/edit/:id" element={<EditCoachTypePage />} />
-          <Route path="/admin/coach-types/view/:id" element={<ViewCoachTypePage />} />
-          <Route path="/admin/train-routes" element={<TrainRouteListPage />} />
-          <Route path="/admin/train-routes/add" element={<AddTrainRoutePage />} />
-          <Route path="/admin/train-routes/edit/:id" element={<EditTrainRoutePage />} />
-          <Route path="/admin/train-routes/view/:id" element={<ViewTrainRoutePage />} />
-          <Route path="/admin/seat-layouts" element={<SeatLayoutListPage />} />
-          <Route path="/admin/seat-layouts/add" element={<AddSeatLayoutPage />} />
-          <Route path="/admin/seat-layouts/edit/:id" element={<EditSeatLayoutPage />} />
-          <Route path="/admin/seat-layouts/view/:id" element={<ViewSeatLayoutPage />} />
+          <Route path="/admin/coach-types" element={<CoachTypeProvider><CoachTypeListPage /></CoachTypeProvider>} />
+          <Route path="/admin/coach-types/add" element={<CoachTypeProvider><AddCoachTypePage /></CoachTypeProvider>} />
+          <Route path="/admin/coach-types/edit/:id" element={<CoachTypeProvider><EditCoachTypePage /></CoachTypeProvider>} />
+          <Route path="/admin/coach-types/view/:id" element={<CoachTypeProvider><ViewCoachTypePage /></CoachTypeProvider>} />
+          <Route path="/admin/train-routes" element={<TrainProvider><StationProvider><TrainRouteProvider><TrainRouteListPage /></TrainRouteProvider></StationProvider></TrainProvider>} />
+          <Route path="/admin/train-routes/add" element={<TrainProvider><StationProvider><TrainRouteProvider><AddTrainRoutePage /></TrainRouteProvider></StationProvider></TrainProvider>} />
+          <Route path="/admin/train-routes/edit/:id" element={<TrainProvider><StationProvider><TrainRouteProvider><EditTrainRoutePage /></TrainRouteProvider></StationProvider></TrainProvider>} />
+          <Route path="/admin/train-routes/view/:id" element={<TrainProvider><StationProvider><TrainRouteProvider><ViewTrainRoutePage /></TrainRouteProvider></StationProvider></TrainProvider>} />
+          <Route path="/admin/seat-layouts" element={<SeatLayoutProvider><SeatLayoutListPage /></SeatLayoutProvider>} />
+          <Route path="/admin/seat-layouts/add" element={<SeatLayoutProvider><AddSeatLayoutPage /></SeatLayoutProvider>} />
+          <Route path="/admin/seat-layouts/edit/:id" element={<SeatLayoutProvider><EditSeatLayoutPage /></SeatLayoutProvider>} />
+          <Route path="/admin/seat-layouts/view/:id" element={<SeatLayoutProvider><ViewSeatLayoutPage /></SeatLayoutProvider>} />
 
           {/* Other Protected Routes */}
           <Route 
@@ -329,23 +330,9 @@ function AppContent() {
 function App() {
   return (
     <Provider store={store}>
-      <TrainProvider>
-        <StationProvider>
-          <FareProvider>
-            <UserProvider>
-              <CoachTypeProvider>
-                <SeatLayoutProvider>
-                  <TrainRouteProvider>
-                    <BrowserRouter>
-                      <AppContent />
-                    </BrowserRouter>
-                  </TrainRouteProvider>
-                </SeatLayoutProvider>
-              </CoachTypeProvider>
-            </UserProvider>
-          </FareProvider>
-        </StationProvider>
-      </TrainProvider>
+      <BrowserRouter>
+        <AppContent />
+      </BrowserRouter>
     </Provider>
   );
 }

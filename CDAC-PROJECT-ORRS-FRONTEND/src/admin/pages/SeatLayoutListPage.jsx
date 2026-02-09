@@ -1,5 +1,5 @@
 import { EyeIcon } from '@heroicons/react/24/outline';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import AdminLayout from '../layouts/AdminLayout';
 import DataTable from '../components/DataTable';
@@ -12,7 +12,7 @@ import toast from 'react-hot-toast';
 
 export default function SeatLayoutListPage() {
   const navigate = useNavigate();
-  const { seatLayouts, addSeatLayout, updateSeatLayout, deleteSeatLayout } = useSeatLayouts();
+  const { seatLayouts, addSeatLayout, updateSeatLayout, deleteSeatLayout, fetchSeatLayouts } = useSeatLayouts();
   const [showModal, setShowModal] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedLayout, setSelectedLayout] = useState(null);
@@ -21,6 +21,10 @@ export default function SeatLayoutListPage() {
     seatNumber: '',
     seatType: ''
   });
+
+  useEffect(() => {
+    fetchSeatLayouts();
+  }, []);
 
   const columns = [
     { 

@@ -30,4 +30,16 @@ public class AdminDashboardController {
     public ResponseEntity<?> getDashboardStats() {
         return ResponseEntity.ok(adminDashboardService.getDashboardStats());
     }
+    
+    @GetMapping("/dashboard/weekly-bookings")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> getWeeklyBookings() {
+        return ResponseEntity.ok(adminDashboardService.getWeeklyBookings());
+    }
+    
+    @GetMapping("/dashboard/monthly-revenue")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> getMonthlyRevenue() {
+        return ResponseEntity.ok(adminDashboardService.getMonthlyRevenue());
+    }
 }
