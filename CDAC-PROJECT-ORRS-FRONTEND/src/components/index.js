@@ -5,4 +5,5 @@ export * from './common';
 export * from './forms';
 export * from './guards';
 export * from './layout';
+export * from './seats';
 export * from './ui';

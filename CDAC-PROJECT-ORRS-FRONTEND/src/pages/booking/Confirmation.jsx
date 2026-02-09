@@ -1,129 +1,249 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { resetBooking } from '../../store/slices/bookingSlice';
+import { CheckCircleIcon, PrinterIcon, ShareIcon } from '@heroicons/react/24/solid';
+import toast from 'react-hot-toast';
 
-export default function BookingConfirmation() {
+/**
+ * Booking Confirmation Page
+ * Shows successful booking details with PNR number
+ */
+export default function Confirmation() {
   const location = useLocation();
   const navigate = useNavigate();
-  const bookingRef = location.state?.bookingRef;
-  const totalFare = location.state?.totalFare;
+  const dispatch = useDispatch();
+  const [booking, setBooking] = useState(null);
 
   useEffect(() => {
-    if (!bookingRef) {
-      navigate("/");
+    // Get booking data from navigation state
+    const bookingData = location.state?.booking;
+    
+    if (!bookingData) {
+      // No booking data, redirect to home
+      toast.error('No booking information found');
+      navigate('/');
+      return;
     }
-  }, [bookingRef, navigate]);
+
+    setBooking(bookingData);
+    
+    // Clear booking state after successful confirmation
+    dispatch(resetBooking());
+  }, [location.state, navigate, dispatch]);
+
+  const handlePrintTicket = () => {
+    window.print();
+  };
+
+  const handleSharePNR = async () => {
+    if (navigator.share && booking?.pnrNumber) {
+      try {
+        await navigator.share({
+          title: 'Train Booking Confirmed',
+          text: `My train booking is confirmed! PNR: ${booking.pnrNumber}`,
+          url: window.location.origin
+        });
+      } catch (error) {
+        // Fallback to clipboard
+        copyPNRToClipboard();
+      }
+    } else {
+      copyPNRToClipboard();
+    }
+  };
+
+  const copyPNRToClipboard = () => {
+    if (booking?.pnrNumber) {
+      navigator.clipboard.writeText(booking.pnrNumber);
+      toast.success('PNR number copied to clipboard!');
+    }
+  };
+
+  const handleNewBooking = () => {
+    navigate('/');
+  };
+
+  const handleViewBookings = () => {
+    navigate('/account/bookings');
+  };
+
+  if (!booking) {
+    return (
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="text-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading booking details...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto py-12">
-      {/* Success Card */}
-      <div className="bg-white rounded-2xl shadow-lg shadow-violet-200 p-8 text-center">
-        <div className="mb-6">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full">
-            <svg
-              className="w-10 h-10 text-green-600"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
-        </div>
-
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">
+    <div className="max-w-4xl mx-auto p-6 space-y-6">
+      {/* Success Header */}
+      <div className="text-center bg-green-50 border-2 border-green-200 rounded-2xl p-8">
+        <CheckCircleIcon className="w-16 h-16 text-green-600 mx-auto mb-4" />
+        <h1 className="text-3xl font-bold text-green-800 mb-2">
           Booking Confirmed!
         </h1>
-        <p className="text-xl text-gray-600 mb-8">
-          Your train reservation has been successfully completed
+        <p className="text-green-600 text-lg">
+          Your train ticket has been booked successfully
         </p>
+      </div>
 
-        {/* Booking Reference */}
-        <div className="bg-violet-50 rounded-xl p-6 mb-8 border-2 border-violet-200">
-          <p className="text-sm text-gray-600 mb-2">Booking Reference Number</p>
-          <p className="text-3xl font-bold text-violet-600 font-mono">
-            {bookingRef}
+      {/* PNR Information */}
+      <div className="bg-white border-2 border-violet-300 rounded-2xl p-6">
+        <div className="text-center mb-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">
+            Your PNR Number
+          </h2>
+          <div className="bg-violet-100 border-2 border-violet-300 rounded-lg p-4 inline-block">
+            <span className="text-3xl font-bold text-violet-800 tracking-wider">
+              {booking.pnrNumber}
+            </span>
+          </div>
+          <p className="text-sm text-gray-600 mt-2">
+            Save this PNR number for future reference
           </p>
-          <p className="text-xs text-gray-500 mt-2">
-            Save this reference for further updates and cancellations
-          </p>
-        </div>
-
-        {/* Confirmation Details */}
-        <div className="grid grid-cols-3 gap-4 mb-8 p-6 bg-gray-50 rounded-xl">
-          <div>
-            <p className="text-sm text-gray-600">Total Amount Paid</p>
-            <p className="text-2xl font-bold text-violet-600">₹{totalFare}</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-600">Booking Status</p>
-            <p className="text-lg font-bold text-green-600">Confirmed</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-600">Confirmation Email</p>
-            <p className="text-sm text-gray-900">
-              maheshraipaiwar2001@gmail.com
-            </p>
-          </div>
-        </div>
-
-        {/* Next Steps */}
-        <div className="bg-blue-50 rounded-xl p-6 border-l-4 border-blue-500 mb-8 text-left">
-          <h3 className="font-bold text-gray-900 mb-3">What's Next?</h3>
-          <ul className="space-y-2 text-sm text-gray-700">
-            <li>
-              ✓ A confirmation email has been sent to your registered email
-            </li>
-            <li>✓ Download and print the e-ticket or show it on your mobile</li>
-            <li>✓ Keep your booking reference for check-in at the station</li>
-            <li>✓ Reach the station 30 minutes before departure</li>
-          </ul>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-4 justify-center">
+        <div className="flex justify-center space-x-4 mb-6">
           <button
-            onClick={() => navigate("/account/bookings")}
-            className="px-8 py-3 bg-violet-600 hover:bg-violet-700 text-white font-bold rounded-xl transition-colors"
+            onClick={handlePrintTicket}
+            className="flex items-center space-x-2 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
           >
-            View My Bookings
+            <PrinterIcon className="w-4 h-4" />
+            <span>Print Ticket</span>
           </button>
           <button
-            onClick={() => navigate("/")}
-            className="px-8 py-3 bg-white border-2 border-violet-600 text-violet-600 hover:bg-violet-50 font-bold rounded-xl transition-colors"
+            onClick={handleSharePNR}
+            className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
           >
-            Book Another Train
+            <ShareIcon className="w-4 h-4" />
+            <span>Share PNR</span>
           </button>
         </div>
       </div>
 
-      {/* Important Info */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white rounded-2xl shadow-lg shadow-violet-200 p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">
-            📄 Important Documents
-          </h3>
-          <ul className="space-y-2 text-sm text-gray-700">
-            <li>• E-Ticket (sent to your email)</li>
-            <li>• Journey details PDF</li>
-            <li>• Cancellation policy</li>
-            <li>• Passenger list</li>
-          </ul>
-        </div>
+      {/* Booking Details */}
+      <div className="bg-white border-2 border-gray-200 rounded-2xl p-6">
+        <h3 className="text-xl font-semibold text-gray-800 mb-4">
+          Booking Details
+        </h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Train Information */}
+          <div>
+            <h4 className="font-semibold text-gray-700 mb-2">Train Information</h4>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-600">Train:</span>
+                <span className="font-medium">
+                  {booking.trainDetails?.trainNumber} - {booking.trainDetails?.trainName}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Route:</span>
+                <span className="font-medium">
+                  {booking.trainDetails?.sourceStation} → {booking.trainDetails?.destinationStation}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Class:</span>
+                <span className="font-medium">{booking.trainDetails?.coachType}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Journey Date:</span>
+                <span className="font-medium">{booking.journeyDate}</span>
+              </div>
+            </div>
+          </div>
 
-        <div className="bg-white rounded-2xl shadow-lg shadow-violet-200 p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">
-            ❓ Need Help?
-          </h3>
-          <ul className="space-y-2 text-sm text-gray-700">
-            <li>📞 Customer Support: 1800-123-456</li>
-            <li>📧 Email: support@railway.com</li>
-            <li>💬 Live Chat: Available 24/7</li>
-            <li>🏠 Visit: Your nearest station</li>
-          </ul>
+          {/* Booking Information */}
+          <div>
+            <h4 className="font-semibold text-gray-700 mb-2">Booking Information</h4>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-600">Status:</span>
+                <span className="font-medium text-green-600">{booking.bookingStatus}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Total Fare:</span>
+                <span className="font-medium">₹{booking.totalFare}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Passengers:</span>
+                <span className="font-medium">{booking.passengers?.length || 0}</span>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+
+      {/* Passenger Details */}
+      {booking.passengers && booking.passengers.length > 0 && (
+        <div className="bg-white border-2 border-gray-200 rounded-2xl p-6">
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">
+            Passenger Details
+          </h3>
+          
+          <div className="space-y-4">
+            {booking.passengers.map((passenger, index) => (
+              <div key={index} className="border border-gray-200 rounded-lg p-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                  <div>
+                    <span className="text-gray-600">Name:</span>
+                    <div className="font-medium">{passenger.name}</div>
+                  </div>
+                  <div>
+                    <span className="text-gray-600">Age:</span>
+                    <div className="font-medium">{passenger.age}</div>
+                  </div>
+                  <div>
+                    <span className="text-gray-600">Gender:</span>
+                    <div className="font-medium">{passenger.gender}</div>
+                  </div>
+                  <div>
+                    <span className="text-gray-600">Seat:</span>
+                    <div className="font-medium text-violet-600">{passenger.seatNumber}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Important Information */}
+      <div className="bg-yellow-50 border-2 border-yellow-200 rounded-2xl p-6">
+        <h3 className="text-lg font-semibold text-yellow-800 mb-3">
+          Important Information
+        </h3>
+        <ul className="space-y-2 text-sm text-yellow-700">
+          <li>• Please carry a valid photo ID proof during your journey</li>
+          <li>• Arrive at the station at least 30 minutes before departure</li>
+          <li>• Keep your PNR number safe for future reference</li>
+          <li>• You can check your PNR status anytime on our website</li>
+          <li>• Cancellation charges may apply as per railway rules</li>
+        </ul>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex justify-center space-x-4">
+        <button
+          onClick={handleNewBooking}
+          className="bg-violet-600 text-white px-6 py-3 rounded-lg hover:bg-violet-700 transition-colors font-medium"
+        >
+          Book Another Ticket
+        </button>
+        <button
+          onClick={handleViewBookings}
+          className="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition-colors font-medium"
+        >
+          View My Bookings
+        </button>
       </div>
     </div>
   );

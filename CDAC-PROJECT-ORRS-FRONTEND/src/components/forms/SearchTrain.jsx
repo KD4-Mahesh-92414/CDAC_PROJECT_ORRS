@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { ArrowsRightLeftIcon } from "@heroicons/react/24/outline";
@@ -7,11 +7,13 @@ import { setSearchData } from "../../store/slices/bookingSlice";
 import Calendar from "../ui/Calendar";
 import Modal from "../common/Modal";
 import { Login } from "../../pages/auth/Login";
+import trainService from "../../services/trainService";
 import toast from "react-hot-toast";
 
 /**
  * SearchTrain Component
  * Responsibility: Handle train search form UI, validation, and navigation
+ * Features: City-based search with autocomplete, backend integration
  */
 export default function SearchTrain() {
   const navigate = useNavigate();
@@ -19,8 +21,8 @@ export default function SearchTrain() {
   const { isAuthenticated } = useSelector((state) => state.auth);
   const { isLoading } = useSelector((state) => state.trains);
   
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
+  const [fromCity, setFromCity] = useState("");
+  const [toCity, setToCity] = useState("");
   const [date, setDate] = useState("");
   const [isSwapping, setIsSwapping] = useState(false);
   const [errors, setErrors] = useState({});
@@ -29,9 +31,9 @@ export default function SearchTrain() {
   const handleSwap = () => {
     setIsSwapping(true);
     setTimeout(() => {
-      const temp = from;
-      setFrom(to);
-      setTo(temp);
+      const temp = fromCity;
+      setFromCity(toCity);
+      setToCity(temp);
       setIsSwapping(false);
     }, 150);
   };
@@ -43,15 +45,15 @@ export default function SearchTrain() {
   const handleSearch = async () => {
     const newErrors = {};
 
-    // Validation
-    if (!from.trim()) {
-      newErrors.from = "Please enter departure station";
+    // Simple validation
+    if (!fromCity.trim()) {
+      newErrors.fromCity = "Please enter departure city";
     }
-    if (!to.trim()) {
-      newErrors.to = "Please enter destination station";
+    if (!toCity.trim()) {
+      newErrors.toCity = "Please enter destination city";
     }
-    if (from.trim() && to.trim() && from.toLowerCase() === to.toLowerCase()) {
-      newErrors.same = "From and To stations cannot be the same";
+    if (fromCity.trim() && toCity.trim() && fromCity.toLowerCase() === toCity.toLowerCase()) {
+      newErrors.same = "From and To cities cannot be the same";
     }
     if (!date) {
       newErrors.date = "Please select a date";
@@ -70,115 +72,134 @@ export default function SearchTrain() {
         dispatch(searchStart());
         
         const searchParams = {
-          from: from.trim(),
-          to: to.trim(),
-          date: date,
+          fromCity: fromCity.trim(),
+          toCity: toCity.trim(),
+          date: date, // Calendar component should provide YYYY-MM-DD format
         };
 
-        // Update both slices for compatibility
+        console.log('Search params:', searchParams);
+
+        // Update booking slice for compatibility
         dispatch(setSearchData(searchParams));
 
-        // TEMPORARY: Using mock data instead of backend call
-        const mockTrainResults = [
-          {
-            id: 1,
-            trainNumber: "12025",
-            trainName: "Rajdhani Express",
-            number: "12025",
-            name: "Rajdhani Express",
-            from: searchParams.from,
-            to: searchParams.to,
-            departure: "06:00",
-            arrival: "14:30",
-            departureTime: "06:00",
-            arrivalTime: "14:30",
-            duration: "8h 30m",
-            departureDate: searchParams.date,
-            arrivalDate: searchParams.date,
-            departureStation: searchParams.from,
-            arrivalStation: searchParams.to,
-            daysOfRun: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-            classes: [
-              { name: "AC First Class", price: 3500, available: 12 },
-              { name: "AC 2-Tier", price: 2200, available: 45 },
-              { name: "AC 3-Tier", price: 1650, available: 78 },
-            ],
-            coaches: [
-              { type: "AC First Class", fare: 3500, available: 12 },
-              { type: "AC 2nd Tier", fare: 2200, available: 45 },
-              { type: "AC 3rd Tier", fare: 1650, available: 78 },
-            ]
-          },
-          {
-            id: 2,
-            trainNumber: "12345",
-            trainName: "Shatabdi Express",
-            number: "12345",
-            name: "Shatabdi Express",
-            from: searchParams.from,
-            to: searchParams.to,
-            departure: "07:15",
-            arrival: "15:45",
-            departureTime: "07:15",
-            arrivalTime: "15:45",
-            duration: "8h 30m",
-            departureDate: searchParams.date,
-            arrivalDate: searchParams.date,
-            departureStation: searchParams.from,
-            arrivalStation: searchParams.to,
-            daysOfRun: ["Mon", "Wed", "Fri", "Sun"],
-            classes: [
-              { name: "Chair Car", price: 850, available: 32 },
-              { name: "Executive Chair", price: 1200, available: 18 },
-            ],
-            coaches: [
-              { type: "AC Chair Car", fare: 850, available: 32 },
-              { type: "Executive Chair", fare: 1200, available: 18 },
-            ]
-          },
-          {
-            id: 3,
-            trainNumber: "12987",
-            trainName: "Deccan Express",
-            number: "12987",
-            name: "Deccan Express",
-            from: searchParams.from,
-            to: searchParams.to,
-            departure: "22:30",
-            arrival: "06:15",
-            departureTime: "22:30",
-            arrivalTime: "06:15",
-            duration: "7h 45m",
-            departureDate: searchParams.date,
-            arrivalDate: searchParams.date,
-            departureStation: searchParams.from,
-            arrivalStation: searchParams.to,
-            daysOfRun: ["Tue", "Thu", "Sat"],
-            classes: [
-              { name: "Sleeper", price: 450, available: 95 },
-              { name: "AC 3-Tier", price: 1200, available: 56 },
-              { name: "AC 2-Tier", price: 1800, available: 23 },
-            ],
-            coaches: [
-              { type: "Sleeper Class", fare: 450, available: 95 },
-              { type: "AC 3rd Tier", fare: 1200, available: 56 },
-              { type: "AC 2nd Tier", fare: 1800, available: 23 },
-            ]
-          }
-        ];
-
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Call backend API
+        const response = await trainService.searchTrains(searchParams);
         
+        console.log('API response:', response);
+        
+        // Transform backend response to frontend format
+        const transformedResults = response.data?.map(train => {
+          // Parse days of run string to array
+          const parseDaysOfRun = (daysString) => {
+            if (!daysString) return ['Daily'];
+            
+            // Handle different formats
+            if (daysString.toLowerCase() === 'daily') {
+              return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            }
+            
+            // Handle comma-separated format like "Mon,Tue,Wed,Thu,Fri,Sat"
+            if (daysString.includes(',')) {
+              return daysString.split(',').map(day => day.trim());
+            }
+            
+            // Handle space-separated format
+            if (daysString.includes(' ')) {
+              return daysString.split(' ').map(day => day.trim()).filter(day => day);
+            }
+            
+            // Single day or unknown format
+            return [daysString];
+          };
+
+          return {
+            // Basic train info
+            id: train.trainId,
+            scheduleId: train.scheduleId,
+            trainNumber: train.trainNumber,
+            trainName: train.trainName,
+            number: train.trainNumber,
+            name: train.trainName,
+            
+            // Journey info
+            from: train.sourceStationName,
+            to: train.destinationStationName,
+            departure: train.departureTime,
+            arrival: train.arrivalTime,
+            departureTime: train.departureTime,
+            arrivalTime: train.arrivalTime,
+            duration: `${Math.floor(train.travelDurationMinutes / 60)}h ${train.travelDurationMinutes % 60}m`,
+            
+            // Station and date info
+            departureStation: train.sourceStationName,
+            arrivalStation: train.destinationStationName,
+            departureDate: searchParams.date,
+            arrivalDate: searchParams.date, // Same day for now, could be calculated based on duration
+            
+            // Station IDs for seat matrix API (populated by backend)
+            sourceStationId: train.sourceStationId,
+            destinationStationId: train.destinationStationId,
+            
+            // Days of operation
+            daysOfRun: parseDaysOfRun(train.daysOfRun),
+            
+            // Additional info
+            distance: train.distanceKm,
+            
+            // Coach/class options for ClassOptions component
+            coaches: train.classOptions?.map(coach => ({
+              coachType: {
+                typeCode: coach.coachCode,
+                typeName: coach.coachName || coach.coachCode
+              },
+              type: coach.coachName || coach.coachCode,
+              code: coach.coachCode,
+              fare: coach.fare,
+              available: coach.availableSeats,
+              status: coach.status,
+              coachTypeId: coach.coachTypeId,
+              coachImageUrl: coach.coachImageUrl
+            })) || [],
+            
+            // Legacy classes field for backward compatibility
+            classes: train.classOptions?.map(coach => ({
+              name: coach.coachName || coach.coachCode,
+              code: coach.coachCode,
+              price: coach.fare,
+              available: coach.availableSeats,
+              status: coach.status
+            })) || []
+          };
+        }) || [];
+
         dispatch(searchSuccess({
-          results: mockTrainResults,
+          results: transformedResults,
           params: searchParams
         }));
 
-        toast.success("Trains found successfully!");
-        navigate("/trains");
+        if (transformedResults.length === 0) {
+          toast.error("No trains found for the selected route and date");
+        } else {
+          toast.success(`Found ${transformedResults.length} trains`);
+          navigate("/trains");
+        }
       } catch (error) {
-        const errorMessage = error.message || "Failed to search trains";
+        console.error('Search error:', error);
+        let errorMessage = "Failed to search trains";
+        
+        // Handle specific error types
+        if (error.message) {
+          errorMessage = error.message;
+        } else if (error.response?.data?.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.response?.status === 400) {
+          errorMessage = "Invalid search parameters. Please check your input.";
+        } else if (error.response?.status === 404) {
+          errorMessage = "No trains found for the selected route.";
+        } else if (error.response?.status === 500) {
+          errorMessage = "Server error. Please try again later.";
+        }
+        
         dispatch(searchFailure(errorMessage));
         toast.error(errorMessage);
       }
@@ -199,27 +220,23 @@ export default function SearchTrain() {
         <div className="relative w-full max-w-[900px] rounded-3xl bg-white/95 backdrop-blur-lg shadow-2xl shadow-violet-900/30 p-9 border border-white/20">
           <div className="flex flex-col md:flex-row items-center gap-6">
             <div className="relative flex w-full md:w-[520px] h-[80px] border-2 border-violet-600 bg-gradient-to-r from-white via-violet-50/30 to-white rounded-2xl overflow-hidden hover:shadow-lg hover:border-violet-700 transition-all duration-300 hover:scale-[1.02]">
-              <div className="w-1/2 flex items-center justify-center">
+              <div className="w-1/2 flex items-center justify-center px-4">
                 <input
                   type="text"
+                  value={fromCity}
+                  onChange={(e) => setFromCity(e.target.value)}
                   placeholder="From"
-                  value={from}
-                  onChange={(e) => setFrom(e.target.value)}
-                  className={`w-full h-full text-center outline-none text-lg bg-transparent placeholder:text-gray-600 font-medium transition-opacity duration-150 ${
-                    isSwapping ? "opacity-40" : "opacity-100"
-                  }`}
+                  className="w-full h-full text-center outline-none text-lg bg-transparent placeholder:text-gray-600 font-medium"
                 />
               </div>
               <div className="w-[2px] bg-gradient-to-b from-violet-500 via-violet-700 to-violet-500" />
-              <div className="w-1/2 flex items-center justify-center">
+              <div className="w-1/2 flex items-center justify-center px-4">
                 <input
                   type="text"
+                  value={toCity}
+                  onChange={(e) => setToCity(e.target.value)}
                   placeholder="To"
-                  value={to}
-                  onChange={(e) => setTo(e.target.value)}
-                  className={`w-full h-full text-center outline-none text-lg bg-transparent placeholder:text-gray-600 font-medium transition-opacity duration-150 ${
-                    isSwapping ? "opacity-40" : "opacity-100"
-                  }`}
+                  className="w-full h-full text-center outline-none text-lg bg-transparent placeholder:text-gray-600 font-medium"
                 />
               </div>
               <button
@@ -267,8 +284,8 @@ export default function SearchTrain() {
       {/* Error Messages - Below the search component */}
       {Object.keys(errors).length > 0 && (
         <div className="mt-4 max-w-[900px] mx-auto bg-red-50 border border-red-300 rounded-lg p-3">
-          {errors.from && <p className="text-red-600 text-sm">{errors.from}</p>}
-          {errors.to && <p className="text-red-600 text-sm">{errors.to}</p>}
+          {errors.fromCity && <p className="text-red-600 text-sm">{errors.fromCity}</p>}
+          {errors.toCity && <p className="text-red-600 text-sm">{errors.toCity}</p>}
           {errors.same && <p className="text-red-600 text-sm">{errors.same}</p>}
           {errors.date && <p className="text-red-600 text-sm">{errors.date}</p>}
         </div>

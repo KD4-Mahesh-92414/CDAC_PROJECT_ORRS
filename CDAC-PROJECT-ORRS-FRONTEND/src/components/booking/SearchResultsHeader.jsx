@@ -4,7 +4,7 @@ import { CalendarDaysIcon, MapPinIcon, ArrowRightIcon, RectangleStackIcon } from
  * SearchResultsHeader Component
  * Responsibility: Display search results summary and route information
  */
-export default function SearchResultsHeader({ trainsCount, searchData }) {
+export default function SearchResultsHeader({ trainsCount, totalTrainsCount, searchData }) {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { 
@@ -13,6 +13,8 @@ export default function SearchResultsHeader({ trainsCount, searchData }) {
       day: 'numeric' 
     });
   };
+
+  const isFiltered = totalTrainsCount && trainsCount !== totalTrainsCount;
 
   return (
     <div className="mb-8">
@@ -26,10 +28,14 @@ export default function SearchResultsHeader({ trainsCount, searchData }) {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-900">
-                {trainsCount} Trains Available
+                {trainsCount} Train{trainsCount !== 1 ? 's' : ''} Available
               </h1>
               <p className="text-violet-600 text-sm font-medium">
-                Choose your preferred train and class
+                {isFiltered ? (
+                  <>Showing {trainsCount} of {totalTrainsCount} trains (filtered)</>
+                ) : (
+                  <>Choose your preferred train and class</>
+                )}
               </p>
             </div>
           </div>
@@ -50,7 +56,7 @@ export default function SearchResultsHeader({ trainsCount, searchData }) {
             </div>
             <div>
               <p className="text-xs text-gray-500 font-medium">From</p>
-              <p className="text-lg font-bold text-gray-900">{searchData.from}</p>
+              <p className="text-lg font-bold text-gray-900">{searchData.fromCity || searchData.from}</p>
             </div>
           </div>
 
@@ -67,7 +73,7 @@ export default function SearchResultsHeader({ trainsCount, searchData }) {
           <div className="flex items-center gap-3">
             <div>
               <p className="text-xs text-gray-500 font-medium text-right">To</p>
-              <p className="text-lg font-bold text-gray-900">{searchData.to}</p>
+              <p className="text-lg font-bold text-gray-900">{searchData.toCity || searchData.to}</p>
             </div>
             <div className="w-10 h-10 bg-violet-600 rounded-full flex items-center justify-center">
               <MapPinIcon className="w-5 h-5 text-white" />

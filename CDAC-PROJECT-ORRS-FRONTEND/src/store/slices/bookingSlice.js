@@ -22,7 +22,10 @@ const bookingSlice = createSlice({
     isLoading: false,
     error: null,
     // Booking flow state
-    step: 1, // 1: Search, 2: Select Train, 3: Passenger Details, 4: Payment, 5: Confirmation
+    step: 1, // 1: Search, 2: Select Train, 3: Seat Selection, 4: Passenger Details, 5: Payment, 6: Confirmation
+    // Seat reservation data
+    reservationData: null,
+    reservationTimer: null,
   },
   reducers: {
     // Search actions
@@ -57,7 +60,7 @@ const bookingSlice = createSlice({
       state.currentBooking = action.payload
       state.isLoading = false
       state.error = null
-      state.step = 5 // Move to confirmation step
+      state.step = 6 // Move to confirmation step
     },
     bookingFailure: (state, action) => {
       state.isLoading = false
@@ -76,7 +79,7 @@ const bookingSlice = createSlice({
       state.step = action.payload
     },
     nextStep: (state) => {
-      if (state.step < 5) {
+      if (state.step < 6) {
         state.step += 1
       }
     },
@@ -88,6 +91,22 @@ const bookingSlice = createSlice({
     setBookingHistory: (state, action) => {
       state.bookingHistory = action.payload
     },
+    // Seat reservation actions
+    setReservationData: (state, action) => {
+      state.reservationData = action.payload
+    },
+    clearReservationData: (state) => {
+      state.reservationData = null
+      state.reservationTimer = null
+    },
+    setReservationTimer: (state, action) => {
+      state.reservationTimer = action.payload
+    },
+    updateReservationTime: (state, action) => {
+      if (state.reservationData) {
+        state.reservationData.timeRemaining = action.payload
+      }
+    },
     resetBooking: (state) => {
       state.currentBooking = null
       state.selectedSeats = []
@@ -95,6 +114,8 @@ const bookingSlice = createSlice({
       state.paymentDetails = null
       state.fareData = null
       state.selectedTrain = null
+      state.reservationData = null
+      state.reservationTimer = null
       state.step = 1
       state.error = null
     },
@@ -103,6 +124,8 @@ const bookingSlice = createSlice({
       state.selectedSeats = []
       state.passengers = []
       state.paymentDetails = null
+      state.reservationData = null
+      state.reservationTimer = null
       state.step = 1
       state.error = null
     },
@@ -132,6 +155,11 @@ export const {
   nextStep,
   previousStep,
   setBookingHistory,
+  // Seat reservation actions
+  setReservationData,
+  clearReservationData,
+  setReservationTimer,
+  updateReservationTime,
   resetBooking,
   clearBooking,
   clearError,

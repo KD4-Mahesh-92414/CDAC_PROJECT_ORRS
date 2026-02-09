@@ -1,0 +1,1146 @@
+{
+  "stations": [
+    {
+      "id": 1,
+      "stationCode": "CSMT",
+      "stationName": "Chhatrapati Shivaji Maharaj Terminus",
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "zone": "Central Railway",
+      "platforms": 18,
+      "status": "ACTIVE"
+    },
+    {
+      "id": 2,
+      "stationCode": "NDLS",
+      "stationName": "New Delhi",
+      "city": "New Delhi",
+      "state": "Delhi",
+      "zone": "Northern Railway",
+      "platforms": 16,
+      "status": "ACTIVE"
+    },
+    {
+      "id": 3,
+      "stationCode": "BPL",
+      "stationName": "Bhopal Junction",
+      "city": "Bhopal",
+      "state": "Madhya Pradesh",
+      "zone": "West Central Railway",
+      "platforms": 6,
+      "status": "ACTIVE"
+    },
+    {
+      "id": 4,
+      "stationCode": "JBP",
+      "stationName": "Jabalpur Junction",
+      "city": "Jabalpur",
+      "state": "Madhya Pradesh",
+      "zone": "West Central Railway",
+      "platforms": 6,
+      "status": "ACTIVE"
+    },
+    {
+      "id": 5,
+      "stationCode": "PUNE",
+      "stationName": "Pune Junction",
+      "city": "Pune",
+      "state": "Maharashtra",
+      "zone": "Central Railway",
+      "platforms": 6,
+      "status": "ACTIVE"
+    },
+    {
+      "id": 6,
+      "stationCode": "BLR",
+      "stationName": "Bangalore City Junction",
+      "city": "Bangalore",
+      "state": "Karnataka",
+      "zone": "South Western Railway",
+      "platforms": 10,
+      "status": "ACTIVE"
+    },
+    {
+      "id": 7,
+      "stationCode": "HYB",
+      "stationName": "Hyderabad Deccan",
+      "city": "Hyderabad",
+      "state": "Telangana",
+      "zone": "South Central Railway",
+      "platforms": 8,
+      "status": "ACTIVE"
+    },
+    {
+      "id": 8,
+      "stationCode": "CSTM",
+      "stationName": "Mumbai Central",
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "zone": "Western Railway",
+      "platforms": 9,
+      "status": "ACTIVE"
+    },
+    {
+      "id": 9,
+      "stationCode": "ADI",
+      "stationName": "Ahmedabad Junction",
+      "city": "Ahmedabad",
+      "state": "Gujarat",
+      "zone": "Western Railway",
+      "platforms": 12,
+      "status": "ACTIVE"
+    },
+    {
+      "id": 10,
+      "stationCode": "JP",
+      "stationName": "Jaipur Junction",
+      "city": "Jaipur",
+      "state": "Rajasthan",
+      "zone": "North Western Railway",
+      "platforms": 5,
+      "status": "ACTIVE"
+    }
+  ],
+  "coachTypes": [
+    {
+      "id": 1,
+      "typeCode": "SL",
+      "typeName": "Sleeper Class",
+      "totalSeats": 72,
+      "coachImageUrl": "/images/coaches/sleeper-layout.png",
+      "description": "Non-AC sleeper class with open windows"
+    },
+    {
+      "id": 2,
+      "typeCode": "3A",
+      "typeName": "AC 3 Tier",
+      "totalSeats": 64,
+      "coachImageUrl": "/images/coaches/3ac-layout.png",
+      "description": "Air conditioned 3-tier sleeper with curtains"
+    },
+    {
+      "id": 3,
+      "typeCode": "2A",
+      "typeName": "AC 2 Tier",
+      "totalSeats": 48,
+      "coachImageUrl": "/images/coaches/2ac-layout.png",
+      "description": "Air conditioned 2-tier sleeper with privacy"
+    },
+    {
+      "id": 4,
+      "typeCode": "1A",
+      "typeName": "AC First Class",
+      "totalSeats": 24,
+      "coachImageUrl": "/images/coaches/1ac-layout.png",
+      "description": "Luxury air conditioned compartments"
+    },
+    {
+      "id": 5,
+      "typeCode": "CC",
+      "typeName": "Chair Car",
+      "totalSeats": 78,
+      "coachImageUrl": "/images/coaches/cc-layout.png",
+      "description": "Air conditioned chair car for day travel"
+    },
+    {
+      "id": 6,
+      "typeCode": "EC",
+      "typeName": "Executive Chair Car",
+      "totalSeats": 56,
+      "coachImageUrl": "/images/coaches/ec-layout.png",
+      "description": "Premium air conditioned chair car"
+    }
+  ],
+  "trains": [
+    {
+      "id": 1,
+      "trainNumber": "12137",
+      "trainName": "Punjab Mail",
+      "trainType": "SUPERFAST",
+      "sourceStation": {
+        "id": 1,
+        "stationCode": "CSMT",
+        "stationName": "Chhatrapati Shivaji Maharaj Terminus"
+      },
+      "destinationStation": {
+        "id": 2,
+        "stationCode": "NDLS",
+        "stationName": "New Delhi"
+      },
+      "totalDistanceKm": 1384,
+      "avgSpeed": 65,
+      "daysOfRun": "Daily",
+      "trainStatus": "ACTIVE",
+      "coaches": [
+        {
+          "id": 1,
+          "coachType": {
+            "id": 1,
+            "typeCode": "SL",
+            "typeName": "Sleeper Class"
+          },
+          "coachLabel": "S1",
+          "sequenceInTrain": 1,
+          "isActive": true
+        },
+        {
+          "id": 2,
+          "coachType": {
+            "id": 1,
+            "typeCode": "SL",
+            "typeName": "Sleeper Class"
+          },
+          "coachLabel": "S2",
+          "sequenceInTrain": 2,
+          "isActive": true
+        },
+        {
+          "id": 3,
+          "coachType": {
+            "id": 2,
+            "typeCode": "3A",
+            "typeName": "AC 3 Tier"
+          },
+          "coachLabel": "B1",
+          "sequenceInTrain": 3,
+          "isActive": true
+        },
+        {
+          "id": 4,
+          "coachType": {
+            "id": 3,
+            "typeCode": "2A",
+            "typeName": "AC 2 Tier"
+          },
+          "coachLabel": "A1",
+          "sequenceInTrain": 4,
+          "isActive": true
+        }
+      ],
+      "routes": [
+        {
+          "id": 1,
+          "station": {
+            "id": 1,
+            "stationCode": "CSMT",
+            "stationName": "Chhatrapati Shivaji Maharaj Terminus"
+          },
+          "sequenceNo": 1,
+          "arrivalTime": null,
+          "departureTime": "16:40",
+          "haltMinutes": 0,
+          "distanceFromSource": 0,
+          "dayNumber": 1,
+          "isMajorStation": true,
+          "stopType": "TERMINUS"
+        },
+        {
+          "id": 2,
+          "station": {
+            "id": 3,
+            "stationCode": "BPL",
+            "stationName": "Bhopal Junction"
+          },
+          "sequenceNo": 2,
+          "arrivalTime": "05:15",
+          "departureTime": "05:25",
+          "haltMinutes": 10,
+          "distanceFromSource": 742,
+          "dayNumber": 2,
+          "isMajorStation": true,
+          "stopType": "REGULAR"
+        },
+        {
+          "id": 3,
+          "station": {
+            "id": 4,
+            "stationCode": "JBP",
+            "stationName": "Jabalpur Junction"
+          },
+          "sequenceNo": 3,
+          "arrivalTime": "08:45",
+          "departureTime": "08:55",
+          "haltMinutes": 10,
+          "distanceFromSource": 1056,
+          "dayNumber": 2,
+          "isMajorStation": true,
+          "stopType": "REGULAR"
+        },
+        {
+          "id": 4,
+          "station": {
+            "id": 2,
+            "stationCode": "NDLS",
+            "stationName": "New Delhi"
+          },
+          "sequenceNo": 4,
+          "arrivalTime": "17:55",
+          "departureTime": null,
+          "haltMinutes": 0,
+          "distanceFromSource": 1384,
+          "dayNumber": 2,
+          "isMajorStation": true,
+          "stopType": "TERMINUS"
+        }
+      ],
+      "fares": [
+        {
+          "id": 1,
+          "coachType": {
+            "id": 1,
+            "typeCode": "SL",
+            "typeName": "Sleeper Class"
+          },
+          "ratePerKm": 0.75,
+          "baseFare": 50.00,
+          "isActive": true
+        },
+        {
+          "id": 2,
+          "coachType": {
+            "id": 2,
+            "typeCode": "3A",
+            "typeName": "AC 3 Tier"
+          },
+          "ratePerKm": 2.25,
+          "baseFare": 150.00,
+          "isActive": true
+        },
+        {
+          "id": 3,
+          "coachType": {
+            "id": 3,
+            "typeCode": "2A",
+            "typeName": "AC 2 Tier"
+          },
+          "ratePerKm": 3.50,
+          "baseFare": 250.00,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "trainNumber": "12627",
+      "trainName": "Karnataka Express",
+      "trainType": "EXPRESS",
+      "sourceStation": {
+        "id": 2,
+        "stationCode": "NDLS",
+        "stationName": "New Delhi"
+      },
+      "destinationStation": {
+        "id": 6,
+        "stationCode": "BLR",
+        "stationName": "Bangalore City Junction"
+      },
+      "totalDistanceKm": 2444,
+      "avgSpeed": 55,
+      "daysOfRun": "Daily",
+      "trainStatus": "ACTIVE",
+      "coaches": [
+        {
+          "id": 5,
+          "coachType": {
+            "id": 1,
+            "typeCode": "SL",
+            "typeName": "Sleeper Class"
+          },
+          "coachLabel": "S1",
+          "sequenceInTrain": 1,
+          "isActive": true
+        },
+        {
+          "id": 6,
+          "coachType": {
+            "id": 1,
+            "typeCode": "SL",
+            "typeName": "Sleeper Class"
+          },
+          "coachLabel": "S2",
+          "sequenceInTrain": 2,
+          "isActive": true
+        },
+        {
+          "id": 7,
+          "coachType": {
+            "id": 1,
+            "typeCode": "SL",
+            "typeName": "Sleeper Class"
+          },
+          "coachLabel": "S3",
+          "sequenceInTrain": 3,
+          "isActive": true
+        },
+        {
+          "id": 8,
+          "coachType": {
+            "id": 2,
+            "typeCode": "3A",
+            "typeName": "AC 3 Tier"
+          },
+          "coachLabel": "B1",
+          "sequenceInTrain": 4,
+          "isActive": true
+        },
+        {
+          "id": 9,
+          "coachType": {
+            "id": 2,
+            "typeCode": "3A",
+            "typeName": "AC 3 Tier"
+          },
+          "coachLabel": "B2",
+          "sequenceInTrain": 5,
+          "isActive": true
+        },
+        {
+          "id": 10,
+          "coachType": {
+            "id": 3,
+            "typeCode": "2A",
+            "typeName": "AC 2 Tier"
+          },
+          "coachLabel": "A1",
+          "sequenceInTrain": 6,
+          "isActive": true
+        }
+      ],
+      "routes": [
+        {
+          "id": 5,
+          "station": {
+            "id": 2,
+            "stationCode": "NDLS",
+            "stationName": "New Delhi"
+          },
+          "sequenceNo": 1,
+          "arrivalTime": null,
+          "departureTime": "12:15",
+          "haltMinutes": 0,
+          "distanceFromSource": 0,
+          "dayNumber": 1,
+          "isMajorStation": true,
+          "stopType": "TERMINUS"
+        },
+        {
+          "id": 6,
+          "station": {
+            "id": 3,
+            "stationCode": "BPL",
+            "stationName": "Bhopal Junction"
+          },
+          "sequenceNo": 2,
+          "arrivalTime": "23:45",
+          "departureTime": "23:55",
+          "haltMinutes": 10,
+          "distanceFromSource": 707,
+          "dayNumber": 1,
+          "isMajorStation": true,
+          "stopType": "REGULAR"
+        },
+        {
+          "id": 7,
+          "station": {
+            "id": 7,
+            "stationCode": "HYB",
+            "stationName": "Hyderabad Deccan"
+          },
+          "sequenceNo": 3,
+          "arrivalTime": "14:20",
+          "departureTime": "14:30",
+          "haltMinutes": 10,
+          "distanceFromSource": 1685,
+          "dayNumber": 2,
+          "isMajorStation": true,
+          "stopType": "REGULAR"
+        },
+        {
+          "id": 8,
+          "station": {
+            "id": 6,
+            "stationCode": "BLR",
+            "stationName": "Bangalore City Junction"
+          },
+          "sequenceNo": 4,
+          "arrivalTime": "06:00",
+          "departureTime": null,
+          "haltMinutes": 0,
+          "distanceFromSource": 2444,
+          "dayNumber": 3,
+          "isMajorStation": true,
+          "stopType": "TERMINUS"
+        }
+      ],
+      "fares": [
+        {
+          "id": 4,
+          "coachType": {
+            "id": 1,
+            "typeCode": "SL",
+            "typeName": "Sleeper Class"
+          },
+          "ratePerKm": 0.75,
+          "baseFare": 50.00,
+          "isActive": true
+        },
+        {
+          "id": 5,
+          "coachType": {
+            "id": 2,
+            "typeCode": "3A",
+            "typeName": "AC 3 Tier"
+          },
+          "ratePerKm": 2.25,
+          "baseFare": 150.00,
+          "isActive": true
+        },
+        {
+          "id": 6,
+          "coachType": {
+            "id": 3,
+            "typeCode": "2A",
+            "typeName": "AC 2 Tier"
+          },
+          "ratePerKm": 3.50,
+          "baseFare": 250.00,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "trainNumber": "20926",
+      "trainName": "Vande Bharat Express",
+      "trainType": "VANDE_BHARAT",
+      "sourceStation": {
+        "id": 2,
+        "stationCode": "NDLS",
+        "stationName": "New Delhi"
+      },
+      "destinationStation": {
+        "id": 3,
+        "stationCode": "BPL",
+        "stationName": "Bhopal Junction"
+      },
+      "totalDistanceKm": 707,
+      "avgSpeed": 85,
+      "daysOfRun": "Mon,Tue,Wed,Thu,Fri,Sat",
+      "trainStatus": "ACTIVE",
+      "coaches": [
+        {
+          "id": 11,
+          "coachType": {
+            "id": 5,
+            "typeCode": "CC",
+            "typeName": "Chair Car"
+          },
+          "coachLabel": "C1",
+          "sequenceInTrain": 1,
+          "isActive": true
+        },
+        {
+          "id": 12,
+          "coachType": {
+            "id": 5,
+            "typeCode": "CC",
+            "typeName": "Chair Car"
+          },
+          "coachLabel": "C2",
+          "sequenceInTrain": 2,
+          "isActive": true
+        },
+        {
+          "id": 13,
+          "coachType": {
+            "id": 5,
+            "typeCode": "CC",
+            "typeName": "Chair Car"
+          },
+          "coachLabel": "C3",
+          "sequenceInTrain": 3,
+          "isActive": true
+        },
+        {
+          "id": 14,
+          "coachType": {
+            "id": 6,
+            "typeCode": "EC",
+            "typeName": "Executive Chair Car"
+          },
+          "coachLabel": "E1",
+          "sequenceInTrain": 4,
+          "isActive": true
+        }
+      ],
+      "routes": [
+        {
+          "id": 9,
+          "station": {
+            "id": 2,
+            "stationCode": "NDLS",
+            "stationName": "New Delhi"
+          },
+          "sequenceNo": 1,
+          "arrivalTime": null,
+          "departureTime": "06:00",
+          "haltMinutes": 0,
+          "distanceFromSource": 0,
+          "dayNumber": 1,
+          "isMajorStation": true,
+          "stopType": "TERMINUS"
+        },
+        {
+          "id": 10,
+          "station": {
+            "id": 3,
+            "stationCode": "BPL",
+            "stationName": "Bhopal Junction"
+          },
+          "sequenceNo": 2,
+          "arrivalTime": "14:20",
+          "departureTime": null,
+          "haltMinutes": 0,
+          "distanceFromSource": 707,
+          "dayNumber": 1,
+          "isMajorStation": true,
+          "stopType": "TERMINUS"
+        }
+      ],
+      "fares": [
+        {
+          "id": 7,
+          "coachType": {
+            "id": 5,
+            "typeCode": "CC",
+            "typeName": "Chair Car"
+          },
+          "ratePerKm": 1.85,
+          "baseFare": 100.00,
+          "isActive": true
+        },
+        {
+          "id": 8,
+          "coachType": {
+            "id": 6,
+            "typeCode": "EC",
+            "typeName": "Executive Chair Car"
+          },
+          "ratePerKm": 3.25,
+          "baseFare": 200.00,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "trainNumber": "19019",
+      "trainName": "Dehradun Express",
+      "trainType": "EXPRESS",
+      "sourceStation": {
+        "id": 8,
+        "stationCode": "CSTM",
+        "stationName": "Mumbai Central"
+      },
+      "destinationStation": {
+        "id": 2,
+        "stationCode": "NDLS",
+        "stationName": "New Delhi"
+      },
+      "totalDistanceKm": 1384,
+      "avgSpeed": 60,
+      "daysOfRun": "Daily",
+      "trainStatus": "ACTIVE",
+      "coaches": [
+        {
+          "id": 15,
+          "coachType": {
+            "id": 1,
+            "typeCode": "SL",
+            "typeName": "Sleeper Class"
+          },
+          "coachLabel": "S1",
+          "sequenceInTrain": 1,
+          "isActive": true
+        },
+        {
+          "id": 16,
+          "coachType": {
+            "id": 1,
+            "typeCode": "SL",
+            "typeName": "Sleeper Class"
+          },
+          "coachLabel": "S2",
+          "sequenceInTrain": 2,
+          "isActive": true
+        },
+        {
+          "id": 17,
+          "coachType": {
+            "id": 2,
+            "typeCode": "3A",
+            "typeName": "AC 3 Tier"
+          },
+          "coachLabel": "B1",
+          "sequenceInTrain": 3,
+          "isActive": true
+        },
+        {
+          "id": 18,
+          "coachType": {
+            "id": 3,
+            "typeCode": "2A",
+            "typeName": "AC 2 Tier"
+          },
+          "coachLabel": "A1",
+          "sequenceInTrain": 4,
+          "isActive": true
+        },
+        {
+          "id": 19,
+          "coachType": {
+            "id": 4,
+            "typeCode": "1A",
+            "typeName": "AC First Class"
+          },
+          "coachLabel": "H1",
+          "sequenceInTrain": 5,
+          "isActive": true
+        }
+      ],
+      "routes": [
+        {
+          "id": 11,
+          "station": {
+            "id": 8,
+            "stationCode": "CSTM",
+            "stationName": "Mumbai Central"
+          },
+          "sequenceNo": 1,
+          "arrivalTime": null,
+          "departureTime": "11:05",
+          "haltMinutes": 0,
+          "distanceFromSource": 0,
+          "dayNumber": 1,
+          "isMajorStation": true,
+          "stopType": "TERMINUS"
+        },
+        {
+          "id": 12,
+          "station": {
+            "id": 9,
+            "stationCode": "ADI",
+            "stationName": "Ahmedabad Junction"
+          },
+          "sequenceNo": 2,
+          "arrivalTime": "21:30",
+          "departureTime": "21:40",
+          "haltMinutes": 10,
+          "distanceFromSource": 492,
+          "dayNumber": 1,
+          "isMajorStation": true,
+          "stopType": "REGULAR"
+        },
+        {
+          "id": 13,
+          "station": {
+            "id": 10,
+            "stationCode": "JP",
+            "stationName": "Jaipur Junction"
+          },
+          "sequenceNo": 3,
+          "arrivalTime": "08:15",
+          "departureTime": "08:25",
+          "haltMinutes": 10,
+          "distanceFromSource": 1056,
+          "dayNumber": 2,
+          "isMajorStation": true,
+          "stopType": "REGULAR"
+        },
+        {
+          "id": 14,
+          "station": {
+            "id": 2,
+            "stationCode": "NDLS",
+            "stationName": "New Delhi"
+          },
+          "sequenceNo": 4,
+          "arrivalTime": "13:45",
+          "departureTime": null,
+          "haltMinutes": 0,
+          "distanceFromSource": 1384,
+          "dayNumber": 2,
+          "isMajorStation": true,
+          "stopType": "TERMINUS"
+        }
+      ],
+      "fares": [
+        {
+          "id": 9,
+          "coachType": {
+            "id": 1,
+            "typeCode": "SL",
+            "typeName": "Sleeper Class"
+          },
+          "ratePerKm": 0.75,
+          "baseFare": 50.00,
+          "isActive": true
+        },
+        {
+          "id": 10,
+          "coachType": {
+            "id": 2,
+            "typeCode": "3A",
+            "typeName": "AC 3 Tier"
+          },
+          "ratePerKm": 2.25,
+          "baseFare": 150.00,
+          "isActive": true
+        },
+        {
+          "id": 11,
+          "coachType": {
+            "id": 3,
+            "typeCode": "2A",
+            "typeName": "AC 2 Tier"
+          },
+          "ratePerKm": 3.50,
+          "baseFare": 250.00,
+          "isActive": true
+        },
+        {
+          "id": 12,
+          "coachType": {
+            "id": 4,
+            "typeCode": "1A",
+            "typeName": "AC First Class"
+          },
+          "ratePerKm": 5.75,
+          "baseFare": 500.00,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "trainNumber": "12002",
+      "trainName": "New Delhi Shatabdi Express",
+      "trainType": "SHATABDI",
+      "sourceStation": {
+        "id": 2,
+        "stationCode": "NDLS",
+        "stationName": "New Delhi"
+      },
+      "destinationStation": {
+        "id": 3,
+        "stationCode": "BPL",
+        "stationName": "Bhopal Junction"
+      },
+      "totalDistanceKm": 707,
+      "avgSpeed": 75,
+      "daysOfRun": "Mon,Tue,Wed,Thu,Fri,Sat",
+      "trainStatus": "ACTIVE",
+      "coaches": [
+        {
+          "id": 20,
+          "coachType": {
+            "id": 5,
+            "typeCode": "CC",
+            "typeName": "Chair Car"
+          },
+          "coachLabel": "C1",
+          "sequenceInTrain": 1,
+          "isActive": true
+        },
+        {
+          "id": 21,
+          "coachType": {
+            "id": 5,
+            "typeCode": "CC",
+            "typeName": "Chair Car"
+          },
+          "coachLabel": "C2",
+          "sequenceInTrain": 2,
+          "isActive": true
+        },
+        {
+          "id": 22,
+          "coachType": {
+            "id": 6,
+            "typeCode": "EC",
+            "typeName": "Executive Chair Car"
+          },
+          "coachLabel": "E1",
+          "sequenceInTrain": 3,
+          "isActive": true
+        }
+      ],
+      "routes": [
+        {
+          "id": 15,
+          "station": {
+            "id": 2,
+            "stationCode": "NDLS",
+            "stationName": "New Delhi"
+          },
+          "sequenceNo": 1,
+          "arrivalTime": null,
+          "departureTime": "06:15",
+          "haltMinutes": 0,
+          "distanceFromSource": 0,
+          "dayNumber": 1,
+          "isMajorStation": true,
+          "stopType": "TERMINUS"
+        },
+        {
+          "id": 16,
+          "station": {
+            "id": 3,
+            "stationCode": "BPL",
+            "stationName": "Bhopal Junction"
+          },
+          "sequenceNo": 2,
+          "arrivalTime": "15:40",
+          "departureTime": null,
+          "haltMinutes": 0,
+          "distanceFromSource": 707,
+          "dayNumber": 1,
+          "isMajorStation": true,
+          "stopType": "TERMINUS"
+        }
+      ],
+      "fares": [
+        {
+          "id": 13,
+          "coachType": {
+            "id": 5,
+            "typeCode": "CC",
+            "typeName": "Chair Car"
+          },
+          "ratePerKm": 1.95,
+          "baseFare": 120.00,
+          "isActive": true
+        },
+        {
+          "id": 14,
+          "coachType": {
+            "id": 6,
+            "typeCode": "EC",
+            "typeName": "Executive Chair Car"
+          },
+          "ratePerKm": 3.45,
+          "baseFare": 250.00,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "trainNumber": "11077",
+      "trainName": "Jhelum Express",
+      "trainType": "EXPRESS",
+      "sourceStation": {
+        "id": 5,
+        "stationCode": "PUNE",
+        "stationName": "Pune Junction"
+      },
+      "destinationStation": {
+        "id": 2,
+        "stationCode": "NDLS",
+        "stationName": "New Delhi"
+      },
+      "totalDistanceKm": 1527,
+      "avgSpeed": 58,
+      "daysOfRun": "Daily",
+      "trainStatus": "ACTIVE",
+      "coaches": [
+        {
+          "id": 23,
+          "coachType": {
+            "id": 1,
+            "typeCode": "SL",
+            "typeName": "Sleeper Class"
+          },
+          "coachLabel": "S1",
+          "sequenceInTrain": 1,
+          "isActive": true
+        },
+        {
+          "id": 24,
+          "coachType": {
+            "id": 1,
+            "typeCode": "SL",
+            "typeName": "Sleeper Class"
+          },
+          "coachLabel": "S2",
+          "sequenceInTrain": 2,
+          "isActive": true
+        },
+        {
+          "id": 25,
+          "coachType": {
+            "id": 1,
+            "typeCode": "SL",
+            "typeName": "Sleeper Class"
+          },
+          "coachLabel": "S3",
+          "sequenceInTrain": 3,
+          "isActive": true
+        },
+        {
+          "id": 26,
+          "coachType": {
+            "id": 2,
+            "typeCode": "3A",
+            "typeName": "AC 3 Tier"
+          },
+          "coachLabel": "B1",
+          "sequenceInTrain": 4,
+          "isActive": true
+        },
+        {
+          "id": 27,
+          "coachType": {
+            "id": 3,
+            "typeCode": "2A",
+            "typeName": "AC 2 Tier"
+          },
+          "coachLabel": "A1",
+          "sequenceInTrain": 5,
+          "isActive": true
+        }
+      ],
+      "routes": [
+        {
+          "id": 17,
+          "station": {
+            "id": 5,
+            "stationCode": "PUNE",
+            "stationName": "Pune Junction"
+          },
+          "sequenceNo": 1,
+          "arrivalTime": null,
+          "departureTime": "10:40",
+          "haltMinutes": 0,
+          "distanceFromSource": 0,
+          "dayNumber": 1,
+          "isMajorStation": true,
+          "stopType": "TERMINUS"
+        },
+        {
+          "id": 18,
+          "station": {
+            "id": 1,
+            "stationCode": "CSMT",
+            "stationName": "Chhatrapati Shivaji Maharaj Terminus"
+          },
+          "sequenceNo": 2,
+          "arrivalTime": "13:25",
+          "departureTime": "13:35",
+          "haltMinutes": 10,
+          "distanceFromSource": 192,
+          "dayNumber": 1,
+          "isMajorStation": true,
+          "stopType": "REGULAR"
+        },
+        {
+          "id": 19,
+          "station": {
+            "id": 3,
+            "stationCode": "BPL",
+            "stationName": "Bhopal Junction"
+          },
+          "sequenceNo": 3,
+          "arrivalTime": "06:45",
+          "departureTime": "06:55",
+          "haltMinutes": 10,
+          "distanceFromSource": 934,
+          "dayNumber": 2,
+          "isMajorStation": true,
+          "stopType": "REGULAR"
+        },
+        {
+          "id": 20,
+          "station": {
+            "id": 2,
+            "stationCode": "NDLS",
+            "stationName": "New Delhi"
+          },
+          "sequenceNo": 4,
+          "arrivalTime": "16:20",
+          "departureTime": null,
+          "haltMinutes": 0,
+          "distanceFromSource": 1527,
+          "dayNumber": 2,
+          "isMajorStation": true,
+          "stopType": "TERMINUS"
+        }
+      ],
+      "fares": [
+        {
+          "id": 15,
+          "coachType": {
+            "id": 1,
+            "typeCode": "SL",
+            "typeName": "Sleeper Class"
+          },
+          "ratePerKm": 0.75,
+          "baseFare": 50.00,
+          "isActive": true
+        },
+        {
+          "id": 16,
+          "coachType": {
+            "id": 2,
+            "typeCode": "3A",
+            "typeName": "AC 3 Tier"
+          },
+          "ratePerKm": 2.25,
+          "baseFare": 150.00,
+          "isActive": true
+        },
+        {
+          "id": 17,
+          "coachType": {
+            "id": 3,
+            "typeCode": "2A",
+            "typeName": "AC 2 Tier"
+          },
+          "ratePerKm": 3.50,
+          "baseFare": 250.00,
+          "isActive": true
+        }
+      ]
+    }
+  ],
+  "seatLayouts": {
+    "SL": [
+      {"seatNumber": 1, "seatType": "LOWER_BERTH"},
+      {"seatNumber": 2, "seatType": "MIDDLE_BERTH"},
+      {"seatNumber": 3, "seatType": "UPPER_BERTH"},
+      {"seatNumber": 4, "seatType": "LOWER_BERTH"},
+      {"seatNumber": 5, "seatType": "MIDDLE_BERTH"},
+      {"seatNumber": 6, "seatType": "UPPER_BERTH"},
+      {"seatNumber": 7, "seatType": "SIDE_LOWER"},
+      {"seatNumber": 8, "seatType": "SIDE_UPPER"}
+    ],
+    "3A": [
+      {"seatNumber": 1, "seatType": "LOWER_BERTH"},
+      {"seatNumber": 2, "seatType": "MIDDLE_BERTH"},
+      {"seatNumber": 3, "seatType": "UPPER_BERTH"},
+      {"seatNumber": 4, "seatType": "LOWER_BERTH"},
+      {"seatNumber": 5, "seatType": "MIDDLE_BERTH"},
+      {"seatNumber": 6, "seatType": "UPPER_BERTH"},
+      {"seatNumber": 7, "seatType": "SIDE_LOWER"},
+      {"seatNumber": 8, "seatType": "SIDE_UPPER"}
+    ],
+    "2A": [
+      {"seatNumber": 1, "seatType": "LOWER_BERTH"},
+      {"seatNumber": 2, "seatType": "UPPER_BERTH"},
+      {"seatNumber": 3, "seatType": "LOWER_BERTH"},
+      {"seatNumber": 4, "seatType": "UPPER_BERTH"},
+      {"seatNumber": 5, "seatType": "SIDE_LOWER"},
+      {"seatNumber": 6, "seatType": "SIDE_UPPER"}
+    ]
+  }
+}
