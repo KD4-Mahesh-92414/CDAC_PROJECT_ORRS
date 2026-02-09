@@ -1,59 +1,93 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 
-const PassengerCard = ({ passengerNo, passenger, onPassengerChange }) => {
-  const [errors, setErrors] = useState({});
+const PassengerCard = ({ passengerNo, passenger, onPassengerChange, seatInfo }) => {
+  // Local validation errors only - no passenger data stored locally
+  const [validationErrors, setValidationErrors] = useState({});
 
-  const validateField = (field, value) => {
-    const newErrors = { ...errors };
+  // Clear validation errors when passenger changes
+  useEffect(() => {
+    setValidationErrors({});
+  }, [passengerNo]);
+
+  const validateField = useCallback((field, value) => {
+    setValidationErrors(prev => {
+      const newErrors = { ...prev };
+      
+      switch (field) {
+        case 'name':
+          if (!value || !value.trim()) {
+            newErrors.name = 'Name is required';
+          } else if (value.trim().length < 2) {
+            newErrors.name = 'Name must be at least 2 characters';
+          } else {
+            delete newErrors.name;
+          }
+          break;
+        case 'age':
+          const ageNum = parseInt(value);
+          if (!value || value === '') {
+            newErrors.age = 'Age is required';
+          } else if (isNaN(ageNum) || ageNum < 1 || ageNum > 120) {
+            newErrors.age = 'Age must be between 1 and 120';
+          } else {
+            delete newErrors.age;
+          }
+          break;
+        case 'country':
+          if (!value || !value.trim()) {
+            newErrors.country = 'Country is required';
+          } else {
+            delete newErrors.country;
+          }
+          break;
+        case 'gender':
+          if (!value) {
+            newErrors.gender = 'Gender is required';
+          } else {
+            delete newErrors.gender;
+          }
+          break;
+      }
+      
+      return newErrors;
+    });
+  }, []);
+
+  const handleChange = useCallback((field, value) => {
+    const passengerIndex = passengerNo - 1;
     
-    switch (field) {
-      case 'name':
-        if (!value.trim()) {
-          newErrors.name = 'Name is required';
-        } else if (value.trim().length < 2) {
-          newErrors.name = 'Name must be at least 2 characters';
-        } else {
-          delete newErrors.name;
-        }
-        break;
-      case 'age':
-        if (!value) {
-          newErrors.age = 'Age is required';
-        } else if (value < 1 || value > 120) {
-          newErrors.age = 'Age must be between 1 and 120';
-        } else {
-          delete newErrors.age;
-        }
-        break;
-      case 'country':
-        if (!value.trim()) {
-          newErrors.country = 'Country is required';
-        } else {
-          delete newErrors.country;
-        }
-        break;
-      case 'gender':
-        if (!value) {
-          newErrors.gender = 'Gender is required';
-        } else {
-          delete newErrors.gender;
-        }
-        break;
-    }
+    // Immediately update Redux store
+    onPassengerChange(passengerIndex, field, value);
     
-    setErrors(newErrors);
-  };
-
-  const handleChange = (field, value) => {
-    onPassengerChange(passengerNo - 1, field, value);
+    // Validate the field
     validateField(field, value);
+  }, [passengerNo, onPassengerChange, validateField]);
+
+  // Ensure we have default values
+  const safePassenger = {
+    name: passenger?.name || '',
+    age: passenger?.age || '',
+    gender: passenger?.gender || 'Male',
+    country: passenger?.country || 'India',
+    id: passenger?.id || `temp-${passengerNo}`
   };
 
   return (
     <div className="bg-white border-2 border-violet-300 rounded-2xl p-6 mb-4 shadow-sm hover:shadow-md transition-shadow">
-      <h2 className="text-lg font-semibold text-gray-800 mb-6 pb-2 border-b border-violet-300">
-        Passenger {passengerNo}
-      </h2>
+      <div className="flex justify-between items-center mb-6 pb-2 border-b border-violet-300">
+        <h2 className="text-lg font-semibold text-gray-800">
+          Passenger {passengerNo}
+        </h2>
+        {seatInfo && (
+          <div className="bg-violet-100 px-3 py-1 rounded-full">
+            <span className="text-sm font-medium text-violet-700">
+              {typeof seatInfo === 'object' 
+                ? `Seat ${seatInfo.seatNumber} (Coach ${seatInfo.coach})` 
+                : `Seat ${seatInfo}`}
+            </span>
+          </div>
+        )}
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {/* Gender */}
@@ -61,31 +95,31 @@ const PassengerCard = ({ passengerNo, passenger, onPassengerChange }) => {
           <label className="block text-sm font-medium text-gray-700 mb-3">
             Gender <span className="text-red-500">*</span>
           </label>
-          <div className="flex gap-4">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name={`gender-${passengerNo}`}
-                value="Male"
-                checked={passenger.gender === "Male"}
-                onChange={(e) => handleChange('gender', e.target.value)}
-                className="w-4 h-4 text-violet-600 border-gray-300 focus:ring-violet-500"
-              />
-              <span className="text-sm text-gray-700">Male</span>
-            </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name={`gender-${passengerNo}`}
-                value="Female"
-                checked={passenger.gender === "Female"}
-                onChange={(e) => handleChange('gender', e.target.value)}
-                className="w-4 h-4 text-violet-600 border-gray-300 focus:ring-violet-500"
-              />
-              <span className="text-sm text-gray-700">Female</span>
-            </label>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => handleChange('gender', 'Male')}
+              className={`flex-1 px-4 py-3 rounded-xl border-2 text-sm font-medium transition-all duration-200 ${
+                safePassenger.gender === 'Male'
+                  ? 'bg-violet-600 text-white border-violet-600 shadow-md'
+                  : 'bg-white text-gray-700 border-violet-200 hover:border-violet-400 hover:bg-violet-50'
+              }`}
+            >
+              Male
+            </button>
+            <button
+              type="button"
+              onClick={() => handleChange('gender', 'Female')}
+              className={`flex-1 px-4 py-3 rounded-xl border-2 text-sm font-medium transition-all duration-200 ${
+                safePassenger.gender === 'Female'
+                  ? 'bg-violet-600 text-white border-violet-600 shadow-md'
+                  : 'bg-white text-gray-700 border-violet-200 hover:border-violet-400 hover:bg-violet-50'
+              }`}
+            >
+              Female
+            </button>
           </div>
-          {errors.gender && <p className="text-red-500 text-xs mt-1">{errors.gender}</p>}
+          {validationErrors.gender && <p className="text-red-500 text-xs mt-1">{validationErrors.gender}</p>}
         </div>
 
         {/* Name */}
@@ -95,16 +129,16 @@ const PassengerCard = ({ passengerNo, passenger, onPassengerChange }) => {
           </label>
           <input
             type="text"
-            value={passenger.name}
+            value={safePassenger.name}
             onChange={(e) => handleChange('name', e.target.value)}
             className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-colors ${
-              errors.name 
+              validationErrors.name 
                 ? 'border-red-300 focus:border-red-500' 
                 : 'border-violet-400 focus:border-violet-600'
             }`}
             placeholder="Enter full name"
           />
-          {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+          {validationErrors.name && <p className="text-red-500 text-xs mt-1">{validationErrors.name}</p>}
         </div>
 
         {/* Age */}
@@ -114,10 +148,10 @@ const PassengerCard = ({ passengerNo, passenger, onPassengerChange }) => {
           </label>
           <input
             type="number"
-            value={passenger.age}
+            value={safePassenger.age}
             onChange={(e) => handleChange('age', e.target.value)}
             className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-colors ${
-              errors.age 
+              validationErrors.age 
                 ? 'border-red-300 focus:border-red-500' 
                 : 'border-violet-400 focus:border-violet-600'
             }`}
@@ -125,7 +159,7 @@ const PassengerCard = ({ passengerNo, passenger, onPassengerChange }) => {
             min="1"
             max="120"
           />
-          {errors.age && <p className="text-red-500 text-xs mt-1">{errors.age}</p>}
+          {validationErrors.age && <p className="text-red-500 text-xs mt-1">{validationErrors.age}</p>}
         </div>
 
         {/* Country */}
@@ -135,16 +169,16 @@ const PassengerCard = ({ passengerNo, passenger, onPassengerChange }) => {
           </label>
           <input
             type="text"
-            value={passenger.country}
+            value={safePassenger.country}
             onChange={(e) => handleChange('country', e.target.value)}
             className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-colors ${
-              errors.country 
+              validationErrors.country 
                 ? 'border-red-300 focus:border-red-500' 
                 : 'border-violet-400 focus:border-violet-600'
             }`}
             placeholder="Country"
           />
-          {errors.country && <p className="text-red-500 text-xs mt-1">{errors.country}</p>}
+          {validationErrors.country && <p className="text-red-500 text-xs mt-1">{validationErrors.country}</p>}
         </div>
       </div>
     </div>

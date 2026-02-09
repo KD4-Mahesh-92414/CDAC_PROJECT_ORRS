@@ -51,6 +51,7 @@ const Profile = lazy(() => import("./pages/account/Profile"));
 const EditProfile = lazy(() => import("./pages/account/EditProfile"));
 const ChangePassword = lazy(() => import("./pages/account/ChangePassword"));
 const Bookings = lazy(() => import("./pages/account/Bookings"));
+const BookingDetails = lazy(() => import("./pages/account/BookingDetails"));
 const PaymentHistory = lazy(() => import("./pages/account/PaymentHistory"));
 const SavedPassengers = lazy(() => import("./pages/account/SavedPassengers"));
 
@@ -200,6 +201,14 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <Bookings />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/account/bookings/:bookingId" 
+            element={
+              <ProtectedRoute>
+                <BookingDetails />
               </ProtectedRoute>
             } 
           />
