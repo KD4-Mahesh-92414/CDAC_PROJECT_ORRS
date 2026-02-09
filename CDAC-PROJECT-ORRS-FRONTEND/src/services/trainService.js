@@ -6,20 +6,57 @@ import api from './api'
  */
 const trainService = {
   /**
-   * Search trains
-   * @param {Object} searchParams - { from, to, date }
+   * Search trains by city names
+   * @param {Object} searchParams - { fromCity, toCity, date }
    * @returns {Promise} Search results
    */
   searchTrains: async (searchParams) => {
     try {
-      const response = await api.post('/schedule/search', {
-        fromStation: searchParams.from,
-        toStation: searchParams.to,
-        journeyDate: searchParams.date,
-      })
-      return response.data
+      // Validate input parameters
+      if (!searchParams.fromCity || !searchParams.toCity || !searchParams.date) {
+        throw new Error('Missing required search parameters');
+      }
+
+      // Convert date string to proper format for backend (YYYY-MM-DD)
+      let formattedDate;
+      try {
+        const dateObj = new Date(searchParams.date);
+        if (isNaN(dateObj.getTime())) {
+          throw new Error('Invalid date format');
+        }
+        formattedDate = dateObj.toISOString().split('T')[0];
+      } catch (dateError) {
+        throw new Error('Invalid date format. Please use a valid date.');
+      }
+
+      const requestBody = {
+        sourceStation: searchParams.fromCity.trim(),
+        destinationStation: searchParams.toCity.trim(),
+        journeyDate: formattedDate,
+      };
+
+      console.log('Train search request:', requestBody);
+      
+      const response = await api.post('/schedule/search', requestBody);
+      
+      console.log('Train search response:', response.data);
+      return response.data;
     } catch (error) {
-      throw error.response?.data || { message: 'Failed to search trains' }
+      console.error('Train search error:', error);
+      
+      // Handle different types of errors
+      if (error.response?.status === 400) {
+        const errorMessage = error.response.data?.message || 'Invalid search parameters';
+        throw new Error(errorMessage);
+      } else if (error.response?.status === 404) {
+        throw new Error('No trains found for the selected route');
+      } else if (error.response?.status === 500) {
+        throw new Error('Server error. Please try again later.');
+      } else if (!error.response) {
+        throw new Error('Network error. Please check your connection.');
+      }
+      
+      throw error.response?.data || { message: error.message || 'Failed to search trains' };
     }
   },
 
@@ -48,19 +85,6 @@ const trainService = {
       return response.data
     } catch (error) {
       throw error.response?.data || { message: 'Failed to get train status' }
-    }
-  },
-
-  /**
-   * Get all stations (for autocomplete)
-   * @returns {Promise} List of stations
-   */
-  getStations: async () => {
-    try {
-      const response = await api.get('/api/stations')
-      return response.data
-    } catch (error) {
-      throw error.response?.data || { message: 'Failed to fetch stations' }
     }
   },
 }

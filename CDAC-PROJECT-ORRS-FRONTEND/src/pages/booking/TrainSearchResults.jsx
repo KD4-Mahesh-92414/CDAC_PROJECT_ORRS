@@ -20,10 +20,12 @@ export default function TrainSearchResults() {
   const { trains, isLoading, error } = useTrainData(searchData);
   const { 
     filters, 
-    activeFilters, 
-    handleTrainTypeFilter, 
-    handleClassFilter 
-  } = useTrainFilters();
+    activeFilters,
+    availableClasses,
+    filteredTrains,
+    handleClassFilter,
+    resetFilters
+  } = useTrainFilters(trains);
 
   const handleSelectTrain = (train) => {
     dispatch(setSelectedTrain(train));
@@ -58,11 +60,12 @@ export default function TrainSearchResults() {
         {/* Main Content */}
         <div className="lg:col-span-3">
           <SearchResultsHeader 
-            trainsCount={trains.length} 
+            trainsCount={filteredTrains.length}
+            totalTrainsCount={trains.length}
             searchData={searchData} 
           />
           <TrainsList 
-            trains={trains} 
+            trains={filteredTrains} 
             onSelectTrain={handleSelectTrain} 
           />
         </div>
@@ -71,8 +74,9 @@ export default function TrainSearchResults() {
         <TrainFilters
           filters={filters}
           activeFilters={activeFilters}
-          onTrainTypeFilter={handleTrainTypeFilter}
+          availableClasses={availableClasses}
           onClassFilter={handleClassFilter}
+          onResetFilters={resetFilters}
         />
       </div>
     </div>

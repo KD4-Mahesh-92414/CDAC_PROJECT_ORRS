@@ -1,30 +1,68 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import bookingService from "../../services/bookingService";
+import toast from "react-hot-toast";
 
 export default function PNRStatus() {
   const navigate = useNavigate();
   const [pnr, setPnr] = useState("");
   const [status, setStatus] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleCheckStatus = () => {
-    if (pnr.length === 10) {
-      // Mock data
-      setStatus({
-        pnr: pnr,
-        trainNumber: "12025",
-        trainName: "Rajdhani Express",
-        from: "New Delhi",
-        to: "Mumbai Central",
-        bookingDate: "2024-12-15",
-        journeyDate: "2024-12-25",
-        status: "CONFIRMED",
-        passengers: [
-          { name: "Rajesh Kumar", age: 35, coach: "A", seat: "12" },
-          { name: "Priya Kumar", age: 32, coach: "A", seat: "13" },
-        ],
-        totalFare: "₹4,500",
-      });
+  const handleCheckStatus = async () => {
+    if (pnr.length !== 10) {
+      toast.error("PNR must be exactly 10 digits");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const response = await bookingService.checkPNRStatus(pnr);
+      
+      if (response.status === 'SUCCESS') {
+        const data = response.data;
+        
+        // Transform backend response to frontend format
+        const transformedStatus = {
+          pnr: data.pnrNumber,
+          trainNumber: data.trainInfo.trainNumber,
+          trainName: data.trainInfo.trainName,
+          coachType: data.trainInfo.coachType,
+          from: data.routeInfo.sourceStation,
+          to: data.routeInfo.destinationStation,
+          departureTime: data.routeInfo.departureTime,
+          arrivalTime: data.routeInfo.arrivalTime,
+          distance: data.routeInfo.distance,
+          bookingDate: new Date(data.bookingDate).toLocaleDateString(),
+          journeyDate: new Date(data.journeyDate).toLocaleDateString(),
+          status: data.bookingStatus,
+          passengers: data.passengers.map(p => ({
+            name: p.name,
+            age: p.age,
+            gender: p.gender,
+            seatNumber: p.seatNumber,
+            status: p.status
+          })),
+          totalFare: `₹${data.totalFare.toLocaleString()}`
+        };
+        
+        setStatus(transformedStatus);
+        toast.success("PNR status retrieved successfully");
+      } else {
+        throw new Error(response.message || 'Failed to fetch PNR status');
+      }
+    } catch (error) {
+      console.error('PNR Status Error:', error);
+      const errorMessage = error.message || 'Failed to fetch PNR status';
+      setError(errorMessage);
+      toast.error(errorMessage);
+      setStatus(null);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -59,9 +97,10 @@ export default function PNRStatus() {
                 />
                 <button
                   onClick={handleCheckStatus}
-                  className="bg-violet-600 hover:bg-violet-700 text-white font-bold px-8 py-3 rounded-xl transition-all duration-300 shadow-lg shadow-violet-300"
+                  disabled={loading || pnr.length !== 10}
+                  className="bg-violet-600 hover:bg-violet-700 text-white font-bold px-8 py-3 rounded-xl transition-all duration-300 shadow-lg shadow-violet-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Check
+                  {loading ? "Checking..." : "Check"}
                 </button>
               </div>
               <p className="text-xs text-gray-500 mt-2">
@@ -70,6 +109,15 @@ export default function PNRStatus() {
             </div>
           </div>
         </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="max-w-2xl mx-auto mb-8">
+            <div className="bg-red-50 border border-red-300 rounded-xl p-4 text-center">
+              <p className="text-red-600 font-medium">{error}</p>
+            </div>
+          </div>
+        )}
 
         {/* Status Result */}
         {status && (
@@ -139,6 +187,30 @@ export default function PNRStatus() {
                     {status.journeyDate}
                   </p>
                 </div>
+                <div className="border-b-2 border-violet-100 pb-4">
+                  <p className="text-sm text-gray-500 mb-1">Coach Type</p>
+                  <p className="text-lg font-bold text-gray-900">
+                    {status.coachType}
+                  </p>
+                </div>
+                <div className="border-b-2 border-violet-100 pb-4">
+                  <p className="text-sm text-gray-500 mb-1">Departure Time</p>
+                  <p className="text-lg font-bold text-gray-900">
+                    {status.departureTime}
+                  </p>
+                </div>
+                <div className="border-b-2 border-violet-100 pb-4">
+                  <p className="text-sm text-gray-500 mb-1">Arrival Time</p>
+                  <p className="text-lg font-bold text-gray-900">
+                    {status.arrivalTime}
+                  </p>
+                </div>
+                <div className="border-b-2 border-violet-100 pb-4">
+                  <p className="text-sm text-gray-500 mb-1">Distance</p>
+                  <p className="text-lg font-bold text-gray-900">
+                    {status.distance}
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -158,10 +230,13 @@ export default function PNRStatus() {
                         Age
                       </th>
                       <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900">
-                        Coach
+                        Gender
                       </th>
                       <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900">
                         Seat
+                      </th>
+                      <th className="text-left py-3 px-4 text-sm font-semibold text-gray-900">
+                        Status
                       </th>
                     </tr>
                   </thead>
@@ -178,10 +253,13 @@ export default function PNRStatus() {
                           {passenger.age}
                         </td>
                         <td className="py-3 px-4 text-gray-900">
-                          {passenger.coach}
+                          {passenger.gender}
                         </td>
                         <td className="py-3 px-4 font-bold text-violet-600">
-                          {passenger.seat}
+                          {passenger.seatNumber}
+                        </td>
+                        <td className="py-3 px-4 text-green-600 font-semibold">
+                          {passenger.status}
                         </td>
                       </tr>
                     ))}

@@ -18,7 +18,19 @@ export default function TrainCard({ train, onSelectTrain }) {
 
   const handleProceed = () => {
     if (selectedCoach && onSelectTrain) {
-      onSelectTrain({ ...train, selectedCoach: selectedCoach });
+      // Pass both train and selected coach information
+      onSelectTrain({ 
+        ...train, 
+        selectedCoach: {
+          coachTypeId: selectedCoach.coachTypeId,
+          type: selectedCoach.type,
+          code: selectedCoach.code,
+          fare: selectedCoach.fare,
+          available: selectedCoach.available,
+          status: selectedCoach.status,
+          coachImageUrl: selectedCoach.coachImageUrl
+        }
+      });
     }
   };
 
@@ -32,7 +44,7 @@ export default function TrainCard({ train, onSelectTrain }) {
         {/* Class Options - Takes 2 columns */}
         <div className="lg:col-span-2">
           <ClassOptions 
-            coaches={train.coaches} 
+            coaches={train.coaches || []} 
             onCoachSelect={handleCoachSelect}
           />
         </div>
@@ -49,7 +61,7 @@ export default function TrainCard({ train, onSelectTrain }) {
             className="mt-4 w-full bg-gradient-to-r from-violet-600 to-violet-700 text-white font-semibold py-3 px-4 rounded-lg hover:from-violet-700 hover:to-violet-800 transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:from-gray-400 disabled:hover:to-gray-400"
             disabled={!selectedCoach}
           >
-            <span>Proceed</span>
+            <span>Proceed to Seat Selection</span>
             <ArrowRightIcon className="w-4 h-4" />
           </button>
         </div>
