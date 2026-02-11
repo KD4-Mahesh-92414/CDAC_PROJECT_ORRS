@@ -146,9 +146,18 @@ export default function TrainManagement() {
       return;
     }
 
+    // Clean data - remove empty strings for optional fields
+    const cleanedData = {
+      ...formData,
+      trainType: formData.trainType || null,
+      totalDistanceKm: formData.totalDistanceKm || null,
+      avgSpeed: formData.avgSpeed || null,
+      daysOfRun: formData.daysOfRun || null
+    };
+
     try {
       if (selectedTrain) {
-        const response = await adminService.trains.updateTrain(selectedTrain.id, formData);
+        const response = await adminService.trains.updateTrain(selectedTrain.id, cleanedData);
         if (response.data?.status === 'SUCCESS') {
           toast.success('Train updated successfully!');
           fetchTrains();
@@ -156,7 +165,7 @@ export default function TrainManagement() {
           setErrors({});
         }
       } else {
-        const response = await adminService.trains.addTrain(formData);
+        const response = await adminService.trains.addTrain(cleanedData);
         if (response.data?.status === 'SUCCESS') {
           toast.success('Train added successfully!');
           fetchTrains();
@@ -209,8 +218,8 @@ export default function TrainManagement() {
           open={showModal}
           onClose={() => setShowModal(false)}
           title={selectedTrain ? 'Edit Train' : 'Add Train'}
-          onSubmit={handleSubmit}
         >
+          <form onSubmit={handleSubmit} className="space-y-6">
           {/* Train Information */}
           <div>
             <h3 className="text-lg font-bold text-gray-900 mb-4">Train Information</h3>
@@ -325,6 +334,24 @@ export default function TrainManagement() {
               />
             </div>
           </div>
+
+          {/* Action Buttons */}
+          <div className="flex justify-end gap-3 pt-6 border-t border-violet-100">
+            <button
+              type="button"
+              onClick={() => setShowModal(false)}
+              className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-6 py-2.5 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors"
+            >
+              {selectedTrain ? 'Update Train' : 'Create Train'}
+            </button>
+          </div>
+          </form>
         </FormModal>
 
         {/* Delete Confirmation */}

@@ -12,7 +12,8 @@ import {
   ArrowLeftIcon,
   TruckIcon,
   MapIcon,
-  ViewColumnsIcon
+  ViewColumnsIcon,
+  TicketIcon
 } from '@heroicons/react/24/outline';
 
 const navigation = [
@@ -24,6 +25,7 @@ const navigation = [
   { name: 'Seat Layout Management', href: '/admin/seat-layouts', icon: ViewColumnsIcon },
   { name: 'Train Route Management', href: '/admin/train-routes', icon: MapIcon },
   { name: 'Fare Structure', href: '/admin/fares', icon: CurrencyDollarIcon },
+  { name: 'Booking Management', href: '/admin/bookings', icon: TicketIcon },
 ];
 
 export default function Sidebar({ open, setOpen }) {

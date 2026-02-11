@@ -70,6 +70,12 @@ export const dashboardService = {
   getMonthlyRevenue: () => api.get('/admin/dashboard/monthly-revenue')
 };
 
+// Booking Management APIs
+export const bookingService = {
+  getAllBookings: () => api.get('/admin/bookings'),
+  cancelBooking: (bookingId) => api.put(`/admin/bookings/${bookingId}/cancel`)
+};
+
 // Combined admin service
 const adminService = {
   stations: stationService,
@@ -79,7 +85,8 @@ const adminService = {
   coachTypes: coachTypeService,
   seatLayouts: seatLayoutService,
   trainRoutes: trainRouteService,
-  dashboard: dashboardService
+  dashboard: dashboardService,
+  bookings: bookingService
 };
 
 export default adminService;

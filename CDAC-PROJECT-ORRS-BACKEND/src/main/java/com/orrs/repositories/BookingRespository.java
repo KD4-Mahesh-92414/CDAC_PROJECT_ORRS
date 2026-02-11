@@ -88,4 +88,22 @@ public interface BookingRespository extends JpaRepository<Booking, Long> {
     
     @Query("SELECT COALESCE(SUM(b.totalFare), 0) FROM Booking b WHERE DATE(b.bookingDate) BETWEEN :startDate AND :endDate AND b.status = 'CONFIRMED'")
     java.math.BigDecimal sumTotalAmountByDateRange(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    // Admin Booking Management
+    @Query("""
+        SELECT new com.orrs.dto.response.BookingAdminViewDTO(
+            b.id, b.pnrNumber, b.user.id, b.user.fullName, b.user.email,
+            t.trainNumber, t.trainName, ss.stationName, ds.stationName,
+            b.journeyDate, ct.typeCode, b.totalFare, b.status, b.bookingDate,
+            CAST(SIZE(b.tickets) AS integer)
+        )
+        FROM Booking b
+        JOIN b.schedule s
+        JOIN s.train t
+        JOIN b.sourceStation ss
+        JOIN b.destinationStation ds
+        LEFT JOIN b.coachType ct
+        ORDER BY b.bookingDate DESC
+        """)
+    List<com.orrs.dto.response.BookingAdminViewDTO> fetchAllBookingsForAdmin();
 }

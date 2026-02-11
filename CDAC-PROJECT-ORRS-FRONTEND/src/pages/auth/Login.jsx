@@ -91,9 +91,9 @@ export const Login = ({ onLoginSuccess }) => {
         throw new Error('No JWT token received from server');
       }
 
-      // Store JWT token and role in localStorage
-      localStorage.setItem('token', jwt);
-      localStorage.setItem('userRole', role);
+      // Store JWT token and role in sessionStorage
+      sessionStorage.setItem('token', jwt);
+      sessionStorage.setItem('userRole', role);
       
       // Create user object with email and role
       const user = {
@@ -101,7 +101,7 @@ export const Login = ({ onLoginSuccess }) => {
         role: role,
       };
 
-      console.log('JWT token stored in localStorage');
+      console.log('JWT token stored in sessionStorage');
       console.log('Token preview:', `${jwt.substring(0, 30)}...`);
 
       dispatch(loginSuccess({

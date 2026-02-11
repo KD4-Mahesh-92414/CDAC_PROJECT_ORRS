@@ -145,8 +145,14 @@ export default function UserManagement() {
       if (response.data?.status === 'SUCCESS') {
         const userData = response.data.data;
         const updateResponse = await adminService.users.updateUser(user.userId, {
-          ...userData,
-          role: newRole
+          fullName: userData.fullName,
+          email: userData.email,
+          mobile: userData.mobile,
+          gender: userData.gender,
+          role: newRole,
+          status: userData.status,
+          aadharNo: userData.aadharNo || null,
+          address: userData.address || null
         });
         if (updateResponse.data?.status === 'SUCCESS') {
           toast.success(`User role changed to ${newRole.replace('ROLE_', '')} successfully!`);
@@ -154,7 +160,7 @@ export default function UserManagement() {
         }
       }
     } catch (error) {
-      toast.error('Failed to change user role');
+      toast.error(error.response?.data?.message || 'Failed to change user role');
     }
   };
 

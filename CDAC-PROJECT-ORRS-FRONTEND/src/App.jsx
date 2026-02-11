@@ -31,6 +31,7 @@ const StationManagement = lazy(() => import("./admin/pages/StationManagement"));
 const TrainManagement = lazy(() => import("./admin/pages/TrainManagement"));
 const UserManagement = lazy(() => import("./admin/pages/UserManagement"));
 const FareStructure = lazy(() => import("./admin/pages/FareStructure"));
+const BookingManagement = lazy(() => import("./admin/pages/BookingManagement"));
 const RefundTransaction = lazy(() => import("./admin/pages/RefundTransaction"));
 const CreateAnnouncement = lazy(() => import("./admin/pages/CreateAnnouncement"));
 const CoachTypeListPage = lazy(() => import("./admin/pages/CoachTypeListPage"));
@@ -258,6 +259,7 @@ function AppContent() {
           <Route path="/admin/trains" element={<ProtectedRoute><TrainManagement /></ProtectedRoute>} />
           <Route path="/admin/users" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
           <Route path="/admin/fares" element={<ProtectedRoute><FareStructure /></ProtectedRoute>} />
+          <Route path="/admin/bookings" element={<ProtectedRoute><BookingManagement /></ProtectedRoute>} />
           <Route path="/admin/refunds" element={<ProtectedRoute><RefundTransaction /></ProtectedRoute>} />
           <Route path="/admin/announcements" element={<ProtectedRoute><CreateAnnouncement /></ProtectedRoute>} />
           <Route path="/admin/coach-types" element={<ProtectedRoute><CoachTypeProvider><CoachTypeListPage /></CoachTypeProvider></ProtectedRoute>} />
