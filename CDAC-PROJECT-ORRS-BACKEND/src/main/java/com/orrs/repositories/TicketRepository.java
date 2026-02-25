@@ -26,18 +26,26 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     );
 
     // Fetches booked seats for specific journey segment (station to station)
-    // This considers only bookings that overlap with the requested journey
+    // Uses sequence numbers from train_routes to correctly detect journey overlap
     @Query("""
         SELECT t.coachLabel, t.seatNumber 
         FROM Ticket t 
         JOIN t.booking b 
+        JOIN TrainRoute srcRoute ON srcRoute.train.id = b.schedule.train.id 
+                                 AND srcRoute.station.id = b.sourceStation.id
+        JOIN TrainRoute destRoute ON destRoute.train.id = b.schedule.train.id 
+                                  AND destRoute.station.id = b.destinationStation.id
+        JOIN TrainRoute userSrcRoute ON userSrcRoute.train.id = b.schedule.train.id 
+                                     AND userSrcRoute.station.id = :sourceStationId
+        JOIN TrainRoute userDestRoute ON userDestRoute.train.id = b.schedule.train.id 
+                                      AND userDestRoute.station.id = :destinationStationId
         WHERE b.schedule.id = :scheduleId 
         AND b.coachType.id = :coachTypeId 
         AND b.status = :status
         AND (
-            (b.sourceStation.id <= :sourceStationId AND b.destinationStation.id > :sourceStationId) OR
-            (b.sourceStation.id < :destinationStationId AND b.destinationStation.id >= :destinationStationId) OR
-            (b.sourceStation.id >= :sourceStationId AND b.destinationStation.id <= :destinationStationId)
+            (srcRoute.sequenceNo <= userSrcRoute.sequenceNo AND destRoute.sequenceNo > userSrcRoute.sequenceNo) OR
+            (srcRoute.sequenceNo < userDestRoute.sequenceNo AND destRoute.sequenceNo >= userDestRoute.sequenceNo) OR
+            (srcRoute.sequenceNo >= userSrcRoute.sequenceNo AND destRoute.sequenceNo <= userDestRoute.sequenceNo)
         )
         """)
     List<Object[]> findBookedSeatsForJourneySegment(

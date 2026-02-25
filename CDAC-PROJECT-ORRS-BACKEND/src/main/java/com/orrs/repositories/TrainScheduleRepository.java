@@ -68,6 +68,10 @@ public interface TrainScheduleRepository extends JpaRepository<TrainSchedule, Lo
     @Query("SELECT COUNT(ts) > 0 FROM TrainSchedule ts WHERE ts.train.id = :trainId AND ts.departureDate = :date")
     boolean existsByTrainIdAndDate(@Param("trainId") Long trainId, @Param("date") LocalDate date);
 
+    // Check if train has any schedules
+    @Query("SELECT COUNT(ts) > 0 FROM TrainSchedule ts WHERE ts.train.id = :trainId")
+    boolean existsByTrainId(@Param("trainId") Long trainId);
+
     // Count scheduled trains
     @Query("SELECT COUNT(ts) FROM TrainSchedule ts WHERE ts.departureDate >= :fromDate")
     Long countScheduledTrainsFromDate(@Param("fromDate") LocalDate fromDate);

@@ -1,7 +1,5 @@
 package com.orrs.controller;
 
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -17,12 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.orrs.dto.request.CancelBookingReqDTO;
 import com.orrs.dto.request.SavedPassengerReqDTO;
-import com.orrs.dto.response.BookingDetailRespDTO;
-import com.orrs.dto.response.BookingHistoryRespDTO;
-import com.orrs.dto.response.BookingStatsRespDTO;
-import com.orrs.dto.response.PaymentHistoryRespDTO;
-import com.orrs.dto.response.PaymentSummaryRespDTO;
-import com.orrs.dto.response.SavedPassengerRespDTO;
 import com.orrs.security.UserPrincipal;
 import com.orrs.services.UserBookingService;
 

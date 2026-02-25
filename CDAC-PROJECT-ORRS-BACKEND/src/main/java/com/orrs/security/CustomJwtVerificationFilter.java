@@ -15,6 +15,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -24,7 +25,7 @@ public class CustomJwtVerificationFilter extends OncePerRequestFilter {
 	private final JwtUtils jwtUtils;
 
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+	protected void doFilterInternal( HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {	
 		try {
 			//1. Check for Authorization header in the incoming request -> get its value

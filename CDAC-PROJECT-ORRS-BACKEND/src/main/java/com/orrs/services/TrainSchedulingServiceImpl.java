@@ -30,43 +30,50 @@ public class TrainSchedulingServiceImpl implements TrainSchedulingService {
 
     @Override
     public void scheduleTrainsForNext60Days() {
-        log.info("Starting initial 30-day train scheduling...");
+        log.info("Starting initial 60-day train scheduling...");
         
         List<Train> activeTrains = trainRepository.findAllActiveTrains();
         LocalDate startDate = LocalDate.now();
-        LocalDate endDate = startDate.plusDays(30);
+        LocalDate endDate = startDate.plusDays(60);
         
         int totalScheduled = 0;
         
         for (Train train : activeTrains) {
-            List<DayOfWeek> runningDays = parseDaysOfRun(train.getDaysOfRun());
+            // Check if train has any existing schedules
+            boolean hasSchedules = trainScheduleRepository.existsByTrainId(train.getId());
             
-            for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
-                if (runningDays.contains(date.getDayOfWeek())) {
-                    // Check if schedule already exists
-                    if (!trainScheduleRepository.existsByTrainIdAndDate(train.getId(), date)) {
-                        TrainSchedule schedule = new TrainSchedule();
-                        schedule.setTrain(train);
-                        schedule.setDepartureDate(date);
-                        schedule.setStatus(ScheduleStatus.RUNNING);
-                        
-                        trainScheduleRepository.save(schedule);
-                        totalScheduled++;
+            if (!hasSchedules) {
+                // New train - schedule for next 60 days
+                log.info("New train detected: {} - Scheduling for 60 days", train.getTrainName());
+                
+                List<DayOfWeek> runningDays = parseDaysOfRun(train.getDaysOfRun());
+                
+                for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
+                    if (runningDays.contains(date.getDayOfWeek())) {
+                        if (!trainScheduleRepository.existsByTrainIdAndDate(train.getId(), date)) {
+                            TrainSchedule schedule = new TrainSchedule();
+                            schedule.setTrain(train);
+                            schedule.setDepartureDate(date);
+                            schedule.setStatus(ScheduleStatus.RUNNING);
+                            
+                            trainScheduleRepository.save(schedule);
+                            totalScheduled++;
+                        }
                     }
                 }
             }
         }
         
-        log.info("Initial 30-day scheduling completed. Total schedules created: {}", totalScheduled);
+        log.info("Initial 60-day scheduling completed. Total schedules created: {}", totalScheduled);
     }
 
     @Override
     @Scheduled(cron = "0 1 0 * * ?") // Run daily at 12:01 AM
     public void scheduleTrainsForNextDay() {
-        log.info("Starting daily train scheduling for next day...");
+        log.info("Starting daily train scheduling for 60th day from now...");
         
         List<Train> activeTrains = trainRepository.findAllActiveTrains();
-        LocalDate targetDate = LocalDate.now().plusDays(1); // Schedule for tomorrow
+        LocalDate targetDate = LocalDate.now().plusDays(60); // Schedule for 60th day
         
         int totalScheduled = 0;
         

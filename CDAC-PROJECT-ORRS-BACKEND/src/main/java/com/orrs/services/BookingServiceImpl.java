@@ -337,11 +337,12 @@ public class BookingServiceImpl implements BookingService {
     }
     
     private String generatePNR() {
-        // Generate 10-digit PNR: Format YYYYMMDDXX where XX is random 2-digit number
+        // Generate 10-digit PNR: Format MMDDMMSSXX
+        // MM = Month, DD = Day, MM = Minute, SS = Second, XX = Random (10-99)
         LocalDateTime now = LocalDateTime.now();
-        String datePart = now.format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String timePart = now.format(java.time.format.DateTimeFormatter.ofPattern("MMddmmss"));
         int randomPart = (int) (Math.random() * 90) + 10; // Random 2-digit number (10-99)
-        return datePart + String.format("%02d", randomPart);
+        return timePart + String.format("%02d", randomPart);
     }
 
     private String generateTransactionId() {

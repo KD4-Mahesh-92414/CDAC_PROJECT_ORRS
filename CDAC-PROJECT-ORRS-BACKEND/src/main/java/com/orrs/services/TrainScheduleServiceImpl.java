@@ -77,13 +77,17 @@ public class TrainScheduleServiceImpl implements TrainScheduleService{
         }
 
         // Execute Search
-        List<SearchResultRespDTO> trains = scheduleRepository.findAvailableTrains(
-            sourceStation.getId(), 
-            destStation.getId(), 
-            searchDto.getJourneyDate(),
-            ScheduleStatus.RUNNING
-        );
-        
+//        List<SearchResultRespDTO> trains = scheduleRepository.findAvailableTrains(
+//            sourceStation.getId(), 
+//            destStation.getId(), 
+//            searchDto.getJourneyDate(),
+//            ScheduleStatus.RUNNING
+//        );
+        List<SearchResultRespDTO> trains = searchTrains(
+              sourceStation.getId(), 
+              destStation.getId(), 
+              searchDto.getJourneyDate()
+          );
         // Set station IDs for seat matrix API
         for (SearchResultRespDTO train : trains) {
             train.setSourceStationId(sourceStation.getId());

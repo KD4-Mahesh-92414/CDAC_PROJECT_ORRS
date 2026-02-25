@@ -13,13 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.orrs.dto.common.ApiResponseDTO;
 import com.orrs.dto.request.AddTrainReqDTO;
 import com.orrs.dto.request.UpdateTrainReqDTO;
 import com.orrs.dto.request.UpdateTrainStatusReqDTO;
-import com.orrs.dto.common.ApiResponseDTO;
-import com.orrs.security.UserPrincipal;
-import com.orrs.services.TrainService;
 import com.orrs.services.TrainSchedulingService;
+import com.orrs.services.TrainService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -84,7 +83,7 @@ public class AdminTrainController {
     public ResponseEntity<?> updateTrainStatus(
          @PathVariable Long trainId,
          @RequestBody @Valid UpdateTrainStatusReqDTO dto ) 
-    {
+    {		
      return ResponseEntity.ok(
              trainService.updateTrainStatus(trainId, dto)
      );
